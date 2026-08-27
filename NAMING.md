@@ -36,7 +36,7 @@ The short stable template ID primarily identifies the durable subject. It does n
 
 Neither the title nor the template ID should positively misrepresent the document's authority or nature.
 
-A template may be a template **for a standard** without this repository itself conferring organizational authority. Organizational adoption is what gives a particular downstream standard governing force within that organization's legitimate scope.
+A template may be a template **for a standard or policy** without this repository itself conferring organizational authority. Organizational adoption is what gives a particular downstream artifact governing force within that organization's legitimate scope.
 
 ### 2. Do not annex a neighboring concept's future territory
 
@@ -101,14 +101,20 @@ template ID:
 project-repository-model
 
 human-facing title:
-Software Project Repository, Documentation, and Work Tracking Standard
+Software Project Repository Responsibility Standard
 ```
 
 ## Worked example
 
-The first template required a short ID for a document titled:
+The first template uses the stable ID:
 
-> **Software Project Repository, Documentation, and Work Tracking Standard**
+> `project-repository-model`
+
+and the human-facing title:
+
+> **Software Project Repository Responsibility Standard**
+
+The ID was chosen to name the durable project-repository subject without forcing the path to enumerate every system the standard discusses.
 
 Candidates were evaluated as follows.
 
@@ -136,6 +142,8 @@ Accepted because it:
 - leaves neighboring concepts distinct;
 - can accommodate legitimate future growth within the same project-repository subject;
 - has only a minor potential echo of the software Repository pattern, which repository context resolves easily.
+
+The human-facing title was later narrowed from an enumerative title after review showed that one section actually belonged to the separate `standards-adoption-model` subject. That refinement illustrates the same naming rule: a title should name the document's actual center rather than preserve breadth that belongs to a neighboring concept.
 
 ## Evaluation procedure
 
