@@ -62,6 +62,14 @@ Each template directory contains the reusable document, adoption guidance specif
 
 - [`project-repository-model`](templates/project-repository-model/) — template for a software project repository, documentation, and work-tracking standard.
 
+## License
+
+Unless otherwise noted, the standards templates and documentation in this repository are dedicated to the public domain under [CC0 1.0 Universal](LICENSE).
+
+Materials released under CC0 remain available under CC0 for those released versions. Software or other materials added later may be licensed separately where explicitly indicated; adding separately licensed material does not change the CC0 status of template and documentation versions already released under it.
+
+The repository may preserve provenance and source relationships for adopted templates, but downstream attribution is not required by CC0. Organizational adoption creates an independently governed standard rather than an ongoing authority relationship with this repository.
+
 ## Design principle
 
 Keep this repository deliberately small. Add structure, metadata, validation, automation, or taxonomy only when concrete use demonstrates the need for it.
