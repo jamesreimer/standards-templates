@@ -4,7 +4,7 @@
 
 This document defines how templates in this repository are named.
 
-It governs stable template IDs and human-facing template titles **inside `standards-templates`**. It does not define how version-control repositories should be named. Repository naming is a separate subject covered by the [`repository-naming`](templates/repository-naming/) template.
+It governs stable template IDs and human-facing template titles **inside `standards-templates`**. It does not define how version-control repositories, files, or directories should be named. Repository naming and filesystem naming are separate subjects covered by the [`repository-naming`](templates/repository-naming/) and [`filesystem-naming`](templates/filesystem-naming/) templates.
 
 Each template has two names with different responsibilities:
 
@@ -146,6 +146,8 @@ Accepted because it:
 - has only a minor potential echo of the software Repository pattern, which repository context resolves easily.
 
 The human-facing title was later narrowed from an enumerative title after review showed that one section actually belonged to the separate `standards-adoption-model` subject. That refinement illustrates the same naming rule: a title should name the document's actual center rather than preserve breadth that belongs to a neighboring concept.
+
+The later creation of separate `repository-naming` and `filesystem-naming` templates is another boundary precedent. Although repository names, file names, directory names, and template IDs are all naming concerns, their consequences and technical constraints differ enough that one omnibus naming standard would annex neighboring subjects rather than clarify them.
 
 ## Evaluation procedure
 
