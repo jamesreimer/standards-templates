@@ -234,6 +234,8 @@ For example, GitHub redirects most web and Git traffic after a repository rename
 
 This standard governs repository names only.
 
+File and directory names and path components are governed separately by the `filesystem-naming` standard.
+
 It does not automatically govern:
 
 - file and directory names;
