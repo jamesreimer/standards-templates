@@ -44,7 +44,7 @@ Each template has:
 - a short, stable folder ID that identifies its durable subject; and
 - a separate human-facing title that describes the document clearly and accurately.
 
-See [NAMING.md](NAMING.md) for the **template naming** standard used inside this repository. Repository naming itself is covered by the [`repository-naming`](templates/repository-naming/) template.
+See [NAMING.md](NAMING.md) for the **template naming** standard used inside this repository. Repository naming and filesystem naming are separate reusable subjects covered by the [`repository-naming`](templates/repository-naming/) and [`filesystem-naming`](templates/filesystem-naming/) templates.
 
 ## Repository structure
 
@@ -63,6 +63,7 @@ Each template directory contains the reusable document, adoption guidance specif
 - [`project-repository-model`](templates/project-repository-model/) — responsibility model for durable project artifacts, repositories, issues, planning systems, and related project state.
 - [`standards-adoption-model`](templates/standards-adoption-model/) — policy for deliberate organizational adoption, ownership, provenance, and independent lifecycle of reusable standards material.
 - [`repository-naming`](templates/repository-naming/) — domain-neutral standard for durable, portable, and appropriately scoped repository names.
+- [`filesystem-naming`](templates/filesystem-naming/) — domain-neutral standard for portable, readable file and directory names and path components.
 
 ## License
 
