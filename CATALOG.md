@@ -10,17 +10,17 @@ This file is a current-state catalog, not a roadmap. Planned, deferred, or merel
 
 ## Templates
 
-### `project-repository-model`
+### `standards-authoring`
 
-**Software Project Repository Responsibility Standard**
+**Standards and Policy Authoring Standard**
 
-Defines where durable project artifacts, actionable work, dynamic planning state, exploratory reasoning, and repository responsibilities belong.
+Defines how normative standards and policies are written, scoped, calibrated, distinguished from informative material, and revised when concrete evidence shows a rule is miscalibrated.
 
 Important boundaries:
 
-- determines when repository separation is justified;
-- does not determine how a justified repository should be named;
-- defers organizational adoption and ownership of reusable standards material to `standards-adoption-model`.
+- governs authoring discipline and normative strength;
+- does not determine who has authority to adopt a standard or policy;
+- does not define a complete controlled-document lifecycle or a separate approval workflow.
 
 ### `standards-adoption-model`
 
@@ -33,6 +33,18 @@ Important boundaries:
 - governs adoption, ownership, provenance, and independent lifecycle after adoption;
 - does not determine repository topology;
 - does not make upstream template changes automatically authoritative downstream.
+
+### `project-repository-model`
+
+**Software Project Repository Responsibility Standard**
+
+Defines where durable project artifacts, actionable work, dynamic planning state, exploratory reasoning, and repository responsibilities belong.
+
+Important boundaries:
+
+- determines when repository separation is justified;
+- does not determine how a justified repository should be named;
+- defers organizational adoption and ownership of reusable standards material to `standards-adoption-model`.
 
 ### `repository-naming`
 
@@ -61,6 +73,9 @@ Important boundaries:
 ## Relationship Summary
 
 ```text
+standards-authoring
+    governs how adopted normative documents are written and calibrated
+
 standards-adoption-model
     governs deliberate organizational adoption of reusable normative material
 
