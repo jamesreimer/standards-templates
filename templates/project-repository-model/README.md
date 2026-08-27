@@ -4,13 +4,17 @@ Stable template ID: `project-repository-model`
 
 Human-facing title:
 
-> **Software Project Repository, Documentation, and Work Tracking Standard**
+> **Software Project Repository Responsibility Standard**
 
 ## Purpose
 
-This template defines a default responsibility model for software project repositories, canonical project documentation, issue tracking, project-management systems, exploratory design discussions, and multi-repository topology.
+This template defines a default responsibility model for durable project artifacts, canonical project documentation, issue tracking, project-management systems, exploratory design discussions, and multi-repository topology.
 
-It is intended for organizations that want a consistent rule for where durable project artifacts live and what planning tools are responsible for.
+Its central question is:
+
+> **Which project system legitimately owns which kind of information, artifact, or work state?**
+
+It is intended for organizations that want a consistent rule for where durable project truth lives and what planning and collaboration tools are responsible for.
 
 ## Source document
 
@@ -43,6 +47,7 @@ This template governs **where durable project artifacts and dynamic work state b
 
 It does not define:
 
+- organizational standards-adoption and ownership semantics;
 - application architecture;
 - source-code layout;
 - branching strategy;
@@ -51,4 +56,4 @@ It does not define:
 - development workflow;
 - company-specific security or compliance requirements.
 
-Those subjects may be governed separately.
+For the distinct problem of adopting external or reusable standards into organization-owned authority, see [`standards-adoption-model`](../standards-adoption-model/).
