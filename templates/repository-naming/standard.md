@@ -26,6 +26,10 @@ It governs:
 
 It does not determine whether a repository should exist. Repository creation and separation are separate responsibility and topology decisions.
 
+## 2.1 Normative Language
+
+Where `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, or `MAY` appear in uppercase, they are to be interpreted as described in BCP 14, RFC 2119 and RFC 8174. Lowercase forms retain their ordinary English meaning.
+
 ## 3. Repository Identity Is Distinct from Neighboring Identities
 
 A repository name identifies the repository's durable responsibility or coherent unit of work.
@@ -210,7 +214,7 @@ Before establishing a public repository name intended to become recognizable out
 - conflicts with an established public identity the organization needs to distinguish from;
 - raises trademark or naming concerns appropriate to the intended use.
 
-This review should be proportionate to the repository's public significance. An internal operational repository does not require the same naming diligence as a public project intended for broad distribution.
+This review SHOULD be proportionate to the repository's public significance. An internal operational repository does not require the same naming diligence as a public project intended for broad distribution.
 
 ## 11. Rename Criteria and Migration
 
