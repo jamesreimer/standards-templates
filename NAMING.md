@@ -4,6 +4,8 @@
 
 This document defines how templates in this repository are named.
 
+It governs stable template IDs and human-facing template titles **inside `standards-templates`**. It does not define how version-control repositories should be named. Repository naming is a separate subject covered by the [`repository-naming`](templates/repository-naming/) template.
+
 Each template has two names with different responsibilities:
 
 ```text
