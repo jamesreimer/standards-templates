@@ -58,12 +58,11 @@ templates/
 
 Each template directory contains the reusable document, adoption guidance specific to that template, and intentionally thin metadata.
 
-## Current templates
+## Template catalog
 
-- [`project-repository-model`](templates/project-repository-model/) — responsibility model for durable project artifacts, repositories, issues, planning systems, and related project state.
-- [`standards-adoption-model`](templates/standards-adoption-model/) — policy for deliberate organizational adoption, ownership, provenance, and independent lifecycle of reusable standards material.
-- [`repository-naming`](templates/repository-naming/) — domain-neutral standard for durable, portable, and appropriately scoped repository names.
-- [`filesystem-naming`](templates/filesystem-naming/) — domain-neutral standard for portable, readable file and directory names and path components.
+See [CATALOG.md](CATALOG.md) for the current reusable template inventory, each template's durable subject, and important boundaries between existing templates.
+
+The catalog describes only templates that currently exist; it is not a roadmap or backlog.
 
 ## License
 
