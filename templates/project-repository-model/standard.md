@@ -34,6 +34,10 @@ It governs the default placement and responsibility of:
 
 It does not prescribe programming language, framework, deployment model, application architecture, or organizational standards-adoption semantics.
 
+## 2.1 Normative Language
+
+Where `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, or `MAY` appear in uppercase, they are to be interpreted as described in BCP 14, RFC 2119 and RFC 8174. Lowercase forms retain their ordinary English meaning.
+
 ## 3. Core Principle
 
 The default project model is:
@@ -160,7 +164,7 @@ Repository documents SHOULD NOT duplicate this state merely to create a second p
 
 For example, avoid maintaining a Markdown backlog that duplicates the active issue tracker and project board.
 
-The project-management system should be the source of truth for current work state.
+The project-management system SHOULD be the source of truth for current work state.
 
 ## 8. Exploratory Design Discussions
 
@@ -231,7 +235,7 @@ Examples include:
 - architecture maintained under different permissions or ownership;
 - implementation repositories that may change while the governing specification remains stable.
 
-Such a repository should exist because the artifacts themselves have earned independent version control, not because an issue tracker needs a repository.
+Such a repository SHOULD exist because the artifacts themselves have earned independent version control, not because an issue tracker needs a repository.
 
 This section addresses repository topology. The adoption, ownership, and independent lifecycle of standards derived from external or reusable source material are governed separately by the `standards-adoption-model` template.
 
