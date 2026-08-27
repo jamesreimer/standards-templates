@@ -203,7 +203,7 @@ Do not use numbering alone as the primary distinction between sibling repositori
 
 ## 10. Public Identity and Collision Review
 
-Before establishing a public repository name intended to become recognizable outside the organization, SHOULD review whether the name:
+Before establishing a public repository name intended to become recognizable outside the organization, an organization SHOULD review whether the name:
 
 - creates substantial ambiguity with a prominent existing project, product, organization, or repository;
 - could imply an affiliation that does not exist;
