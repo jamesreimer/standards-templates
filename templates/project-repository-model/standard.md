@@ -1,8 +1,10 @@
-# Software Project Repository, Documentation, and Work Tracking Standard
+# Software Project Repository Responsibility Standard
 
 ## 1. Purpose
 
-This standard defines the default relationship between:
+This standard defines the default responsibility model for information, artifacts, and work state within a software project.
+
+It establishes the relationship between:
 
 - software project repositories;
 - canonical project documentation;
@@ -12,7 +14,7 @@ This standard defines the default relationship between:
 - exploratory design discussions;
 - multiple-repository topologies.
 
-Its purpose is to provide a consistent, durable project-management and repository model without allowing planning tools, issue trackers, or repository convenience to replace canonical specifications or prematurely dictate implementation topology.
+Its purpose is to keep durable project truth, actionable work, dynamic planning state, and exploratory reasoning in the systems that legitimately own them without allowing planning tools, issue trackers, or repository convenience to replace canonical specifications or prematurely dictate implementation topology.
 
 ## 2. Scope
 
@@ -30,7 +32,7 @@ It governs the default placement and responsibility of:
 - exploratory design conversations;
 - additional repositories.
 
-It does not prescribe programming language, framework, deployment model, or application architecture.
+It does not prescribe programming language, framework, deployment model, application architecture, or organizational standards-adoption semantics.
 
 ## 3. Core Principle
 
@@ -218,7 +220,7 @@ Examples include:
 
 Conceptual separation alone is insufficient justification.
 
-## 11. Architecture or Standards Repositories
+## 11. Architecture or Specification Repositories
 
 A separate architecture or specification repository MAY be appropriate when canonical architectural material genuinely has an independent lifecycle from any particular implementation.
 
@@ -226,27 +228,16 @@ Examples include:
 
 - one architecture governing several implementation repositories;
 - specifications distributed independently;
-- standards consumed by multiple projects;
 - architecture maintained under different permissions or ownership;
 - implementation repositories that may change while the governing specification remains stable.
 
 Such a repository should exist because the artifacts themselves have earned independent version control, not because an issue tracker needs a repository.
 
-## 12. Cross-Project Standards
+This section addresses repository topology. The adoption, ownership, and independent lifecycle of standards derived from external or reusable source material are governed separately by the `standards-adoption-model` template.
 
-A standard intended to govern multiple projects SHOULD NOT be canonically owned by one of the projects it governs.
+## 12. Canonical Artifact Change Model
 
-Cross-project standards SHOULD live in an organization-owned standards repository or equivalent authoritative source.
-
-Reusable external or personal templates MAY be used as source material, but an organization SHOULD deliberately adopt its own canonical copy rather than depend on an external personal source for continuing authority.
-
-Once adopted, the organization-owned copy governs according to the organization's own scope and lifecycle.
-
-Subsequent changes to the external template MUST NOT automatically alter the organization-owned standard.
-
-## 13. Standard Change Workflow
-
-A change to a canonical standard or specification SHOULD follow a reviewable path such as:
+A change to a canonical project standard, specification, architecture document, or other governed artifact SHOULD follow a reviewable path such as:
 
 ```text
 identified need
@@ -264,11 +255,11 @@ canonical version update
 
 The issue or proposal tracks the work.
 
-The resulting document contains the normative outcome.
+The resulting canonical document contains the settled outcome.
 
-Approval of the work item does not itself substitute for updating the canonical artifact.
+Approval or closure of the work item does not itself substitute for updating the canonical artifact.
 
-## 14. Repository Creation Timing
+## 13. Repository Creation Timing
 
 A project repository is justified when the project has something that legitimately deserves source control.
 
@@ -288,7 +279,7 @@ A repository does not need to wait for application code.
 
 Conversely, a repository SHOULD NOT be created solely because a management tool happens to require one if no repository-owned artifact or lifecycle has otherwise been earned.
 
-## 15. Default Responsibility Model
+## 14. Default Responsibility Model
 
 The default responsibility model is:
 
@@ -315,7 +306,7 @@ Additional repositories
     only when independent lifecycle justifies separation
 ```
 
-## 16. Anti-Patterns
+## 15. Anti-Patterns
 
 Avoid:
 
@@ -327,10 +318,10 @@ Avoid:
 - keeping consequential architecture only in chat history;
 - copying entire design conversations into the canonical repository;
 - creating multiple repositories before their lifecycle differences are demonstrated;
-- allowing an implementation repository to silently redefine a cross-project standard;
+- treating repository membership as authority over material canonically owned elsewhere;
 - maintaining multiple competing sources of truth for the same planning state.
 
-## 17. Default Standard
+## 16. Default Standard
 
 Unless concrete project requirements demonstrate otherwise:
 
@@ -346,4 +337,4 @@ Unless concrete project requirements demonstrate otherwise:
 >
 > **Create additional repositories only when lifecycle, ownership, permissions, distribution, release cadence, or implementation topology genuinely requires separation.**
 >
-> **Store standards that govern multiple projects in an organization-owned authoritative standards source. External templates may inform adoption but do not remain authoritative after adoption.**
+> **Respect canonical ownership boundaries: local repository membership does not by itself transfer authority over material owned elsewhere.**
