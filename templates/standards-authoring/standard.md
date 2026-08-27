@@ -55,6 +55,8 @@ When the following words appear in uppercase, they are to be interpreted using t
 
 Lowercase forms such as `must`, `should`, and `may` retain their ordinary English meaning and SHOULD NOT be relied upon when precise normative strength matters.
 
+A normative document that uses BCP 14 keywords SHOULD either include a short interpretation statement identifying BCP 14 or explicitly inherit an adopted authoring convention that makes the interpretation unambiguous to its readers.
+
 Normative text does not require BCP 14 keywords in every sentence. Direct imperatives and clearly scoped prohibitions MAY be used when their force is unambiguous. However, authors SHOULD use explicit normative keywords where readers need to distinguish mandatory requirements from recommendations or permissions.
 
 Do not mix competing keyword systems inside one document without an explicit reason and interpretation rule.
