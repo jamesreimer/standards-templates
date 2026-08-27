@@ -1,6 +1,6 @@
 # Standards Templates
 
-Reusable, organization-neutral templates for engineering and software-development standards.
+Reusable, organization-neutral templates for standards and policies.
 
 This repository provides source templates that organizations may deliberately adopt into their own standards repositories. The templates here are **not authoritative for any organization by themselves**. Once an organization adopts a template, the organization owns the resulting standard or policy, its scope, its lifecycle, and any later changes.
 
@@ -8,7 +8,7 @@ This repository provides source templates that organizations may deliberately ad
 
 This repository owns:
 
-- reusable standards templates;
+- reusable standards and policy templates;
 - stable template identities;
 - guidance for deliberate organizational adoption;
 - repository-level naming rules for templates and their human-facing titles.
@@ -19,7 +19,7 @@ This repository does not own:
 - downstream organizational lifecycle state;
 - automatic synchronization of adopted standards;
 - project planning or work tracking for adopting organizations;
-- implementation-specific policy that has not been generalized into an organization-neutral template.
+- organization-specific rules that have not been generalized into an organization-neutral template.
 
 ## Adoption model
 
@@ -44,7 +44,7 @@ Each template has:
 - a short, stable folder ID that identifies its durable subject; and
 - a separate human-facing title that describes the document clearly and accurately.
 
-See [NAMING.md](NAMING.md) for the repository naming standard.
+See [NAMING.md](NAMING.md) for the **template naming** standard used inside this repository. Repository naming itself is covered by the [`repository-naming`](templates/repository-naming/) template.
 
 ## Repository structure
 
@@ -62,6 +62,7 @@ Each template directory contains the reusable document, adoption guidance specif
 
 - [`project-repository-model`](templates/project-repository-model/) — responsibility model for durable project artifacts, repositories, issues, planning systems, and related project state.
 - [`standards-adoption-model`](templates/standards-adoption-model/) — policy for deliberate organizational adoption, ownership, provenance, and independent lifecycle of reusable standards material.
+- [`repository-naming`](templates/repository-naming/) — domain-neutral standard for durable, portable, and appropriately scoped repository names.
 
 ## License
 
