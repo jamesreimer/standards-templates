@@ -27,6 +27,10 @@ It governs:
 
 It does not require an organization to rename externally supplied, generated, or tool-managed material merely to make it stylistically uniform.
 
+## 2.1 Normative Language
+
+Where `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, or `MAY` appear in uppercase, they are to be interpreted as described in BCP 14, RFC 2119 and RFC 8174. Lowercase forms retain their ordinary English meaning.
+
 ## 3. Name for the Durable Subject
 
 A file or directory SHOULD be named for the durable artifact, subject, grouping, or responsibility it represents.
@@ -97,7 +101,7 @@ Legitimate exceptions include:
 - generated files whose names are controlled by the generating system;
 - externally supplied assets whose original names must be preserved for provenance, compatibility, or contractual reasons.
 
-An exception should exist because another legitimate owner or convention requires it, not because individual contributors prefer inconsistent styling.
+An exception SHOULD exist because another legitimate owner or convention requires it, not because individual contributors prefer inconsistent styling.
 
 ## 6. Files and Directories Share a Baseline but Not an Identity
 
