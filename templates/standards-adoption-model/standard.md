@@ -22,6 +22,10 @@ This policy governs adoption, ownership, provenance, and later upstream changes.
 
 It does not prescribe the exact approval workflow, repository topology, synchronization tooling, or content of the adopted standard.
 
+## 2.1 Normative Language
+
+Where `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, or `MAY` appear in uppercase, they are to be interpreted as described in BCP 14, RFC 2119 and RFC 8174. Lowercase forms retain their ordinary English meaning.
+
 ## 3. Core Principle
 
 Reusable source material does not become organizational authority merely because it is available, useful, copied, or historically followed.
