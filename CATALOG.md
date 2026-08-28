@@ -36,7 +36,7 @@ Important boundaries:
 
 ### `project-repository-model`
 
-**Software Project Repository Responsibility Standard**
+**Project Repository Responsibility Standard**
 
 Defines where durable project artifacts, actionable work, dynamic planning state, exploratory reasoning, and repository responsibilities belong.
 
@@ -50,7 +50,7 @@ Important boundaries:
 
 **Repository Naming Standard**
 
-Defines domain-neutral rules for durable, portable, and appropriately scoped repository identities.
+Defines rules for durable, portable, and appropriately scoped repository identities across types of work.
 
 Important boundaries:
 
@@ -62,7 +62,7 @@ Important boundaries:
 
 **File and Directory Naming Standard**
 
-Defines domain-neutral rules for portable, readable, and durable human-managed file and directory names while preserving legitimate tool, ecosystem, generated, and external conventions.
+Defines rules for portable, readable, and durable human-managed file and directory names while preserving legitimate tool, ecosystem, generated, and external conventions.
 
 Important boundaries:
 
@@ -74,22 +74,20 @@ Important boundaries:
 
 ```text
 standards-authoring
-    authoring discipline applied to the reusable normative templates
-    and available for adoption into an organization's own standards system
+    governs how reusable normative standards and policies are authored and calibrated
 
 standards-adoption-model
     governs deliberate organizational adoption of reusable normative material
 
-project-repository-model (software-specific)
-    governs software-project artifact/work-state responsibility and repository separation
+project-repository-model
+    governs project repository responsibility, project-state boundaries,
+    and when additional repositories are justified
 
-repository-naming (domain-neutral)
+repository-naming
     governs the identity of a repository once its existence is justified
-    boundary: software projects may use project-repository-model to decide whether
-              a separate repository is justified
 
-filesystem-naming (domain-neutral)
-    governs ordinary file/directory names within repositories and other versioned trees
+filesystem-naming
+    governs file, directory, and path-component naming
 ```
 
 Relationships communicate conceptual boundaries and useful dependencies. They do not make one template automatically authoritative over another; authority arises only through an adopting organization's own standards system.

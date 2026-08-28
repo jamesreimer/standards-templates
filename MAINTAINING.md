@@ -8,7 +8,7 @@ This document describes how this repository is maintained. It records the review
 
 Maintain the smallest coherent library justified by concrete use.
 
-Domain-neutral documents may acknowledge domain-specific implementations or sibling standards, but do not present one domain's answer as the universal answer.
+Reusable documents may acknowledge domain-specific implementations or sibling standards, but do not present one domain's answer as the universal answer.
 
 Repository work state belongs in Issues. Settled repository guidance belongs in the appropriate canonical document. Reusable normative requirements belong in a template only after the subject and its boundary have been justified.
 
@@ -53,7 +53,7 @@ Before merging a material change:
 
 1. review requirement strength using the A/B/C calibration test in `standards-authoring`;
 2. confirm that examples remain informative and do not silently change the rule;
-3. check domain-neutral documents for domain-specific assumptions or universalized handoffs;
+3. check documents for unintended domain-specific assumptions or universalized handoffs;
 4. update `README.md`, `ADOPTION.md`, `NAMING.md`, or `CATALOG.md` only when their repository-level responsibilities are affected;
 5. verify internal links and re-check affected external claims;
 6. inspect the complete diff for unintended scope, authority, naming, licensing, or lifecycle changes.

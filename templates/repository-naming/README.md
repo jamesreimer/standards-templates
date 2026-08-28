@@ -8,7 +8,7 @@ Human-facing title:
 
 ## Purpose
 
-This template provides a domain-neutral baseline for naming version-control repositories across organizations and types of work.
+This template provides a baseline for naming version-control repositories across organizations and types of work.
 
 It is intended for organizations that want repository names to remain clear, durable, portable, and appropriately scoped without encoding temporary status, speculative topology, or unnecessary organizational repetition.
 
@@ -22,7 +22,7 @@ The adopted copy becomes the organization's canonical repository-naming standard
 
 See the repository-level [ADOPTION.md](../../ADOPTION.md) for the recommended adoption and relationship model.
 
-## Domain neutrality
+## Applicability
 
 This template is not limited to software-development repositories.
 
@@ -49,7 +49,7 @@ It does not answer:
 
 > **Should this responsibility have its own repository?**
 
-Repository creation, separation, and lifecycle criteria are outside this naming template's scope. Software projects may use the sibling [`project-repository-model`](../project-repository-model/) template for that software-specific responsibility question; other domains need criteria appropriate to their own artifacts and lifecycles.
+Repository creation and separation criteria are outside this naming template's scope. The sibling [`project-repository-model`](../project-repository-model/) template determines project repository responsibility and when repository separation is justified.
 
 This template also does not govern file/directory naming, branch naming, product naming, or other neighboring naming subjects merely because they are related.
 

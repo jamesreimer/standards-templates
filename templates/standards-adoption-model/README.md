@@ -57,4 +57,4 @@ It does not define:
 - repository synchronization tooling;
 - organization-specific permissions or legal review procedures.
 
-For the distinct problem of assigning responsibility among repositories, canonical documents, issues, project-management systems, and exploratory discussions within a software project, see [`project-repository-model`](../project-repository-model/).
+For the distinct problem of assigning responsibility among project repositories, canonical artifacts, issues or equivalent work items, planning systems, and exploratory reasoning, see [`project-repository-model`](../project-repository-model/).

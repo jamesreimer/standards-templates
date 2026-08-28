@@ -109,7 +109,7 @@ template ID:
 project-repository-model
 
 human-facing title:
-Software Project Repository Responsibility Standard
+Project Repository Responsibility Standard
 ```
 
 ## Worked example
@@ -120,7 +120,7 @@ The first template uses the stable ID:
 
 and the human-facing title:
 
-> **Software Project Repository Responsibility Standard**
+> **Project Repository Responsibility Standard**
 
 The ID was chosen to name the durable project-repository subject without forcing the path to enumerate every system the standard discusses.
 
@@ -151,7 +151,7 @@ Accepted because it:
 - can accommodate legitimate future growth within the same project-repository subject;
 - has only a minor potential echo of the software Repository pattern, which repository context resolves easily.
 
-The human-facing title was later narrowed from an enumerative title after review showed that one section actually belonged to the separate `standards-adoption-model` subject. That refinement illustrates the same naming rule: a title should name the document's actual center rather than preserve breadth that belongs to a neighboring concept.
+The human-facing title was narrowed from an enumerative title after review showed that one section actually belonged to the separate `standards-adoption-model` subject. It was later generalized to the current title after clause-by-clause pressure testing showed that the repository-responsibility consequences were not software-specific. Both refinements illustrate the same naming rule: a title should name the document's actual center without preserving breadth or narrowness that does not match the subject.
 
 The later creation of separate `repository-naming` and `filesystem-naming` templates is another boundary precedent. Although repository names, file names, directory names, and template IDs are all naming concerns, their consequences and technical constraints differ enough that one omnibus naming standard would annex neighboring subjects rather than clarify them.
 

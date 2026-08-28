@@ -10,7 +10,7 @@ Human-facing title:
 
 This template defines organization-neutral defaults for naming files, directories, and path components so that version-controlled material remains readable, portable, automatable, and resilient across common operating systems and filesystems.
 
-It is intentionally domain-neutral. It can be adopted for software repositories, media-production repositories, research collections, standards libraries, publishing projects, operational repositories, archives, and other version-controlled work.
+It can be adopted for software repositories, media-production repositories, research collections, standards libraries, publishing projects, operational repositories, archives, and other version-controlled work.
 
 ## Source document
 
