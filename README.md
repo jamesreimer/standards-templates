@@ -105,4 +105,10 @@ The repository may preserve provenance and source relationships for adopted temp
 
 ## Design principle
 
-Keep this repository deliberately small. Add structure, metadata, validation, automation, or taxonomy only when concrete use demonstrates the need for it.
+Keep this repository deliberately small. Use this decision model for additions to templates, repository structure, metadata, validation, automation, taxonomy, or related machinery:
+
+- **Build now:** Add something only when the need is concrete or imminent, confidence is high, the change is proportionate, and it naturally belongs to the repository's current responsibility.
+- **Name a trigger:** When a real need depends on a specific future condition, record that trigger rather than implementing the addition prematurely. A named trigger is not a roadmap commitment.
+- **Leave speculative needs unbuilt:** Do not add something without a concrete forcing function.
+
+Prior success, repetition, or convenience does not automatically justify expansion. A concrete failure may still demonstrate that an addition is needed. This model governs whether to add repository material; it does not determine the authority or normative content of a standard or policy.

@@ -6,7 +6,15 @@ This document describes how this repository is maintained. It records the mainta
 
 ## Maintenance principles
 
-Maintain the smallest coherent library justified by concrete use.
+Maintain the smallest coherent library that can meet its current responsibilities without speculative growth.
+
+Apply this decision model when considering additions to templates, repository structure, metadata, validation, automation, taxonomy, or related machinery:
+
+1. **Build now** only when the need is concrete or imminent, confidence is high, the change is proportionate, and it naturally belongs to the repository's current responsibility.
+2. **Name a trigger** when a real need depends on a specific future condition. Record the trigger instead of implementing the addition prematurely; a named trigger is not a roadmap commitment.
+3. **Leave speculative needs unbuilt** when they lack a concrete forcing function.
+
+Prior success, repetition, or convenience does not automatically justify expansion. A concrete failure may still demonstrate that an addition is needed. This model governs whether to add repository material; it does not determine the authority, scope, or normative content of a standard or policy.
 
 Reusable documents may acknowledge domain-specific implementations or sibling standards, but do not present one domain's answer as the universal answer.
 
@@ -20,9 +28,9 @@ Before creating a template:
 2. determine whether the problem belongs in an existing template or repository-level guidance;
 3. test whether the proposed subject has a coherent center of consequence;
 4. check whether the proposal would split one subject by noun or annex a neighboring subject;
-5. confirm that current use has earned a reusable template rather than an Issue, example, or deferred question.
+5. confirm that the need is concrete or imminent, confidence is high, and a reusable template is a proportionate response rather than an Issue, example, named trigger, or deferred question.
 
-Do not create a template merely because an external framework has a standard on the subject or because a mature project commonly has one.
+Do not create a template merely because an external framework has a standard on the subject, a mature project commonly has one, or prior practice makes expansion convenient.
 
 ## Naming and authoring
 
