@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document describes how this repository is maintained. It records the review path for new templates and material changes without establishing an external contribution program.
+This document describes how this repository is maintained. It records the maintainer review path for new templates and material changes. [CONTRIBUTING.md](CONTRIBUTING.md) defines the contributor path and refers here for maintenance standards.
 
 ## Maintenance principles
 
@@ -51,13 +51,15 @@ Do not add citations merely for appearance or copy external text when a precise 
 
 Before merging a material change:
 
-1. review requirement strength using the A/B/C calibration test in `standards-authoring`;
-2. confirm that examples remain informative and do not silently change the rule;
-3. check documents for unintended domain-specific assumptions or universalized handoffs;
-4. update `README.md`, `ADOPTION.md`, `NAMING.md`, or `CATALOG.md` only when their repository-level responsibilities are affected;
-5. verify internal links and re-check affected external claims;
-6. inspect the complete diff for unintended scope, authority, naming, licensing, or lifecycle changes.
+1. regenerate `repository-structure.txt` when repository paths changed intentionally;
+2. run the unit tests and repository validator documented in [README.md](README.md);
+3. review requirement strength using the A/B/C calibration test in `standards-authoring`;
+4. confirm that examples remain informative and do not silently change the rule;
+5. check documents for unintended domain-specific assumptions or universalized handoffs;
+6. update `README.md`, `ADOPTION.md`, `NAMING.md`, or `CATALOG.md` only when their repository-level responsibilities are affected;
+7. verify internal links and manually re-check affected external claims;
+8. inspect the complete diff for unintended scope, authority, naming, licensing, or lifecycle changes.
 
-## External contributions
+## Contribution relationship
 
-This document does not by itself invite or define an external contribution program. If the repository later accepts external contributions under a documented process, a separate `CONTRIBUTING.md` may define that public collaboration relationship and refer here for maintenance standards.
+[CONTRIBUTING.md](CONTRIBUTING.md) describes how to prepare new templates and revisions for review. Maintainers apply the principles and review criteria in this document when evaluating those contributions.
