@@ -60,6 +60,8 @@ Each template directory contains the reusable document and adoption guidance spe
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the contributor path and [MAINTAINING.md](MAINTAINING.md) for the repository's maintenance and review path.
 
+Automated coding agents should also follow [AGENTS.md](AGENTS.md), which routes agent work through the repository's maintainer, contribution, and applicable naming and authoring guidance.
+
 ## Template catalog
 
 See [CATALOG.md](CATALOG.md) for the current reusable template inventory, each template's durable subject, and important boundaries between existing templates.
@@ -68,7 +70,7 @@ The catalog describes only templates that currently exist; it is not a roadmap o
 
 ## Repository validation
 
-Run the dependency-free unit tests and validator before submitting or merging changes:
+Run the unit tests and validator, which require Python 3 and Git but no third-party Python packages, before submitting or merging changes:
 
 ```bash
 python3 -m unittest discover -s tests
