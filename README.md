@@ -75,7 +75,7 @@ python3 -m unittest discover -s tests
 python3 scripts/validate.py
 ```
 
-Validation checks template structure, IDs, catalog membership and titles, local Markdown links and anchors, heading and fence structure, UTF-8 and final newlines, junk artifacts, and obvious malformed uppercase BCP 14 keyword spellings. It does not evaluate normative strength, applicability, conceptual boundaries, citation correctness, external evidence, legal interpretation, or prose quality.
+Validation checks template structure, IDs, catalog membership and titles, local Markdown links and anchors, heading and fence structure, UTF-8 and final newlines, junk artifacts, repository symlinks, and obvious malformed uppercase BCP 14 keyword spellings. Repository symlinks are rejected rather than followed, whether their targets are internal or external. The validator does not evaluate normative strength, applicability, conceptual boundaries, citation correctness, external evidence, legal interpretation, or prose quality.
 
 The validator also compares the current visible repository paths with `repository-structure.txt`. After an intentional structural change, regenerate that deterministic snapshot explicitly:
 
@@ -88,6 +88,10 @@ Git hooks are optional and are not installed by validation or CI. To run the sam
 ```bash
 python3 scripts/setup_git_hooks.py
 ```
+
+Setup is idempotent when `core.hooksPath` already names `.githooks`. It refuses
+to replace a different existing hooks path unless you explicitly run
+`python3 scripts/setup_git_hooks.py --force`.
 
 ## License
 

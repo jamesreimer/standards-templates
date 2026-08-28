@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import textwrap
@@ -16,6 +17,13 @@ if SPEC is None or SPEC.loader is None:
 VALIDATE = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = VALIDATE
 SPEC.loader.exec_module(VALIDATE)
+
+HOOK_SETUP_PATH = REPOSITORY_ROOT / "scripts" / "setup_git_hooks.py"
+HOOK_SPEC = importlib.util.spec_from_file_location("repository_setup_git_hooks", HOOK_SETUP_PATH)
+if HOOK_SPEC is None or HOOK_SPEC.loader is None:
+    raise RuntimeError("could not load Git hook setup")
+HOOK_SETUP = importlib.util.module_from_spec(HOOK_SPEC)
+HOOK_SPEC.loader.exec_module(HOOK_SETUP)
 
 TEMPLATE_METADATA_NAME = "template" + ".yaml"
 
@@ -110,11 +118,69 @@ class RepositoryValidatorTests(unittest.TestCase):
             handle.write("\n[Missing](missing.md)\n")
         self.assertIn("local link target does not exist", self._messages())
 
+    def test_missing_reference_style_local_link_fails(self) -> None:
+        with (self.root / "README.md").open("a", encoding="utf-8") as handle:
+            handle.write("\nSee [missing][target].\n\n[target]: missing.md\n")
+        self.assertIn("local link target does not exist", self._messages())
+
+    def test_valid_reference_style_local_link_passes(self) -> None:
+        with (self.root / "README.md").open("a", encoding="utf-8") as handle:
+            handle.write("\nSee [catalog][catalog-ref].\n\n[catalog-ref]: CATALOG.md\n")
+        self.assertValid()
+
+    def test_reference_style_anchor_is_validated(self) -> None:
+        with (self.root / "README.md").open("a", encoding="utf-8") as handle:
+            handle.write("\nSee [section][section-ref].\n\n[section-ref]: CATALOG.md#absent\n")
+        self.assertIn("Markdown anchor does not exist", self._messages())
+
+    def test_fenced_reference_definition_is_not_active(self) -> None:
+        with (self.root / "README.md").open("a", encoding="utf-8") as handle:
+            handle.write("\nSee [catalog][catalog-ref].\n\n```markdown\n[catalog-ref]: CATALOG.md\n```\n")
+        self.assertIn("reference-style link definition does not exist", self._messages())
+
+    def test_malformed_reference_definition_fails_cleanly(self) -> None:
+        with (self.root / "README.md").open("a", encoding="utf-8") as handle:
+            handle.write("\n[broken]:\n")
+        self.assertIn("malformed reference-style link definition", self._messages())
+
     def test_missing_markdown_anchor_fails(self) -> None:
         self._write("guide.md", "# Guide\n\n## Present\n")
         with (self.root / "README.md").open("a", encoding="utf-8") as handle:
             handle.write("\n[Absent](guide.md#absent)\n")
         self.assertIn("Markdown anchor does not exist", self._messages())
+
+    def test_markdown_anchor_case_must_match(self) -> None:
+        self._write("guide.md", "# Guide\n\n## Some Heading\n")
+        with (self.root / "README.md").open("a", encoding="utf-8") as handle:
+            handle.write("\n[Wrong case](guide.md#Some-Heading)\n")
+        self._refresh_structure_snapshot()
+        self.assertIn("Markdown anchor does not exist", self._messages())
+
+    def test_markdown_anchor_exact_case_passes(self) -> None:
+        self._write("guide.md", "# Guide\n\n## Some Heading\n")
+        with (self.root / "README.md").open("a", encoding="utf-8") as handle:
+            handle.write("\n[Exact case](guide.md#some-heading)\n")
+        self._refresh_structure_snapshot()
+        self.assertValid()
+
+    def test_repository_path_case_must_match(self) -> None:
+        with (self.root / "CATALOG.md").open("a", encoding="utf-8") as handle:
+            handle.write("\n[Wrong case](readme.md)\n")
+        self.assertIn("local link target does not exist", self._messages())
+
+    def test_balanced_parenthesis_link_destination_passes(self) -> None:
+        self._write("docs/file_(one).md", "# Parenthesized File\n")
+        with (self.root / "README.md").open("a", encoding="utf-8") as handle:
+            handle.write("\n[Example](docs/file_(one).md)\n")
+        self._refresh_structure_snapshot()
+        self.assertValid()
+
+    def test_heading_underscore_emphasis_and_literal_underscore_anchors_pass(self) -> None:
+        self._write("guide.md", "# Guide\n\n## _Scope_\n\n## value_name\n")
+        with (self.root / "README.md").open("a", encoding="utf-8") as handle:
+            handle.write("\n[Scope](guide.md#scope) and [name](guide.md#value_name).\n")
+        self._refresh_structure_snapshot()
+        self.assertValid()
 
     def test_duplicate_heading_suffix_anchors_pass(self) -> None:
         self._write("guide.md", "# Guide\n\n## Repeat\n\n## Repeat\n")
@@ -151,11 +217,32 @@ class RepositoryValidatorTests(unittest.TestCase):
 
     def test_malformed_bcp14_keyword_near_misses_fail(self) -> None:
         with (self.root / "README.md").open("a", encoding="utf-8") as handle:
-            handle.write("\nMUSTT SHOUD SHOULD N0T REQUIERD RECOMENDED\n")
+            handle.write(
+                "\nMUSTT MUS SHOUD SHOULDD SHOULD N0T MAYY REQUIERD RECOMENDED "
+                "OPTIONL MUST N0T NOT RECOMENDED SHALL N0T\n"
+            )
         messages = self._messages()
-        for malformed in ("MUSTT", "SHOUD", "SHOULD N0T", "REQUIERD", "RECOMENDED"):
+        for malformed in (
+            "MUSTT",
+            "MUS",
+            "SHOUD",
+            "SHOULDD",
+            "SHOULD N0T",
+            "MAYY",
+            "REQUIERD",
+            "RECOMENDED",
+            "OPTIONL",
+            "MUST N0T",
+            "NOT RECOMENDED",
+            "SHALL N0T",
+        ):
             with self.subTest(malformed=malformed):
                 self.assertIn(repr(malformed), messages)
+
+    def test_similar_uppercase_words_are_not_bcp14_near_misses(self) -> None:
+        with (self.root / "README.md").open("a", encoding="utf-8") as handle:
+            handle.write("\nSHELL MAYO MUSTS MUSTY REQUIRE OPTION\n")
+        self.assertValid()
 
     def test_legitimate_prose_acronyms_identifiers_and_code_are_not_flagged(self) -> None:
         with (self.root / "README.md").open("a", encoding="utf-8") as handle:
@@ -172,6 +259,28 @@ class RepositoryValidatorTests(unittest.TestCase):
     def test_missing_catalog_membership_fails(self) -> None:
         self._write("CATALOG.md", "# Template Catalog\n\n## Templates\n")
         self.assertIn("is missing from the catalog", self._messages())
+
+    def test_fenced_catalog_entry_does_not_count(self) -> None:
+        self._write(
+            "CATALOG.md",
+            "# Template Catalog\n\n## Templates\n\n```markdown\n### `example-template`\n\n**Example Standard**\n```\n",
+        )
+        self.assertIn("is missing from the catalog", self._messages())
+
+    def test_fenced_catalog_title_does_not_count(self) -> None:
+        self._write(
+            "CATALOG.md",
+            "# Template Catalog\n\n## Templates\n\n### `example-template`\n\n```markdown\n**Example Standard**\n```\n",
+        )
+        self.assertIn("is missing its human-facing title", self._messages())
+
+    def test_fenced_readme_title_does_not_count(self) -> None:
+        self._write(
+            "templates/example-template/README.md",
+            "# Example Template\n\nStable template ID: `example-template`\n\n```markdown\n"
+            "Human-facing title:\n\n> **Example Standard**\n```\n",
+        )
+        self.assertIn("cannot find the human-facing title", self._messages())
 
     def test_catalog_entry_without_directory_fails(self) -> None:
         with (self.root / "CATALOG.md").open("a", encoding="utf-8") as handle:
@@ -190,6 +299,29 @@ class RepositoryValidatorTests(unittest.TestCase):
         path = self.root / "notes.txt"
         path.write_bytes(b"\xff\n")
         self.assertIn("text file is not valid UTF-8", self._messages())
+
+    def test_missing_tracked_file_produces_finding(self) -> None:
+        self._write("tracked-note.txt", "tracked\n")
+        self._refresh_structure_snapshot()
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        subprocess.run(["git", "-C", str(self.root), "add", "."], check=True)
+        (self.root / "tracked-note.txt").unlink()
+        self.assertIn("tracked-note.txt: repository file could not be read", self._messages())
+
+    def test_external_symlink_is_rejected_without_reading_target(self) -> None:
+        with tempfile.TemporaryDirectory() as external_directory:
+            external_target = Path(external_directory) / "external.md"
+            external_target.write_bytes(b"\xff\n")
+            (self.root / "external.md").symlink_to(external_target)
+            self._refresh_structure_snapshot()
+            messages = self._messages()
+        self.assertIn("symbolic links are not allowed; the link target was not read", messages)
+        self.assertNotIn("not valid UTF-8", messages)
+
+    def test_internal_symlink_is_rejected(self) -> None:
+        (self.root / "catalog-link.md").symlink_to(self.root / "CATALOG.md")
+        self._refresh_structure_snapshot()
+        self.assertIn("symbolic links are not allowed; the link target was not read", self._messages())
 
     def test_missing_final_newline_fails(self) -> None:
         (self.root / "notes.txt").write_text("missing newline", encoding="utf-8")
@@ -211,6 +343,57 @@ class RepositoryValidatorTests(unittest.TestCase):
         cache_directory.mkdir()
         (cache_directory / "module.pyc").write_bytes(b"junk")
         self.assertIn("junk artifact directory is not allowed", self._messages())
+
+
+class GitHookSetupTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temporary_directory = tempfile.TemporaryDirectory()
+        self.root = Path(self.temporary_directory.name)
+        hook = self.root / ".githooks" / "pre-commit"
+        hook.parent.mkdir()
+        hook.write_text("#!/bin/sh\n", encoding="utf-8")
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+
+    def tearDown(self) -> None:
+        self.temporary_directory.cleanup()
+
+    def _hooks_path(self) -> str:
+        result = subprocess.run(
+            ["git", "-C", str(self.root), "config", "--local", "--get", "core.hooksPath"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        return result.stdout.strip()
+
+    def test_unset_hooks_path_is_configured(self) -> None:
+        HOOK_SETUP.configure_hooks(self.root)
+        self.assertEqual(".githooks", self._hooks_path())
+
+    def test_existing_repository_hooks_path_is_idempotent(self) -> None:
+        subprocess.run(
+            ["git", "-C", str(self.root), "config", "--local", "core.hooksPath", ".githooks"],
+            check=True,
+        )
+        HOOK_SETUP.configure_hooks(self.root)
+        self.assertEqual(".githooks", self._hooks_path())
+
+    def test_conflicting_hooks_path_is_preserved_and_refused(self) -> None:
+        subprocess.run(
+            ["git", "-C", str(self.root), "config", "--local", "core.hooksPath", "custom-hooks"],
+            check=True,
+        )
+        with self.assertRaisesRegex(RuntimeError, "--force"):
+            HOOK_SETUP.configure_hooks(self.root)
+        self.assertEqual("custom-hooks", self._hooks_path())
+
+    def test_force_replaces_conflicting_hooks_path(self) -> None:
+        subprocess.run(
+            ["git", "-C", str(self.root), "config", "--local", "core.hooksPath", "custom-hooks"],
+            check=True,
+        )
+        HOOK_SETUP.configure_hooks(self.root, force=True)
+        self.assertEqual(".githooks", self._hooks_path())
 
 
 if __name__ == "__main__":
