@@ -16,6 +16,16 @@ templates/<template-id>/standard.md
 
 The adjacent template `README.md` describes the subject, adoption considerations, and important boundaries.
 
+## Independent adoption
+
+Templates in this repository may be adopted independently. References to sibling templates generally describe conceptual boundaries, related subjects, or optional companions. A sibling reference does not by itself require the adopting organization to adopt that sibling standard.
+
+If a future template genuinely depends on another adopted standard, that dependency should be stated explicitly rather than inferred from an ordinary cross-reference.
+
+## Illustrative relationship information
+
+The YAML-shaped examples below illustrate semantic information an adopting organization may choose to record. They do not define a required schema, companion YAML file, Markdown frontmatter format, or mandatory storage mechanism. An adopting organization may represent the same facts in frontmatter, a prose header, repository relationship metadata, a records system, or another legitimate organization-owned control mechanism.
+
 ## Recommended relationship
 
 The recommended downstream relationship is:
