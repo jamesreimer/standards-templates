@@ -4,7 +4,7 @@
 
 This catalog describes the reusable templates that currently exist under `templates/` and the important boundaries between them.
 
-Root-level repository guidance such as `README.md`, `ADOPTION.md`, and `NAMING.md` governs this template repository itself and is not part of the reusable template catalog.
+Root-level repository guidance such as `README.md`, `ADOPTION.md`, `NAMING.md`, and `MAINTAINING.md` governs this template repository itself and is not part of the reusable template catalog.
 
 This file is a current-state catalog, not a roadmap. Planned, deferred, or merely possible templates do not belong here until they exist.
 
@@ -26,11 +26,11 @@ Important boundaries:
 
 **Organizational Standards Adoption and Ownership Policy**
 
-Defines how external or reusable normative source material becomes organization-owned authority through deliberate adoption while retaining provenance without continuing upstream authority.
+Defines how external or reusable normative source material becomes organizational authority through deliberate adoption while retaining provenance without continuing upstream authority.
 
 Important boundaries:
 
-- governs adoption, ownership, provenance, and independent lifecycle after adoption;
+- governs adoption, canonical governance, provenance, and independent lifecycle after adoption;
 - does not determine repository topology;
 - does not make upstream template changes automatically authoritative downstream.
 
@@ -44,7 +44,7 @@ Important boundaries:
 
 - determines when repository separation is justified;
 - does not determine how a justified repository should be named;
-- defers organizational adoption and ownership of reusable standards material to `standards-adoption-model`.
+- defers organizational adoption and canonical governance of reusable standards material to `standards-adoption-model`.
 
 ### `repository-naming`
 
@@ -74,19 +74,22 @@ Important boundaries:
 
 ```text
 standards-authoring
-    governs how adopted normative documents are written and calibrated
+    authoring discipline applied to the reusable normative templates
+    and available for adoption into an organization's own standards system
 
 standards-adoption-model
     governs deliberate organizational adoption of reusable normative material
 
-project-repository-model
-    governs project artifact/work-state responsibility and repository separation
-        |
-        +--> repository-naming
-        |       governs the identity of a repository once justified
-        |
-        +--> filesystem-naming
-                governs ordinary file/directory names within repositories and other versioned trees
+project-repository-model (software-specific)
+    governs software-project artifact/work-state responsibility and repository separation
+
+repository-naming (domain-neutral)
+    governs the identity of a repository once its existence is justified
+    boundary: software projects may use project-repository-model to decide whether
+              a separate repository is justified
+
+filesystem-naming (domain-neutral)
+    governs ordinary file/directory names within repositories and other versioned trees
 ```
 
 Relationships communicate conceptual boundaries and useful dependencies. They do not make one template automatically authoritative over another; authority arises only through an adopting organization's own standards system.

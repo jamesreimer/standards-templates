@@ -32,7 +32,7 @@ Before adoption, an organization should consider:
 
 - whether non-ASCII filenames are intentionally required;
 - language, framework, or tool conventions that require another case or separator style;
-- conventional root filenames such as `README.md`, `LICENSE`, or tool-owned dotfiles;
+- conventional or deliberately established prominent root filenames such as `README.md`, `LICENSE`, `ADOPTION.md`, or `NAMING.md`, and tool-owned dotfiles;
 - generated or externally supplied filenames that should remain untouched;
 - whether dates, sequence numbers, or release identifiers are legitimate parts of filenames;
 - stricter path-length limits imposed by target systems, storage, synchronization, or delivery tooling;

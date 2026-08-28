@@ -235,7 +235,7 @@ When concrete evidence demonstrates that an authoring rule is wrong, incomplete,
 
 The change itself SHOULD follow the organization's normal canonical-artifact change process.
 
-For project-repository contexts, the `project-repository-model` template defines a general pattern in which an issue or proposal tracks the work while the canonical document carries the settled outcome.
+For software-project contexts, the `project-repository-model` template provides one domain-specific example in which an issue or proposal tracks the work while the canonical document carries the settled outcome. Other domains may use different review systems while preserving the same distinction between work state and the settled canonical artifact.
 
 This standard does not create a separate standards-revision workflow merely for authoring corrections.
 
@@ -275,14 +275,13 @@ Sources:
 
 ### ISO drafting guidance
 
-ISO drafting guidance emphasizes that standards should be clear, precise, unambiguous, and terminologically consistent. ISO uses its own verbal-form system, including `shall`, `should`, `may`, and `can`.
+ISO/IEC Directives, Part 2 establishes drafting rules intended to produce clear and precise documents and defines distinct verbal forms for requirements, recommendations, permissions, possibilities, and capabilities, including `shall`, `should`, `may`, and `can`.
 
 This template adopts BCP 14-style uppercase keywords instead of reproducing ISO's verbal-form system, while retaining the general clarity and precision discipline.
 
-Sources:
+Source:
 
-- https://www.iso.org/drafting-standards.html
-- https://www.iso.org/ISO-house-style.html
+- https://www.iso.org/sites/directives/current/part2/index.xhtml
 
 ### Synthesized conventions
 

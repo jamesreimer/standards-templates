@@ -52,11 +52,11 @@ Implementation and validation
 Issues
     track work arising from the project
 
-Project-management views
-    track status, priority, sequencing, and dependencies
+Designated planning system
+    tracks status, priority, sequencing, and dependencies
 ```
 
-These responsibilities must remain distinct.
+These responsibilities MUST remain distinct even when one system performs more than one of them.
 
 A planning tool is not a canonical specification.
 
@@ -147,9 +147,9 @@ Closing the issue does not retire or erase the canonical requirement.
 
 Issue comments MAY preserve useful discussion, but consequential settled results SHOULD be promoted to the appropriate canonical artifact.
 
-## 7. Project-Management Systems
+## 7. Dynamic Planning State
 
-GitHub Projects or an equivalent project-management system SHOULD own dynamic planning state such as:
+A project SHOULD designate one system of record for dynamic planning state such as:
 
 - status;
 - priority;
@@ -160,11 +160,13 @@ GitHub Projects or an equivalent project-management system SHOULD own dynamic pl
 - assignment;
 - roadmap placement.
 
-Repository documents SHOULD NOT duplicate this state merely to create a second planning system.
+The designated system MAY be an issue tracker, a project-management product, a repository document, or another mechanism proportionate to the project's needs.
+
+Other systems and documents SHOULD NOT duplicate this state merely to create a competing planning system.
 
 For example, avoid maintaining a Markdown backlog that duplicates the active issue tracker and project board.
 
-The project-management system SHOULD be the source of truth for current work state.
+The designated system SHOULD be the source of truth for current work state.
 
 ## 8. Exploratory Design Discussions
 
@@ -206,9 +208,9 @@ A decision deserves durable preservation when forgetting it would materially imp
 
 ## 10. Additional Repositories
 
-Projects MUST NOT default to separate management and implementation repositories merely because planning and implementation are conceptually different activities.
+Projects SHOULD NOT default to separate management and implementation repositories merely because planning and implementation are conceptually different activities.
 
-Additional repositories SHOULD be created only when a concrete difference in lifecycle justifies separation.
+Additional repositories SHOULD be created only when a concrete difference in responsibility or lifecycle justifies separation.
 
 Examples include:
 
@@ -300,8 +302,9 @@ Git repository
 Issues
     actionable work
 
-Project-management system
-    dynamic planning state
+Designated planning system
+    dynamic planning state; can be an issue tracker, project-management product,
+    repository document, or another proportionate mechanism
 
 Pull requests
     reviewable changes to repository artifacts
@@ -335,7 +338,7 @@ Unless concrete project requirements demonstrate otherwise:
 >
 > **Use Issues for actionable work, not as substitutes for canonical documents.**
 >
-> **Use the project-management system for dynamic status, priority, sequencing, and dependencies.**
+> **Designate one proportionate system of record for dynamic status, priority, sequencing, and dependencies.**
 >
 > **Use exploratory discussions as working spaces and promote settled consequential results into canonical artifacts.**
 >

@@ -49,7 +49,7 @@ It does not answer:
 
 > **Should this responsibility have its own repository?**
 
-Repository creation, separation, and lifecycle criteria belong to the sibling [`project-repository-model`](../project-repository-model/) template.
+Repository creation, separation, and lifecycle criteria are outside this naming template's scope. Software projects may use the sibling [`project-repository-model`](../project-repository-model/) template for that software-specific responsibility question; other domains need criteria appropriate to their own artifacts and lifecycles.
 
 This template also does not govern file/directory naming, branch naming, product naming, or other neighboring naming subjects merely because they are related.
 

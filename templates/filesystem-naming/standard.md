@@ -57,7 +57,7 @@ working-stuff/
 misc/
 ```
 
-Names should remain useful after ordinary edits, review, promotion, archival, or movement through a workflow.
+Names SHOULD remain useful after ordinary edits, review, promotion, archival, or movement through a workflow.
 
 ## 4. Default Syntax
 
@@ -96,10 +96,11 @@ Legitimate exceptions include:
 
 - language or framework conventions, such as source files that conventionally use `snake_case`, `PascalCase`, or another required form;
 - conventional repository files such as `README.md`, `LICENSE`, `CHANGELOG.md`, `CONTRIBUTING.md`, or `SECURITY.md`;
+- intentionally prominent root-level repository governance or guidance documents such as `ADOPTION.md`, `CATALOG.md`, `NAMING.md`, or `MAINTAINING.md` when the repository has deliberately established that convention;
 - tool-owned paths such as `.gitignore`, `.github/`, or other dotfiles and metadata directories;
 - files whose names are defined by an external specification or delivery system;
 - generated files whose names are controlled by the generating system;
-- externally supplied assets whose original names must be preserved for provenance, compatibility, or contractual reasons.
+- externally supplied assets whose original names MUST be preserved for provenance, compatibility, or contractual reasons.
 
 An exception SHOULD exist because another legitimate owner or convention requires it, not because individual contributors prefer inconsistent styling.
 
@@ -374,7 +375,7 @@ Source: https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file
 
 ### Apple filesystems
 
-Apple documents that APFS may be case-sensitive or case-insensitive and recommends treating paths as case-sensitive in code. Apple also documents filename-extension expectations and Unicode normalization behavior in APFS.
+Apple recommends treating paths as case-sensitive in code and including filename extensions. Its archived APFS FAQ documents that APFS preserves case and normalization on disk, may be case-sensitive or case-insensitive, and provided normalization-insensitive lookup behavior in the specified macOS and iOS versions.
 
 Sources:
 

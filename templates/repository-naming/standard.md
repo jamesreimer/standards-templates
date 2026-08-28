@@ -47,7 +47,7 @@ service or deployment
 artifact
 ```
 
-These identities may align when that is useful, but one must not silently dictate another.
+These identities may align when that is useful, but one SHOULD NOT silently dictate another.
 
 A repository may retain a stable descriptive identity while a project uses a working title, a product later acquires a brand, or an implementation topology changes.
 
@@ -147,7 +147,7 @@ For example, do not create `project-api` merely because an API is currently expe
 
 `-monorepo` is discouraged by default because it describes current repository topology rather than the subject the repository serves. Use it only when monorepo topology itself is a durable identity needed to distinguish the repository from legitimate siblings.
 
-Whether an additional repository is justified is governed separately from what that repository should be named. See the `project-repository-model` standard for repository responsibility and separation criteria.
+Whether an additional repository is justified is separate from what that repository should be named and is outside this standard's scope. Software projects MAY use the `project-repository-model` standard for that software-specific responsibility question. Other domains SHOULD apply criteria appropriate to their own artifacts, ownership, distribution, and lifecycles.
 
 ## 8. Lifecycle State and Provisional Names
 
@@ -199,7 +199,7 @@ platform
 platform-infrastructure
 ```
 
-Each member of a repository family must still have an independently intelligible responsibility.
+Each member of a repository family MUST still have an independently intelligible responsibility.
 
 Do not manufacture a common prefix merely to make unrelated repositories appear coordinated.
 
@@ -310,7 +310,7 @@ The following are standards decisions rather than claims that every host require
 - repository-family semantics;
 - rename criteria.
 
-An adopting organization MAY strengthen these conventions but should not weaken them accidentally merely because its current repository host permits a broader syntax.
+An adopting organization MAY strengthen these conventions but SHOULD NOT weaken them accidentally merely because its current repository host permits a broader syntax.
 
 ## 15. Default Standard
 

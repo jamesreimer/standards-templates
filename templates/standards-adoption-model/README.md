@@ -12,9 +12,9 @@ This template defines how an organization should adopt standards, policies, or o
 
 Its central question is:
 
-> **How does reusable source material become organization-owned authority and then evolve under an independent organizational lifecycle?**
+> **How does reusable source material become organizational authority and then evolve under an independent organizational lifecycle?**
 
-It is intended for organizations that want a clear rule for deliberate adoption, canonical ownership, provenance, later upstream changes, and cross-organizational independence.
+It is intended for organizations that want a clear rule for deliberate adoption, canonical governance, provenance, later upstream changes, and cross-organizational independence.
 
 ## Source document
 
@@ -44,7 +44,9 @@ These are adoption considerations, not requirements to customize the template. I
 
 ## Conceptual boundary
 
-This template governs **standards adoption, canonical ownership, provenance, and independent downstream lifecycle**.
+This template governs **standards adoption, canonical governance, provenance, and independent downstream lifecycle**.
+
+Canonical governance means organizational responsibility for authority, scope, interpretation, and lifecycle. It does not by itself transfer copyright or other intellectual-property rights in source material.
 
 It does not define:
 

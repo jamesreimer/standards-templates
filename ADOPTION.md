@@ -1,117 +1,54 @@
-# Template Adoption Model
+# Adopting Templates from This Repository
 
 ## Purpose
 
-This document defines how a template from this repository should become an organization-owned standard without transferring ongoing authority to the template source.
+This document describes how to adopt a template specifically from `jamesreimer/standards-templates` while preserving the source relationship without giving this repository continuing authority over the adopted result.
 
-## Core rule
+For the general reusable policy governing organizational adoption, authority, provenance, and independent lifecycle, see the [`standards-adoption-model`](templates/standards-adoption-model/) template.
 
-> **Adoption transfers responsibility for the adopted artifact, not authority back to the template source.**
+## Source material
 
-A template in this repository is reusable source material. It becomes authoritative for an organization only through that organization's own legitimate adoption process and within the scope the organization assigns to it.
-
-## Adoption lifecycle
+Reusable source documents are stored at:
 
 ```text
-source template
-    ↓ review
-organization adoption decision
-    ↓
-organization-owned canonical standard
-    ↓
-independent organizational lifecycle
+templates/<template-id>/standard.md
 ```
 
-After adoption:
+The adjacent template `README.md` describes the subject, adoption considerations, and important boundaries.
 
-- the organization owns the canonical standard;
-- the organization controls its scope and lifecycle;
-- the organization may modify it independently;
-- upstream template changes do not automatically alter the organization-owned standard;
-- the upstream relationship may be retained for provenance and future comparison.
+## Recommended relationship
 
-## Default relationship type
-
-The default relationship for adopted templates is conceptually:
-
-```text
-relationship: adapted-copy
-sync_policy: manual-review
-```
-
-This remains the preferred relationship even when the initial adopted copy is byte-for-byte identical to the source template.
-
-The reason is semantic rather than technical: the downstream organization owns its future lifecycle. Exact equality at adoption time must not imply automatic external control later.
-
-## Recommended provenance
-
-Where an organization maintains repository relationship metadata, an adopted standard should retain enough provenance to identify the source template used for adoption.
-
-A downstream relationship may record information equivalent to:
+The recommended downstream relationship is:
 
 ```yaml
 relationship: adapted-copy
 sync_policy: manual-review
-source_repo: jamesreimer/standards-templates
+```
+
+Use this relationship even when the initial adopted copy is byte-for-byte identical to the source. Exact equality at adoption time does not transfer control of the downstream artifact's future authority or lifecycle to this repository.
+
+## Recommended provenance
+
+Record enough provenance to identify exactly what source material was reviewed. For this repository, that normally means:
+
+```yaml
+relationship: adapted-copy
+sync_policy: manual-review
+source_repo: https://github.com/jamesreimer/standards-templates
 source_path: templates/<template-id>/standard.md
-source_revision: <adopted-source-commit>
+source_revision: <full-source-commit-sha>
 ```
 
-A content digest may also be recorded when useful, but this repository does not require a particular downstream relationship schema.
+Use the full commit SHA as the immutable source revision. A content digest or organizational adoption record may also be retained when useful.
 
-## Upstream changes
+The provenance record identifies the source used for adoption. It does not make this repository authoritative for the organization, and it does not by itself determine intellectual-property ownership or replace applicable license obligations.
 
-A later change to a source template is a **candidate for downstream review**, not a downstream change.
+## Later source changes
 
-The healthy path is:
+A later change in this repository is a candidate for downstream review, not an automatic downstream update.
 
-```text
-upstream template changes
-    ↓
-relationship or comparison reports difference
-    ↓
-downstream organization reviews
-    ↓
-accept / adapt / reject
-    ↓
-organization updates its own canonical standard if approved
-```
+The adopting organization may accept, adapt, reject, or defer the change through its own legitimate process. Moving, renaming, or deleting a source template does not by itself alter the authority or lifecycle of an already adopted organizational artifact.
 
-Never:
+## General policy
 
-```text
-upstream template changes
-    ↓
-automatic rewrite of organization-owned standards
-```
-
-## Divergence
-
-Divergence is normal.
-
-An organization may:
-
-- adopt the template unchanged;
-- adapt wording to organizational terminology;
-- add organization-specific requirements;
-- remove provisions that do not apply;
-- decline later upstream changes;
-- independently evolve the standard over time.
-
-The upstream source remains useful provenance even when the downstream artifact no longer matches it exactly.
-
-## Authority boundary
-
-This repository does not determine whether an adopted standard is active, superseded, withdrawn, or otherwise authoritative inside an organization.
-
-Those judgments belong to the adopting organization and whatever governance process legitimately owns that organization's standards.
-
-## Cross-organization reuse
-
-Two organizations may adopt the same source template while producing different standards.
-
-Neither organization's copy governs the other, and neither should rely on this personal repository as its ongoing authoritative source.
-
-Reusable origin may be shared.
-
-Organizational authority and lifecycle are not.
+Organizations that want a reusable policy for deliberate adoption, canonical governance, provenance, source-managed exceptions, and cross-organizational independence should review and adopt the [`standards-adoption-model`](templates/standards-adoption-model/) template.

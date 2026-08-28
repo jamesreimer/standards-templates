@@ -18,13 +18,17 @@ human-facing title
 
 A stable folder ID does not need to repeat the document type or encode the full human-facing title.
 
+## Normative language
+
+Where `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, or `MAY` appear in uppercase, they are to be interpreted as described in BCP 14, [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119.html) and [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174.html). Lowercase forms retain their ordinary English meaning.
+
 ## Priority order
 
 When naming principles conflict, apply them in the following order.
 
 ### 1. Match the register to what the name is responsible for communicating
 
-The human-facing title should accurately express the document's form and authority.
+The human-facing title SHOULD accurately express the document's form and authority.
 
 Terms carry implications:
 
@@ -36,13 +40,13 @@ Do not let a title claim more or less authority than the document is intended to
 
 The short stable template ID primarily identifies the durable subject. It does not need to repeat words such as `standard`, `policy`, or `guide` when the human-facing title already communicates the document type.
 
-Neither the title nor the template ID should positively misrepresent the document's authority or nature.
+The title and template ID MUST NOT misrepresent the document's authority or nature.
 
 A template may be a template **for a standard or policy** without this repository itself conferring organizational authority. Organizational adoption is what gives a particular downstream artifact governing force within that organization's legitimate scope.
 
 ### 2. Do not annex a neighboring concept's future territory
 
-Do not broaden a name merely to make it sound future-proof when that breadth reaches into a concept that should remain distinct.
+A name MUST NOT be broadened merely to make it sound future-proof when that breadth reaches into a concept that should remain distinct.
 
 The relevant test is not:
 
@@ -54,7 +58,7 @@ It is:
 
 Related concepts may remain related without sharing one name.
 
-If two subjects are intended to remain conceptually distinct, their identifiers should preserve that boundary.
+If two subjects are intended to remain conceptually distinct, their identifiers SHOULD preserve that boundary.
 
 ### 3. Name for the durable subject, not today's incomplete slice
 
@@ -78,13 +82,15 @@ Repository context and the adjacent template README can resolve mild ambiguity.
 
 ## Stable template IDs
 
-Template IDs should be:
+Template IDs SHOULD be:
 
 - short enough to use comfortably in paths and relationship metadata;
 - descriptive enough to identify the durable subject;
-- stable across ordinary expansion of the template within its existing conceptual territory;
-- lowercase and hyphen-separated;
-- free of organization-specific names unless the template itself is intentionally organization-specific, which is ordinarily outside this repository's purpose.
+- stable across ordinary expansion of the template within its existing conceptual territory.
+
+Template IDs MUST use lowercase ASCII letters and digits separated by single hyphens. They MUST begin and end with a letter or digit and MUST NOT contain consecutive hyphens.
+
+Template IDs MUST NOT include an organization-specific name unless the template is intentionally organization-specific, which is ordinarily outside this repository's purpose.
 
 Do not optimize IDs for marketing language.
 
@@ -94,7 +100,7 @@ Do not encode transient status, version numbers, organizational adoption state, 
 
 Human-facing titles may be substantially more descriptive than the folder ID.
 
-A title should communicate what the document actually is and what territory it covers without requiring the stable ID to carry that entire burden.
+A title SHOULD communicate what the document actually is and what territory it covers without requiring the stable ID to carry that entire burden.
 
 For example:
 
@@ -167,4 +173,4 @@ Do not manufacture alternatives merely to appear thorough.
 
 Template IDs are intended to be stable because downstream organizations may retain them in provenance and relationship metadata.
 
-Renaming an existing template should therefore require a substantive naming defect, such as semantic misrepresentation or conceptual collision, rather than stylistic preference.
+Renaming an existing template MUST require a substantive naming defect, such as semantic misrepresentation or conceptual collision, rather than stylistic preference.

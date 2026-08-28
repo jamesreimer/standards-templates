@@ -2,9 +2,9 @@
 
 ## 1. Purpose
 
-This policy defines the default requirements for adopting standards, policies, templates, or other normative material from an external or reusable source into organization-owned authority.
+This policy defines the default requirements for adopting standards, policies, templates, or other normative material from an external or reusable source into organizational authority.
 
-Its purpose is to preserve legitimate organizational ownership, provenance, and independent lifecycle while allowing organizations to reuse good source material without creating accidental continuing authority outside the organization.
+Its purpose is to preserve legitimate organizational governance, provenance, and independent lifecycle while allowing organizations to reuse good source material without creating accidental continuing authority outside the organization.
 
 ## 2. Scope
 
@@ -18,13 +18,19 @@ Examples include:
 - reusable internal templates maintained outside the adopting standards source;
 - prior standards used as source material for a new organizational standard.
 
-This policy governs adoption, ownership, provenance, and later upstream changes.
+This policy governs adoption, canonical governance, provenance, and later upstream changes.
 
 It does not prescribe the exact approval workflow, repository topology, synchronization tooling, or content of the adopted standard.
 
 ## 2.1 Normative Language
 
 Where `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, or `MAY` appear in uppercase, they are to be interpreted as described in BCP 14, RFC 2119 and RFC 8174. Lowercase forms retain their ordinary English meaning.
+
+## 2.2 Organizational Ownership
+
+In this policy, **organizational ownership** or **canonical ownership** means responsibility for the adopted artifact's organizational authority, scope, interpretation, and lifecycle.
+
+It does not by itself mean that copyright or other intellectual-property rights in the source material transfer to the adopting organization. Those rights remain governed separately by applicable law, license terms, assignments, and other legal instruments.
 
 ## 3. Core Principle
 
@@ -35,14 +41,14 @@ The default relationship is:
 ```text
 external or reusable source material
         ↓ deliberate organizational adoption
-organization-owned canonical standard
+organizational canonical standard
         ↓ independent lifecycle
 later upstream change
         ↓ review candidate
 accept / adapt / reject
 ```
 
-Adoption creates an organization-owned normative artifact.
+Adoption creates a normative artifact governed canonically by the adopting organization.
 
 The upstream source remains provenance and a possible source of later improvements, not continuing authority over the adopted standard.
 
@@ -56,30 +62,30 @@ The adoption decision SHOULD establish at minimum:
 
 - which artifact is being adopted;
 - the organizational scope for which it will govern;
-- the organization-owned canonical location of the adopted result;
+- the organization-controlled canonical location of the adopted result;
 - the organizational role or process authorized to adopt it.
 
 Exact approval mechanics MAY vary by organization.
 
-## 5. Canonical Ownership After Adoption
+## 5. Canonical Governance After Adoption
 
-Once adopted, the organization-owned artifact becomes canonical for the scope assigned by the organization.
+Once adopted, the organizational artifact becomes canonical for the scope assigned by the organization.
 
-The adopting organization owns:
+The adopting organization controls:
 
-- the standard's governing content within that scope;
+- the standard's organizational authority within that scope;
 - its lifecycle;
 - later modifications;
 - supersession or withdrawal decisions;
 - any organization-specific interpretation legitimately assigned to the standards owner.
 
-The external source MUST NOT retain continuing authority merely because the adopted artifact originated there.
+The adopting organization MUST NOT treat the external source as retaining continuing authority merely because the adopted artifact originated there.
 
 An organization SHOULD NOT depend on a personal or unrelated external repository as the canonical source of its own governing standard unless the organization has deliberately established that source as legitimate authority.
 
 ## 6. Provenance
 
-An adopted standard SHOULD retain enough provenance to identify the source material from which it was adopted when doing so materially helps later review or comparison.
+An adopted standard SHOULD retain enough provenance to identify the source material from which it was adopted.
 
 Useful provenance may include:
 
@@ -89,6 +95,8 @@ Useful provenance may include:
 - content digest where useful;
 - adoption date or organizational adoption record where useful.
 
+When the adopted source can change, the adoption record MUST identify an immutable source revision, release, edition, or content digest sufficient to determine what material was reviewed.
+
 Provenance records origin.
 
 Provenance does not confer continuing upstream authority.
@@ -97,16 +105,16 @@ Attribution required by an applicable license remains a separate legal obligatio
 
 ## 7. Independent Lifecycle
 
-An adopted organizational standard MUST have an independent lifecycle from its upstream source unless the organization has explicitly established a different authority relationship.
+The adopting organization MUST govern an adopted standard under a lifecycle independent from its upstream source unless it has explicitly established a different authority relationship.
 
 Therefore:
 
-- an upstream modification MUST NOT automatically change the organization-owned standard;
-- an upstream deletion MUST NOT automatically withdraw the organization-owned standard;
-- an upstream rename or relocation MUST NOT alter the organizational standard's authority;
-- an upstream lifecycle label MUST NOT silently replace the organization's own lifecycle judgment for the adopted artifact.
+- the adopting organization MUST NOT treat an upstream modification as automatically changing the organizational standard;
+- the adopting organization MUST NOT treat an upstream deletion as automatically withdrawing the organizational standard;
+- the adopting organization MUST NOT treat an upstream rename or relocation as altering the organizational standard's authority;
+- the adopting organization MUST NOT allow an upstream lifecycle label to silently replace its own lifecycle judgment for the adopted artifact.
 
-The organization may deliberately review upstream changes, but the organizational standard changes only through an organization-owned decision.
+The organization may deliberately review upstream changes, but the organizational standard changes only through an organizational decision.
 
 ## 8. Later Upstream Changes
 
@@ -130,15 +138,15 @@ An independently adopted standard SHOULD be represented in a way that communicat
 
 - its upstream source and adopted revision;
 - that downstream review is required for later upstream changes;
-- that the adopting organization owns the downstream lifecycle.
+- that the adopting organization controls the downstream lifecycle.
 
 The fact that an adopted copy is byte-identical to its source at the moment of adoption does not by itself make it a source-managed copy.
 
-Exact content similarity and semantic ownership are different facts.
+Exact content similarity and canonical governance are different facts.
 
 ## 10. Cross-Organizational Independence
 
-Standards adopted by different organizations MUST evolve independently unless those organizations have deliberately established shared authority.
+An adopting organization MUST NOT treat another adopter's changes as automatically authoritative for its own standard unless the organizations have deliberately established shared authority.
 
 Therefore:
 
@@ -156,7 +164,7 @@ upstream template changes
 
 A common source may explain similarity and provenance without creating shared lifecycle ownership.
 
-## 11. Changes to the Organization-Owned Standard
+## 11. Changes to the Organization-Governed Standard
 
 A change to an adopted organizational standard SHOULD follow the organization's normal review and canonical-document change process.
 
@@ -169,7 +177,7 @@ organizational review
         ↓
 accept / adapt / reject
         ↓
-organization-owned canonical update, if approved
+organizational canonical update, if approved
 ```
 
 The review item tracks the decision process.
@@ -198,7 +206,7 @@ Avoid:
 - treating availability or historical use as organizational adoption;
 - relying on a personal repository as continuing company authority without deliberate organizational authorization;
 - automatically synchronizing independently adopted standards from upstream templates;
-- allowing an upstream change to silently rewrite an organization-owned standard;
+- allowing an upstream change to silently rewrite an organization-governed standard;
 - treating provenance as proof of continuing upstream authority;
 - treating byte-identical content as proof of shared lifecycle ownership;
 - mutating one organization's standard because another organization changed its copy;
@@ -211,7 +219,7 @@ Unless an organization deliberately establishes a different authority relationsh
 
 > **External or reusable source material becomes organizational authority only through deliberate organizational adoption.**
 >
-> **The adopted result is owned canonically by the adopting organization for its assigned scope.**
+> **The adopted result is governed canonically by the adopting organization for its assigned scope.**
 >
 > **Upstream provenance may be retained, but provenance does not create continuing upstream authority.**
 >

@@ -2,7 +2,7 @@
 
 Reusable, organization-neutral templates for standards and policies.
 
-This repository provides source templates that organizations may deliberately adopt into their own standards repositories. The templates here are **not authoritative for any organization by themselves**. Once an organization adopts a template, the organization owns the resulting standard or policy, its scope, its lifecycle, and any later changes.
+This repository provides source templates that organizations may deliberately adopt into their own standards repositories. The templates here are **not authoritative for any organization by themselves**. Once an organization adopts a template, the organization governs the resulting standard or policy, its scope, its lifecycle, and any later changes. This canonical governance does not by itself transfer copyright or other intellectual-property rights in source material.
 
 ## Repository responsibility
 
@@ -11,7 +11,8 @@ This repository owns:
 - reusable standards and policy templates;
 - stable template identities;
 - guidance for deliberate organizational adoption;
-- repository-level naming rules for templates and their human-facing titles.
+- repository-level naming rules for templates and their human-facing titles;
+- maintenance guidance for evaluating and reviewing changes to this library.
 
 This repository does not own:
 
@@ -28,12 +29,12 @@ The default relationship is:
 ```text
 source template
     ↓ deliberate adoption
-organization-owned standard or policy
+organizational standard or policy
     ↓ independent lifecycle
 accept / adapt / reject later template changes
 ```
 
-Adoption creates a new organization-owned artifact. The upstream template remains provenance and a possible source of future improvements, not continuing authority over the adopted standard or policy.
+Adoption creates a new organizational artifact governed by the adopter. The upstream template remains provenance and a possible source of future improvements, not continuing authority over the adopted standard or policy.
 
 See [ADOPTION.md](ADOPTION.md) for the adoption and relationship model.
 
@@ -52,11 +53,12 @@ See [NAMING.md](NAMING.md) for the **template naming** standard used inside this
 templates/
 └── <template-id>/
     ├── README.md
-    ├── standard.md
-    └── template.yaml
+    └── standard.md
 ```
 
-Each template directory contains the reusable document, adoption guidance specific to that template, and intentionally thin metadata.
+Each template directory contains the reusable document and adoption guidance specific to that template.
+
+See [MAINTAINING.md](MAINTAINING.md) for the repository's maintenance and review path.
 
 ## Template catalog
 

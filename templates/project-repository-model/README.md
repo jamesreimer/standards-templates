@@ -8,7 +8,7 @@ Human-facing title:
 
 ## Purpose
 
-This template defines a default responsibility model for durable project artifacts, canonical project documentation, issue tracking, project-management systems, exploratory design discussions, and multi-repository topology.
+This template defines a default responsibility model for durable project artifacts, canonical project documentation, issue tracking, dynamic planning state, exploratory design discussions, and multi-repository topology.
 
 Its central question is:
 
@@ -32,7 +32,7 @@ See the repository-level [ADOPTION.md](../../ADOPTION.md) for the recommended re
 
 Before adoption, an organization should consider whether it needs to adapt:
 
-- references to GitHub Projects and GitHub Issues to another work-management platform;
+- the system designated to own dynamic planning state, which may be an issue tracker, project-management product, repository document, or another proportionate mechanism;
 - repository naming or ownership conventions;
 - requirements for architecture decision records;
 - review or approval requirements for canonical document changes;
