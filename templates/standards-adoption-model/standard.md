@@ -197,7 +197,7 @@ It does not determine whether standards live in:
 
 Repository topology is a separate design question.
 
-For software-project responsibility among repositories, canonical documents, issues, project-management systems, and exploratory discussions, see the `project-repository-model` template.
+For project responsibility among repositories, canonical artifacts, issues or equivalent work items, planning systems, and exploratory reasoning, see the `project-repository-model` template.
 
 ## 13. Anti-Patterns
 

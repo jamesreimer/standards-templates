@@ -4,7 +4,7 @@
 
 This standard defines default rules for naming version-control repositories so that repository identities remain clear, durable, portable, and appropriately scoped over time.
 
-It is intentionally domain-neutral. A repository may contain software, media-production material, research, standards, publishing content, infrastructure, documentation, automation, operational artifacts, or other version-controlled work.
+A repository may contain software, media-production material, research, standards, publishing content, infrastructure, documentation, automation, operational artifacts, or other version-controlled work.
 
 The standard governs repository identity. It does not prescribe how files, directories, branches, packages, products, productions, services, or other neighboring entities are named except where those identities must be distinguished from the repository name.
 
@@ -147,7 +147,7 @@ For example, do not create `project-api` merely because an API is currently expe
 
 `-monorepo` is discouraged by default because it describes current repository topology rather than the subject the repository serves. Use it only when monorepo topology itself is a durable identity needed to distinguish the repository from legitimate siblings.
 
-Whether an additional repository is justified is separate from what that repository should be named and is outside this standard's scope. Software projects MAY use the `project-repository-model` standard for that software-specific responsibility question. Other domains SHOULD apply criteria appropriate to their own artifacts, ownership, distribution, and lifecycles.
+Whether a repository or its separation is justified is separate from what that repository should be named and is outside this standard's scope. The `project-repository-model` standard determines project repository responsibility and when repository separation is justified.
 
 ## 8. Lifecycle State and Provisional Names
 

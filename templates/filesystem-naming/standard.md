@@ -4,7 +4,7 @@
 
 This standard defines default rules for naming files, directories, and path components so that version-controlled material remains readable, portable, automatable, and resilient across common operating systems and filesystems.
 
-It is intentionally domain-neutral. The same principles may apply to software, media production, research, standards, publishing, infrastructure, documentation, archives, operations, and other version-controlled work.
+The same principles may apply to software, media production, research, standards, publishing, infrastructure, documentation, archives, operations, and other version-controlled work.
 
 The standard governs filesystem-visible names. It does not prescribe the naming of repositories, branches, tags, packages, services, products, productions, publications, or other neighboring identities except where those identities must remain distinct from filenames or directory names.
 

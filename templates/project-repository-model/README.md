@@ -4,17 +4,17 @@ Stable template ID: `project-repository-model`
 
 Human-facing title:
 
-> **Software Project Repository Responsibility Standard**
+> **Project Repository Responsibility Standard**
 
 ## Purpose
 
-This template defines a default responsibility model for durable project artifacts, canonical project documentation, issue tracking, dynamic planning state, exploratory design discussions, and multi-repository topology.
+This template defines a default responsibility model for durable project artifacts, canonical project documentation, issues or equivalent work items, dynamic planning state, exploratory reasoning, and multi-repository topology.
 
 Its central question is:
 
 > **Which project system legitimately owns which kind of information, artifact, or work state?**
 
-It is intended for organizations that want a consistent rule for where durable project truth lives and what planning and collaboration tools are responsible for.
+It is intended for organizations that want a consistent rule across project domains for where durable project truth lives and what planning and collaboration tools are responsible for.
 
 ## Source document
 
@@ -34,7 +34,7 @@ Before adoption, an organization should consider whether it needs to adapt:
 
 - the system designated to own dynamic planning state, which may be an issue tracker, project-management product, repository document, or another proportionate mechanism;
 - repository naming or ownership conventions;
-- requirements for architecture decision records;
+- requirements for durable decision records;
 - review or approval requirements for canonical document changes;
 - conditions that justify repository separation;
 - documentation locations or repository layout conventions.
@@ -43,17 +43,15 @@ These are adoption considerations, not requirements to customize the template. I
 
 ## Conceptual boundary
 
-This template governs **where durable project artifacts and dynamic work state belong**.
+This template governs **where durable project artifacts and dynamic work state belong, and when repository separation is justified**.
 
 It does not define:
 
 - organizational standards-adoption and ownership semantics;
-- application architecture;
-- source-code layout;
+- domain-specific artifact structure;
 - branching strategy;
-- release process;
-- deployment process;
-- development workflow;
+- release, publication, distribution, or deployment process;
+- project workflow;
 - company-specific security or compliance requirements.
 
 For the distinct problem of adopting external or reusable standards into organization-owned authority, see [`standards-adoption-model`](../standards-adoption-model/).

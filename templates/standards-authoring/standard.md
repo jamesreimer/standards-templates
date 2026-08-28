@@ -4,7 +4,7 @@
 
 This standard defines default rules for authoring organization-owned standards and policies so that normative documents remain clear, scoped, reviewable, internally consistent, and proportionate to the consequences they are intended to protect against.
 
-It is intentionally domain-neutral. The same authoring discipline may be used for engineering, media, operations, research, publishing, security, governance, records, production, or other organizational subjects.
+The same authoring discipline may be used for engineering, media, operations, research, publishing, security, governance, records, production, or other organizational subjects.
 
 ## 2. Scope
 
@@ -110,6 +110,10 @@ The purpose of this review is not to prefer strictness or looseness. It is to ma
 Every normative document SHOULD define its scope clearly enough that a reader can determine what subjects, repositories, teams, systems, projects, organizations, artifacts, or activities it is intended to govern.
 
 A document SHOULD also state material exclusions where omission would create a realistic risk of over-application.
+
+A normative document SHOULD NOT restrict its applicability to the domain that originally motivated it unless its requirements or protected consequences materially depend on that domain.
+
+General applicability does not require a special designation. When a domain restriction is materially necessary, the document SHOULD state it explicitly.
 
 Do not use broad titles or scope language to annex neighboring subjects merely for completeness.
 
@@ -235,7 +239,7 @@ When concrete evidence demonstrates that an authoring rule is wrong, incomplete,
 
 The change itself SHOULD follow the organization's normal canonical-artifact change process.
 
-For software-project contexts, the `project-repository-model` template provides one domain-specific example in which an issue or proposal tracks the work while the canonical document carries the settled outcome. Other domains may use different review systems while preserving the same distinction between work state and the settled canonical artifact.
+The `project-repository-model` template provides an example in which an issue, equivalent work item, or proposal tracks the work while the canonical artifact carries the settled outcome. Different projects may use different review systems while preserving the same distinction between work state and the settled canonical artifact.
 
 This standard does not create a separate standards-revision workflow merely for authoring corrections.
 
