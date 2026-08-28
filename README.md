@@ -58,13 +58,36 @@ templates/
 
 Each template directory contains the reusable document and adoption guidance specific to that template.
 
-See [MAINTAINING.md](MAINTAINING.md) for the repository's maintenance and review path.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the contributor path and [MAINTAINING.md](MAINTAINING.md) for the repository's maintenance and review path.
 
 ## Template catalog
 
 See [CATALOG.md](CATALOG.md) for the current reusable template inventory, each template's durable subject, and important boundaries between existing templates.
 
 The catalog describes only templates that currently exist; it is not a roadmap or backlog.
+
+## Repository validation
+
+Run the dependency-free unit tests and validator before submitting or merging changes:
+
+```bash
+python3 -m unittest discover -s tests
+python3 scripts/validate.py
+```
+
+Validation checks template structure, IDs, catalog membership and titles, local Markdown links and anchors, heading and fence structure, UTF-8 and final newlines, junk artifacts, and obvious malformed uppercase BCP 14 keyword spellings. It does not evaluate normative strength, applicability, conceptual boundaries, citation correctness, external evidence, legal interpretation, or prose quality.
+
+The validator also compares the current visible repository paths with `repository-structure.txt`. After an intentional structural change, regenerate that deterministic snapshot explicitly:
+
+```bash
+python3 scripts/update_repository_structure.py
+```
+
+Git hooks are optional and are not installed by validation or CI. To run the same tests and validator before local commits, opt in once per checkout:
+
+```bash
+python3 scripts/setup_git_hooks.py
+```
 
 ## License
 
