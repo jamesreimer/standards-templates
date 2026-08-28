@@ -97,9 +97,11 @@ to replace a different existing hooks path unless you explicitly run
 
 ## License
 
-Unless otherwise noted, the standards templates and documentation in this repository are dedicated to the public domain under [CC0 1.0 Universal](LICENSE).
+Unless otherwise noted, all repository-authored material in this repository is dedicated to the public domain under [CC0 1.0 Universal](LICENSE). This includes the standards templates and documentation; maintenance tooling under `scripts/`, `tests/`, and `.githooks/`; repository automation and contribution configuration under `.github/`; editor and Git configuration in `.editorconfig`, `.gitattributes`, `.gitignore`, and `.vscode/`; and the generated `repository-structure.txt` snapshot.
 
-Materials released under CC0 remain available under CC0 for those released versions. Software or other materials added later may be licensed separately where explicitly indicated; adding separately licensed material does not change the CC0 status of template and documentation versions already released under it.
+The existing [`LICENSE`](LICENSE) file provides the CC0 legal code for this scope. No separate software license applies to the current repository material.
+
+Materials released under CC0 remain available under CC0 for those released versions. Software or other materials added later may be licensed separately where explicitly indicated; adding separately licensed material does not change the CC0 status of material already released under it.
 
 The repository may preserve provenance and source relationships for adopted templates, but downstream attribution is not required by CC0. Organizational adoption creates an independently governed standard or policy rather than an ongoing authority relationship with this repository.
 
