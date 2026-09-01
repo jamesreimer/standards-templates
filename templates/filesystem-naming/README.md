@@ -26,6 +26,19 @@ The adopted copy becomes the organization's canonical standard for the scope ass
 
 See the repository-level [ADOPTION.md](../../ADOPTION.md) for the recommended relationship model.
 
+## Subject-specific adoption review
+
+Use the universal review in [ADOPTION.md](../../ADOPTION.md) first. For this standard specifically, also determine:
+
+- whether an existing filesystem convention, language or framework rule, external format, delivery contract, archive requirement, or tool-owned naming scheme already governs affected paths;
+- whether the template's terminology, default syntax, or exception ownership conflicts with established authority;
+- which system or owner is canonical for generated, externally supplied, synchronized, archival, or delivery-controlled artifacts;
+- which links, imports, scripts, manifests, automation, synchronization systems, archives, delivery paths, or external consumers depend on existing names;
+- whether the standard adds durable portability or clarity value or would cause only cosmetic churn;
+- what migration and validation would be required across case-sensitive and case-insensitive filesystems and other affected environments.
+
+Adopting this naming standard does not authorize any file or directory rename. Each proposed rename requires its own authority, migration, consumer-impact, and validation decision.
+
 ## Likely organization-specific review points
 
 Before adoption, an organization should consider:

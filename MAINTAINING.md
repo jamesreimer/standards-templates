@@ -41,7 +41,9 @@ For a justified template:
 3. distinguish external facts from conventions synthesized by the template;
 4. preserve boundaries with sibling templates and use cross-references without duplicating their requirements;
 5. keep the adjacent template `README.md` focused on purpose, adoption considerations, and boundaries;
-6. add the completed template to [CATALOG.md](CATALOG.md) only when it exists.
+6. retain a bounded subject-specific adoption review in the adjacent `README.md` that defers to root [ADOPTION.md](ADOPTION.md) for the universal review and adds only authority, conflict, migration, and validation questions peculiar to the subject;
+7. keep that subject-specific review distinct from likely organization-specific review points, which identify legitimate adaptation choices rather than pre-adoption safety checks;
+8. add the completed template to [CATALOG.md](CATALOG.md) only when it exists.
 
 ## External claims
 

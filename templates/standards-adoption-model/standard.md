@@ -18,7 +18,7 @@ Examples include:
 - reusable internal templates maintained outside the adopting standards source;
 - prior standards used as source material for a new organizational standard.
 
-This policy governs adoption, canonical governance, provenance, and later upstream changes.
+This policy governs pre-adoption authority review, adoption, canonical governance, provenance, and later upstream changes.
 
 It does not prescribe the exact approval workflow, repository topology, synchronization tooling, or content of the adopted standard.
 
@@ -66,6 +66,28 @@ The adoption decision SHOULD establish at minimum:
 - the organizational role or process authorized to adopt it.
 
 Exact approval mechanics MAY vary by organization.
+
+## 4.1 Existing Authority and Material Overlap
+
+Before adoption, an organization SHOULD review the standards, policies, contracts, specifications, canonical documents, external requirements, established systems, and other authority that already governs or constrains the proposed scope.
+
+The review SHOULD evaluate whether the proposed adoption would:
+
+- duplicate existing authority;
+- conflict with or weaken an existing requirement;
+- accidentally supersede an existing canonical artifact;
+- create a competing canonical destination;
+- add machinery or migration cost disproportionate to the value gained.
+
+Material overlap SHOULD be resolved as part of the adoption decision rather than left for later interpretation.
+
+An organization MUST NOT knowingly establish two canonical artifacts with ambiguous authority over the same material consequence.
+
+Where the proposed and existing authority overlap, the adoption decision SHOULD record which artifact takes precedence and whether the source material is integrated, supersedes or is superseded by existing authority, or remains applicable only within a distinct retained boundary.
+
+When existing authority is sufficient, or the additional adoption machinery would be disproportionate to the value gained, the organization SHOULD reject or defer adoption.
+
+General applicability, source quality, copying convenience, or usefulness as an adoption exercise does not by itself establish that the material should become organizational authority.
 
 ## 5. Canonical Governance After Adoption
 
@@ -212,12 +234,18 @@ Avoid:
 - mutating one organization's standard because another organization changed its copy;
 - losing the source revision needed to understand what was originally adopted when that provenance matters;
 - treating a relationship manifest as authority rather than as evidence of relationship and provenance.
+- adopting generally applicable or convenient material without determining that it adds durable value;
+- skipping review of existing authority, material conflicts, or accidental weakening and supersession;
+- leaving materially overlapping canonical artifacts with ambiguous precedence;
+- adding duplicative governance machinery or disruptive migration work when existing authority is sufficient.
 
 ## 14. Default Policy
 
 Unless an organization deliberately establishes a different authority relationship:
 
 > **External or reusable source material becomes organizational authority only through deliberate organizational adoption.**
+>
+> **Existing authority should be reviewed and material overlap resolved before adoption; two canonical artifacts must not be knowingly left with ambiguous authority over the same material consequence.**
 >
 > **The adopted result is governed canonically by the adopting organization for its assigned scope.**
 >
