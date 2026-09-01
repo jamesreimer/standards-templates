@@ -22,6 +22,19 @@ The adopted copy becomes the organization's canonical repository-naming standard
 
 See the repository-level [ADOPTION.md](../../ADOPTION.md) for the recommended adoption and relationship model.
 
+## Subject-specific adoption review
+
+Use the universal review in [ADOPTION.md](../../ADOPTION.md) first. For this standard specifically, also determine:
+
+- whether an existing repository-naming policy, canonical registry, host rule, contractual requirement, or externally governed identity already controls repository names;
+- whether the template's terms for durable responsibility, namespace, topology, lifecycle, and repository families conflict with established terminology or ownership;
+- which system of record owns repository identity and whether protected, public, transferred, mirrored, or externally consumed repositories have stronger naming authority;
+- whether automation, package references, hosted actions, deployment configuration, documentation, redirects, integrations, or other consumers depend on existing names;
+- whether the standard adds durable naming value or would cause only cosmetic churn;
+- what migration, compatibility review, redirect handling, and validation would be required for any later rename proposal.
+
+Adopting this naming standard does not authorize any repository rename. Each proposed rename requires its own authority, migration, consumer-impact, and validation decision.
+
 ## Applicability
 
 This template is not limited to software-development repositories.

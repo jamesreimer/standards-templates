@@ -28,6 +28,18 @@ Once adopted, the organization's copy becomes canonical for the scope the organi
 
 See the repository-level [ADOPTION.md](../../ADOPTION.md) for guidance specific to adopting templates from this repository.
 
+## Subject-specific adoption review
+
+Use the universal review in [ADOPTION.md](../../ADOPTION.md) first. For this policy specifically, also determine:
+
+- whether existing standards governance already defines adoption authority, canonical ownership, provenance, source-managed relationships, or controlled-document lifecycle;
+- whether this policy's terminology or ownership model conflicts with established governance roles, lifecycle states, or systems of record;
+- whether adopting the policy would clarify a real gap or duplicate an already sufficient adoption policy;
+- how any material overlap will be integrated, superseded, subordinated, or retained within distinct boundaries;
+- whether standards indexes, relationship records, lifecycle tooling, validators, or other consumers would require migration or validation.
+
+Do not reclassify an existing canonical artifact as independently adopted, source-managed, superseded, or subordinate without an explicit authority and migration decision.
+
 ## Likely organization-specific review points
 
 Before adoption, an organization should consider whether it needs to adapt:

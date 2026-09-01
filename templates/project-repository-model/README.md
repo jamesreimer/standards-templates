@@ -28,6 +28,19 @@ The adopted copy becomes the organization's canonical standard for whatever scop
 
 See the repository-level [ADOPTION.md](../../ADOPTION.md) for the recommended relationship model.
 
+## Subject-specific adoption review
+
+Use the universal review in [ADOPTION.md](../../ADOPTION.md) first. For this standard specifically, also determine:
+
+- whether existing project governance already assigns ownership among canonical artifacts, repositories, issues or work items, planning systems, and exploratory spaces;
+- whether terms such as `canonical artifact`, `system of record`, `issue`, or `planning system` conflict with established terminology or ownership;
+- which systems are authoritative for durable project truth and dynamic planning state, and whether adoption would create a competing source of truth;
+- whether protected repositories, locked or externally governed artifacts, permission boundaries, integrations, reports, or consumers depend on the existing responsibility model;
+- whether repository separation, artifact movement, or planning-state migration would be required and how those effects would be reviewed and validated;
+- whether adoption resolves real ownership ambiguity or only relabels established systems and creates normative churn.
+
+Do not reclassify an existing canonical artifact or system of record without an explicit authority and migration decision.
+
 ## Likely organization-specific review points
 
 Before adoption, an organization should consider whether it needs to adapt:

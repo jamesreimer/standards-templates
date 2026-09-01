@@ -24,6 +24,19 @@ The adopted copy becomes authoritative only for the scope assigned by the adopti
 
 See the repository-level [ADOPTION.md](../../ADOPTION.md) and the reusable [`standards-adoption-model`](../standards-adoption-model/) template for the adoption boundary.
 
+## Subject-specific adoption review
+
+Use the universal review in [ADOPTION.md](../../ADOPTION.md) first. For this standard specifically, also determine:
+
+- whether an existing authoring standard, style authority, controlled-document policy, or external drafting requirement already governs normative documents;
+- whether recognized document types, normative keywords, definitions, exception authority, or evidence expectations conflict with this template;
+- which canonical system owns document form and authoring rules when style guides, templates, generators, or governance systems overlap;
+- whether existing standards, policies, templates, linters, renderers, or validators depend on the current authoring model;
+- whether adoption would improve normative clarity and calibration or merely restyle existing documents and create cosmetic or normative churn;
+- what migration and validation would be required before changing the classification, register, or wording of existing canonical documents.
+
+Adopting this authoring standard does not itself reclassify or rewrite existing canonical artifacts. Any such change requires a separate authority and migration decision.
+
 ## Likely organization-specific review points
 
 Before adoption, an organization should consider whether it needs to adapt:
