@@ -245,6 +245,22 @@ This standard does not create a separate standards-revision workflow merely for 
 
 The reasoning behind a material rule change SHOULD be retained where forgetting it would create a realistic risk of repeating the same mistake, but the current standard itself SHOULD remain focused on the rule that now governs rather than becoming a chronological changelog.
 
+### Candidate and canonical-publication truthfulness
+
+Candidate content intended to survive materially unaltered into canonical publication MUST use final-state-stable or explicitly event-conditioned wording. Final-state-stable wording remains accurate through publication; event-conditioned wording states what becomes true upon a specified event without claiming that the event has already occurred.
+
+A document MUST NOT claim approval, authority, effectiveness, or another completed state before the relevant act has occurred. Accurate wording may record an authority act or describe conditions for its effect; wording alone does not create the underlying authority.
+
+Provisional wording MAY be used when necessary, provided controlled finalization occurs before approval of the publication content under the adopting organization's existing process. If finalization changes already approved content, the revised content MUST receive renewed review and whatever approval that process requires before publication. Prior approval of different content does not itself approve the revision.
+
+Canonical text MUST NOT retain unqualified candidate-state assertions as current claims when publication makes them false. Clearly identified historical descriptions, quotations, and informative counterexamples MAY remain when their context distinguishes them from claims about the document's current state.
+
+Before canonical publication, reviewers MUST check the intended publication text in both its candidate and intended published contexts, including state, dates, authority, approval, and effectiveness claims. The check must identify premature claims before publication and claims that publication would make false, with any necessary finalization subject to the review and approval requirements above.
+
+For example, where the organization's existing process makes effectiveness conditional on approval and canonical publication, wording such as "This standard becomes effective upon approval and canonical publication" states that condition without asserting either event has occurred. In contrast, "This document remains an unapproved draft" cannot survive as an unqualified current claim after approval and canonical publication. A clearly identified historical statement that an earlier version was an unapproved draft does not make that current-state claim.
+
+These authoring requirements do not determine who may approve content, establish a separate publication-authorization requirement, or replace the organization's existing approval and document-change process.
+
 ## 16. Anti-Patterns
 
 Avoid:
@@ -260,6 +276,7 @@ Avoid:
 - prescribing procedure when only an outcome or condition needs to be governed;
 - broadening one standard until it annexes neighboring subjects;
 - duplicating another standard's requirements instead of defining a clear boundary;
+- approving provisional wording and publishing different finalized content without renewed review, or retaining current-state claims that publication makes false;
 - silently working around a canonical rule without reviewing whether the rule or the case is wrong.
 
 ## 17. Basis and External References
@@ -297,6 +314,7 @@ The following are authoring decisions in this template rather than claims that t
 - the rule against silent promotion or demotion through precedent or friction;
 - the separation of external evidence from synthesized organizational rules;
 - the boundary discipline for splitting neighboring standards;
+- the candidate/publication truthfulness and controlled-finalization requirements;
 - the cross-reference and change-discipline model.
 
 ## 18. Default Standard
@@ -320,5 +338,7 @@ Unless concrete organizational requirements demonstrate otherwise:
 > **Keep standards scoped around coherent consequences and split neighboring subjects when their ownership, lifecycle, applicability, or enforcement meaning materially differs.**
 >
 > **Distinguish external facts from organizational rules synthesized in response to those facts.**
+>
+> **Keep intended publication content truthful in both candidate and published contexts, and submit changed approved content to renewed review and the organization's required approval.**
 >
 > **Revise a miscalibrated canonical rule through the normal document-change path rather than silently working around it.**
