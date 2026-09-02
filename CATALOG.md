@@ -70,6 +70,19 @@ Important boundaries:
 - does not govern repository identities;
 - yields to stronger legitimate technical or external naming requirements.
 
+### `web-accessibility`
+
+**Web Accessibility Standard**
+
+Defines a declared web-accessibility target, incorporating dated WCAG 2.2 Level AA requirements by default, with local assessment, evidence, and truthful-claim discipline.
+
+Important boundaries:
+
+- independently adoptable without a web-suite umbrella or other companion;
+- retains accessibility-specific verification without owning broader design, layout, interaction, content, or quality conventions;
+- distinguishes external WCAG conformance from local-standard conformance and incomplete assessment;
+- does not provide legal certification, complete inclusive-design coverage, organizational approval authority, or automatic downstream updates.
+
 ## Relationship Summary
 
 ```text
