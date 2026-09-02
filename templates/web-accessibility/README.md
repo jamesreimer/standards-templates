@@ -31,6 +31,7 @@ In addition to the universal review, determine:
 - Do existing claims or reporting systems distinguish external WCAG conformance, local-standard conformance, partial assessment, known failure, source-defined partial-conformance statements, and undetermined results?
 - Would adoption require reassessing existing claims or evidence? What migration and validation consequences follow from a changed target, and what existing commitments remain protected?
 - Does candidate wording prematurely assert approval or conformance, or contain provisional statements that would become false on publication? Are any historical statements clearly contextualized, and would finalization require renewed review under the organization's existing process?
+- Given this template's treatment of conflicting evidence, conforming alternate versions, and errata rechecking, does any existing local reporting, claim, or reassessment procedure need adjustment for consistency?
 
 These are pre-adoption safety questions, not a prescribed approval ceremony.
 
@@ -44,6 +45,12 @@ Review whether there is a justified need to adapt:
 - assignment of evaluation responsibilities using existing roles;
 - evidence representation and integration with existing review or quality systems;
 - reassessment triggers more specific to the organization's products or publishing activity.
+
+Related choices to consider within the organization's existing process:
+
+- How will severity or remediation priority be assigned to reported nonconformance, and by whom? This standard does not define a severity scale; that convention, if any, belongs to the organization's existing process.
+- Will assessments be self-performed, independently performed, or both? Where a self-assessed result carries elevated risk or supports a public claim, does the organization's existing process call for independent review, and who makes that call?
+- Could an evaluator's incentives, reporting relationship, or competence limits materially affect a result? How could material conflicts or limitations be disclosed in the assessment evidence?
 
 Customization is not required when the defaults fit. Local waivers cannot rewrite WCAG's conformance conditions or turn an unverified result into a pass.
 
