@@ -42,5 +42,8 @@ templates/standards-adoption-model/standard.md
 templates/standards-authoring/
 templates/standards-authoring/README.md
 templates/standards-authoring/standard.md
+templates/web-accessibility/
+templates/web-accessibility/README.md
+templates/web-accessibility/standard.md
 tests/
 tests/test_validate.py
