@@ -83,6 +83,19 @@ Important boundaries:
 - distinguishes external WCAG conformance from local-standard conformance and incomplete assessment;
 - does not provide legal certification, complete inclusive-design coverage, organizational approval authority, or automatic downstream updates.
 
+### `web-content-semantics`
+
+**Web Content and Semantics Standard**
+
+Defines requirements for preserving intended content meaning, semantic structure, audience understanding, and representation integrity, with reviewable evidence and truthful content-semantic claims.
+
+Important boundaries:
+
+- independently adoptable without a web-suite umbrella or other companion;
+- covers media as content without owning accessibility alternatives, responsive presentation, or control behavior;
+- distinguishes content-semantic results from accessibility, platform-specification, legal, editorial, and whole-suite conclusions;
+- does not prescribe brand voice, house style, a universal reading level, editorial workflows, or automatic downstream updates.
+
 ## Relationship Summary
 
 ```text
