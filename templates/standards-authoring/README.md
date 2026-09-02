@@ -37,6 +37,16 @@ Use the universal review in [ADOPTION.md](../../ADOPTION.md) first. For this sta
 
 Adopting this authoring standard does not itself reclassify or rewrite existing canonical artifacts. Any such change requires a separate authority and migration decision.
 
+### Candidate/publication truthfulness review
+
+These informative questions help human reviewers and AI agents apply the [candidate/publication truthfulness requirements](standard.md#candidate-and-canonical-publication-truthfulness) within the organization's existing process; they do not create additional requirements or approval authority:
+
+- Does the candidate claim approval, authority, effectiveness, a date-dependent state, or another completed act before it has occurred?
+- Will the intended publication text remain accurate after publication, or does it retain unqualified claims such as "remains an unapproved draft" that will then be false?
+- Where provisional wording is necessary, what finalization is needed before approval of the publication content, and does the finalized wording remain truthful in both candidate and published contexts?
+- Has finalization changed already approved content, requiring renewed review and the approval required by the existing process?
+- Are historical descriptions, quotations, and informative counterexamples clearly identified so that they are not mistaken for current-state claims?
+
 ## Likely organization-specific review points
 
 Before adoption, an organization should consider whether it needs to adapt:
