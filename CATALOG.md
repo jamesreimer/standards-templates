@@ -96,6 +96,19 @@ Important boundaries:
 - distinguishes content-semantic results from accessibility, platform-specification, legal, editorial, and whole-suite conclusions;
 - does not prescribe brand voice, house style, a universal reading level, editorial workflows, or automatic downstream updates.
 
+### `web-design-foundations`
+
+**Web Design Foundations Standard**
+
+Defines requirements for legible typography, coherent visual hierarchy, spacing relationships, and functional visual roles, with reviewable evidence and truthful design-foundation claims.
+
+Important boundaries:
+
+- independently adoptable without a web-suite umbrella, design system, or other companion;
+- governs delivered visual outcomes without prescribing a brand, font, scale, grid, palette, token format, tool, or framework;
+- does not own accessibility, content semantics, responsive layout, interaction behavior, motion, CSS architecture, or design-system governance;
+- does not establish legal, brand-approval, or whole-suite conformance or automatic downstream updates.
+
 ## Relationship Summary
 
 ```text
