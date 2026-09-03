@@ -109,6 +109,19 @@ Important boundaries:
 - does not own accessibility, content semantics, responsive layout, interaction behavior, motion, CSS architecture, or design-system governance;
 - does not establish legal, brand-approval, or whole-suite conformance or automatic downstream updates.
 
+### `responsive-web-layout`
+
+**Responsive Web Layout Standard**
+
+Defines requirements for preserving usable access, material layout relationships, and intentional presentation across available space, containing contexts, and content variability, with reviewable evidence and truthful responsive-layout claims.
+
+Important boundaries:
+
+- independently adoptable without a web-suite umbrella, design system, responsive framework, or other companion;
+- covers layout transitions, embedding, variable content, overflow, overlays, and media fitting without prescribing devices, breakpoints, grids, or implementation mechanisms;
+- does not own accessibility, content semantics, visual-foundation calibration, interaction behavior, performance, or CSS architecture;
+- does not establish legal, compatibility, brand-approval, or whole-suite conformance or automatic downstream updates.
+
 ## Relationship Summary
 
 ```text
