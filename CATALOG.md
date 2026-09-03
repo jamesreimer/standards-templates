@@ -135,6 +135,19 @@ Important boundaries:
 - does not own accessibility, content semantics and wording, visual-foundation calibration, responsive layout, performance, security policy, transaction authority, or backend correctness;
 - does not establish legal, brand-approval, or whole-suite conformance or automatic downstream updates.
 
+### `web-quality-verification`
+
+**Web Quality and Verification Standard**
+
+Defines requirements for credible performance, compatibility, resilience, and verification claims tied to declared profiles, environments, methods, revisions, and limitations.
+
+Important boundaries:
+
+- independently adoptable without a web-suite umbrella, analytics or monitoring vendor, test framework, browser-automation system, or other companion;
+- distinguishes field, lab, synthetic, and directly observed evidence while leaving target and mechanism selection to the adopter;
+- does not prescribe universal performance thresholds, browser/device matrices, tooling, service workers, caching, fallbacks, or offline support;
+- does not own sibling substantive conformance, security, privacy, infrastructure operations, deployment, legal conclusions, or automatic downstream updates.
+
 ## Relationship Summary
 
 ```text
