@@ -48,5 +48,8 @@ templates/web-accessibility/standard.md
 templates/web-content-semantics/
 templates/web-content-semantics/README.md
 templates/web-content-semantics/standard.md
+templates/web-design-foundations/
+templates/web-design-foundations/README.md
+templates/web-design-foundations/standard.md
 tests/
 tests/test_validate.py
