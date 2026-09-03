@@ -122,6 +122,19 @@ Important boundaries:
 - does not own accessibility, content semantics, visual-foundation calibration, interaction behavior, performance, or CSS architecture;
 - does not establish legal, compatibility, brand-approval, or whole-suite conformance or automatic downstream updates.
 
+### `web-interface-interaction`
+
+**Web Interface and Interaction Standard**
+
+Defines requirements for reliable action outcomes, understandable interaction states, task continuity, recovery, and truthful interface-and-interaction claims.
+
+Important boundaries:
+
+- independently adoptable without a web-suite umbrella, component library, framework, accessibility pattern library, or other companion;
+- governs delivered interaction behavior without prescribing component APIs, focus algorithms, keyboard bindings, confirmation dialogs, undo systems, or state-management architecture;
+- does not own accessibility, content semantics and wording, visual-foundation calibration, responsive layout, performance, security policy, transaction authority, or backend correctness;
+- does not establish legal, brand-approval, or whole-suite conformance or automatic downstream updates.
+
 ## Relationship Summary
 
 ```text

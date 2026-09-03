@@ -54,5 +54,8 @@ templates/web-content-semantics/standard.md
 templates/web-design-foundations/
 templates/web-design-foundations/README.md
 templates/web-design-foundations/standard.md
+templates/web-interface-interaction/
+templates/web-interface-interaction/README.md
+templates/web-interface-interaction/standard.md
 tests/
 tests/test_validate.py
