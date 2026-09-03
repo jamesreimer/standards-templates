@@ -36,6 +36,9 @@ templates/project-repository-model/standard.md
 templates/repository-naming/
 templates/repository-naming/README.md
 templates/repository-naming/standard.md
+templates/responsive-web-layout/
+templates/responsive-web-layout/README.md
+templates/responsive-web-layout/standard.md
 templates/standards-adoption-model/
 templates/standards-adoption-model/README.md
 templates/standards-adoption-model/standard.md
