@@ -148,6 +148,19 @@ Important boundaries:
 - does not prescribe universal performance thresholds, browser/device matrices, tooling, service workers, caching, fallbacks, or offline support;
 - does not own sibling substantive conformance, security, privacy, infrastructure operations, deployment, legal conclusions, or automatic downstream updates.
 
+### `web-experience-baseline`
+
+**Web Experience Baseline Standard**
+
+Defines how the six required core Web Standards compose into a truthful Baseline assessment and conformance conclusion while preserving each companion's ownership and result model.
+
+Important boundaries:
+
+- requires exact versions of the six core companions only for unchanged Baseline conformance; each companion remains independently adoptable;
+- governs composition, complete mandatory coverage, evidence reuse, conflict handling, and Baseline claim integrity without duplicating companion requirements;
+- does not require Web Styling Architecture, define Enhanced conformance or domain profiles, or automatically incorporate later companion revisions;
+- does not establish organizational authority, release approval, legal certification, public claims, tooling, reporting infrastructure, or automatic downstream updates.
+
 ## Relationship Summary
 
 ```text
