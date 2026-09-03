@@ -161,6 +161,19 @@ Important boundaries:
 - does not require Web Styling Architecture, define Enhanced conformance or domain profiles, or automatically incorporate later companion revisions;
 - does not establish organizational authority, release approval, legal certification, public claims, tooling, reporting infrastructure, or automatic downstream updates.
 
+### `web-styling-architecture`
+
+**Web Styling Architecture Standard**
+
+Defines requirements for predictable style ownership, influence, overrides, containment, and change boundaries, with reviewable evidence and truthful styling-architecture claims.
+
+Important boundaries:
+
+- independently adoptable without a web-suite umbrella, CSS methodology, framework, naming system, scoping technology, linter, build tool, or other companion;
+- governs intentional and reviewable relationships between style sources and their declared targets without prescribing `@layer`, `@scope`, Shadow DOM, CSS Modules, BEM, utility classes, Sass modules, CSS-in-JS, inline styles, `!important`, IDs, global selectors, or another styling mechanism;
+- does not own visual correctness, responsive layout, interface behavior, accessibility, content semantics, performance, compatibility, resilience, JavaScript state, general module architecture, backend systems, infrastructure, or deployment;
+- remains optional and outside the unchanged Web Experience Baseline dependency set, and does not establish legal, whole-suite, or automatic downstream conclusions.
+
 ## Relationship Summary
 
 ```text
