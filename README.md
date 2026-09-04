@@ -81,7 +81,9 @@ python3 -m unittest discover -s tests
 python3 scripts/validate.py
 ```
 
-Validation checks template structure, IDs, catalog membership and titles, local Markdown links and anchors, heading and fence structure, UTF-8 and final newlines, junk artifacts, repository symlinks, and obvious malformed uppercase BCP 14 keyword spellings. Repository symlinks are rejected rather than followed, whether their targets are internal or external. The validator does not evaluate normative strength, applicability, conceptual boundaries, citation correctness, external evidence, legal interpretation, or prose quality.
+Validation checks repository filesystem and path naming; template structure and stable template-ID declaration consistency; catalog membership and titles; local requirement-ID scheme and definition integrity for standards that explicitly declare a local scheme; explicit inline-code local requirement-reference resolution in template `standard.md` files; local Markdown links and anchors; heading and fence structure; UTF-8 and final newlines; junk artifacts; repository symlinks; and obvious malformed uppercase BCP 14 keyword spellings. Repository symlinks are rejected rather than followed, whether their targets are internal or external.
+
+The validator does not check requirement references in template READMEs or root or general guidance, external URL availability, semantic correctness of cross-standard dependencies, or the normative meaning of a reference. It does not evaluate normative strength, applicability, conceptual boundaries, citation correctness, external evidence correctness, legal interpretation, editorial quality, or prose quality.
 
 The validator also compares the current visible repository paths with `repository-structure.txt`. After an intentional structural change, regenerate that deterministic snapshot explicitly:
 
