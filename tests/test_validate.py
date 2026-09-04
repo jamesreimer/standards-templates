@@ -102,6 +102,27 @@ class RepositoryValidatorTests(unittest.TestCase):
             f"# Example Standard\n\n## Requirements\n\n{textwrap.dedent(body).strip()}\n",
         )
 
+    def _add_template(self, template_id: str, title: str, standard_body: str) -> None:
+        self._write(
+            f"templates/{template_id}/README.md",
+            f"""
+            # {title} Template
+
+            Stable template ID: `{template_id}`
+
+            Human-facing title:
+
+            > **{title}**
+            """,
+        )
+        self._write(
+            f"templates/{template_id}/standard.md",
+            f"# {title}\n\n## Requirements\n\n{textwrap.dedent(standard_body).strip()}\n",
+        )
+        with (self.root / "CATALOG.md").open("a", encoding="utf-8") as handle:
+            handle.write(f"\n### `{template_id}`\n\n**{title}**\n")
+        self._refresh_structure_snapshot()
+
     def _findings(self) -> list:
         return VALIDATE.validate_repository(self.root)
 
@@ -366,6 +387,126 @@ class RepositoryValidatorTests(unittest.TestCase):
         messages = self._messages()
         self.assertIn("declares 2 local requirement ID schemes", messages)
         self.assertIn("expected at most one", messages)
+
+    def test_same_standard_inline_requirement_reference_passes(self) -> None:
+        self._write_local_requirement_standard(
+            """
+            `WEB-TEST-NNN` identifies a local requirement synthesized by this template.
+
+            **WEB-TEST-005 — Requirement.** The artifact MUST remain reviewable.
+
+            This conclusion relies on `WEB-TEST-005`.
+            """
+        )
+        self.assertValid()
+
+    def test_cross_standard_inline_requirement_reference_passes(self) -> None:
+        self._write_local_requirement_standard(
+            """
+            `WEB-TEST-NNN` identifies a local requirement synthesized by this template.
+
+            **WEB-TEST-005 — Requirement.** Apply `WEB-OTHER-007` where relevant.
+            """
+        )
+        self._add_template(
+            "other-template",
+            "Other Standard",
+            """
+            `WEB-OTHER-NNN` identifies a local requirement synthesized by this template.
+
+            **WEB-OTHER-007 — Other requirement.** The artifact MUST remain stable.
+            """,
+        )
+        self.assertValid()
+
+    def test_unresolved_inline_requirement_reference_reports_id_and_source(self) -> None:
+        self._write_local_requirement_standard(
+            """
+            `WEB-TEST-NNN` identifies a local requirement synthesized by this template.
+
+            **WEB-TEST-005 — Requirement.** Apply `WEB-TEST-999` where relevant.
+            """
+        )
+        messages = self._messages()
+        self.assertIn("templates/example-template/standard.md", messages)
+        self.assertIn("unresolved local requirement reference 'WEB-TEST-999'", messages)
+        self.assertIn("declared prefix 'WEB-TEST'", messages)
+
+    def test_requirement_scheme_placeholder_is_not_a_reference(self) -> None:
+        self._write_local_requirement_standard(
+            """
+            `WEB-TEST-NNN` identifies a local requirement synthesized by this template.
+
+            **WEB-TEST-005 — Requirement.** The artifact MUST remain reviewable.
+
+            The local scheme is `WEB-TEST-NNN`.
+            """
+        )
+        self.assertValid()
+
+    def test_ordinary_requirement_prose_mention_is_not_a_reference(self) -> None:
+        self._write_local_requirement_standard(
+            """
+            `WEB-TEST-NNN` identifies a local requirement synthesized by this template.
+
+            **WEB-TEST-005 — Requirement.** WEB-TEST-999 is mentioned as prose.
+            """
+        )
+        self.assertValid()
+
+    def test_fenced_inline_requirement_reference_is_not_checked(self) -> None:
+        self._write_local_requirement_standard(
+            """
+            `WEB-TEST-NNN` identifies a local requirement synthesized by this template.
+
+            **WEB-TEST-005 — Requirement.** The artifact MUST remain reviewable.
+
+            ```markdown
+            An example cites `WEB-TEST-999`.
+            ```
+            """
+        )
+        self.assertValid()
+
+    def test_unknown_prefix_inline_requirement_token_is_not_checked(self) -> None:
+        self._write_local_requirement_standard(
+            """
+            `WEB-TEST-NNN` identifies a local requirement synthesized by this template.
+
+            **WEB-TEST-005 — Requirement.** The example cites `WEB-UNKNOWN-001`.
+            """
+        )
+        self.assertValid()
+
+    def test_external_identifier_is_not_a_local_requirement_reference(self) -> None:
+        self._write_local_requirement_standard(
+            """
+            `WEB-TEST-NNN` identifies a local requirement synthesized by this template.
+
+            **WEB-TEST-005 — Requirement.** External identifiers include `WCAG 1.1.1`.
+            """
+        )
+        self.assertValid()
+
+    def test_readme_requirement_token_is_out_of_scope(self) -> None:
+        readme = self.root / "templates/example-template/README.md"
+        with readme.open("a", encoding="utf-8") as handle:
+            handle.write("\nAn example cites `WEB-TEST-999`.\n")
+        self.assertValid()
+
+    def test_reference_to_duplicate_definition_does_not_resolve(self) -> None:
+        self._write_local_requirement_standard(
+            """
+            `WEB-TEST-NNN` identifies a local requirement synthesized by this template.
+
+            **WEB-TEST-005 — First definition.** The artifact MUST remain reviewable.
+
+            **WEB-TEST-005 — Duplicate definition.** See `WEB-TEST-005`.
+            """
+        )
+        messages = self._messages()
+        self.assertIn("duplicate local requirement ID 'WEB-TEST-005'", messages)
+        self.assertIn("reference 'WEB-TEST-005' resolves to 2 definitions", messages)
 
     def test_dangling_relative_link_fails(self) -> None:
         with (self.root / "README.md").open("a", encoding="utf-8") as handle:
