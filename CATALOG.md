@@ -12,6 +12,8 @@ This file is a current-state catalog, not a roadmap. Planned, deferred, or merel
 
 ## Templates
 
+Repository validation machine-reads this single section and its level-three template-ID headings (for example, ``### `standards-authoring` ``). Preserve that structure when editing the catalog.
+
 **Standards Governance and Authoring**
 
 These related subjects are grouped for discovery; they do not form a suite or adoption bundle.
