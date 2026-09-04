@@ -4,11 +4,17 @@
 
 This catalog describes the reusable templates that currently exist under `templates/` and the important boundaries between them.
 
+Templates are grouped by related subject area to improve discovery. These groupings do not create authority, adoption dependencies, or shared lifecycle. Any actual dependency is established only by the applicable template itself.
+
 Root-level repository guidance such as `README.md`, `ADOPTION.md`, `NAMING.md`, and `MAINTAINING.md` governs this template repository itself and is not part of the reusable template catalog.
 
 This file is a current-state catalog, not a roadmap. Planned, deferred, or merely possible templates do not belong here until they exist.
 
 ## Templates
+
+**Standards Governance and Authoring**
+
+These related subjects are grouped for discovery; they do not form a suite or adoption bundle.
 
 ### `standards-authoring`
 
@@ -33,6 +39,10 @@ Important boundaries:
 - governs adoption, canonical governance, provenance, and independent lifecycle after adoption;
 - does not determine repository topology;
 - does not make upstream template changes automatically authoritative downstream.
+
+**Repository Architecture and Naming**
+
+These templates are independently adoptable. Their order below is a discovery or reading aid, not a required adoption sequence.
 
 ### `project-repository-model`
 
@@ -69,6 +79,29 @@ Important boundaries:
 - governs files, directories, and path components;
 - does not govern repository identities;
 - yields to stronger legitimate technical or external naming requirements.
+
+**Web Standards Suite**
+
+This catalog describes the suite relationship already established by the templates; placement here does not create authority or dependency.
+
+**Web Experience Baseline**
+
+### `web-experience-baseline`
+
+**Web Experience Baseline Standard**
+
+Defines how the six required core Web Standards compose into a truthful Baseline assessment and conformance conclusion while preserving each companion's ownership and result model.
+
+Important boundaries:
+
+- requires exact versions of the six core companions only for unchanged Baseline conformance; each companion remains independently adoptable;
+- governs composition, complete mandatory coverage, evidence reuse, conflict handling, and Baseline claim integrity without duplicating companion requirements;
+- does not require Web Styling Architecture, define Enhanced conformance or domain profiles, or automatically incorporate later companion revisions;
+- does not establish organizational authority, release approval, legal certification, public claims, tooling, reporting infrastructure, or automatic downstream updates.
+
+**Required Core Companions (each also independently adoptable)**
+
+The six core companions are required only for conformance to the unchanged Web Experience Baseline. Each core companion remains independently adoptable.
 
 ### `web-accessibility`
 
@@ -148,18 +181,9 @@ Important boundaries:
 - does not prescribe universal performance thresholds, browser/device matrices, tooling, service workers, caching, fallbacks, or offline support;
 - does not own sibling substantive conformance, security, privacy, infrastructure operations, deployment, legal conclusions, or automatic downstream updates.
 
-### `web-experience-baseline`
+**Optional Companion**
 
-**Web Experience Baseline Standard**
-
-Defines how the six required core Web Standards compose into a truthful Baseline assessment and conformance conclusion while preserving each companion's ownership and result model.
-
-Important boundaries:
-
-- requires exact versions of the six core companions only for unchanged Baseline conformance; each companion remains independently adoptable;
-- governs composition, complete mandatory coverage, evidence reuse, conflict handling, and Baseline claim integrity without duplicating companion requirements;
-- does not require Web Styling Architecture, define Enhanced conformance or domain profiles, or automatically incorporate later companion revisions;
-- does not establish organizational authority, release approval, legal certification, public claims, tooling, reporting infrastructure, or automatic downstream updates.
+Web Styling Architecture remains optional and independently adoptable.
 
 ### `web-styling-architecture`
 
@@ -176,22 +200,22 @@ Important boundaries:
 
 ## Relationship Summary
 
-```text
-standards-authoring
-    governs how reusable normative standards and policies are authored and calibrated
+**Standards Governance and Authoring**
 
-standards-adoption-model
-    governs deliberate organizational adoption of reusable normative material
+`standards-authoring` governs how reusable normative standards and policies are authored and calibrated. `standards-adoption-model` governs how reusable normative material becomes organizational authority and then follows an independent lifecycle. Their conceptual relationship does not require adopting them together or in a particular order.
 
-project-repository-model
-    governs project repository responsibility, project-state boundaries,
-    and when additional repositories are justified
+**Repository Architecture and Naming**
 
-repository-naming
-    governs the identity of a repository once its existence is justified
+- `project-repository-model` governs project repository responsibility, project-state boundaries, and when repository separation is justified.
+- `repository-naming` governs the identity of a repository once its responsibility exists.
+- `filesystem-naming` governs file, directory, and path-component naming.
 
-filesystem-naming
-    governs file, directory, and path-component naming
-```
+These responsibilities are distinct. Their presentation order is a discovery aid, not a mandatory sequence or dependency chain.
 
-Relationships communicate conceptual boundaries and useful dependencies. They do not make one template automatically authoritative over another; authority arises only through an adopting organization's own standards system.
+**Web Standards Suite**
+
+- Web Experience Baseline requires results from the six core companions for conformance to the unchanged Baseline.
+- Each core companion remains independently adoptable outside a Baseline assessment.
+- Web Styling Architecture is optional, independently adoptable, and outside the unchanged Baseline dependency set.
+
+These statements summarize relationships established by the templates themselves. Catalog placement does not make one template authoritative over another; authority arises only through an adopting organization's own standards system.
