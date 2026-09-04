@@ -68,6 +68,10 @@ See [CATALOG.md](CATALOG.md) for the current reusable template inventory, each t
 
 The catalog describes only templates that currently exist; it is not a roadmap or backlog.
 
+## Non-normative Web Standards Suite guidance
+
+See [Web Standards Suite Assessment Guidance](WEB_STANDARDS_ASSESSMENT_GUIDANCE.md) for non-normative assistance with assessment and evidence recording. It does not create adoption or conformance authority or a normative dependency.
+
 ## Repository validation
 
 Run the unit tests and validator, which require Python 3 and Git but no third-party Python packages, before submitting or merging changes:

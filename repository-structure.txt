@@ -21,6 +21,7 @@ LICENSE
 MAINTAINING.md
 NAMING.md
 README.md
+WEB_STANDARDS_ASSESSMENT_GUIDANCE.md
 repository-structure.txt
 scripts/
 scripts/setup_git_hooks.py
