@@ -199,6 +199,49 @@ class RepositoryValidatorTests(unittest.TestCase):
         (self.root / "templates/example-template/README.md").unlink()
         self.assertIn("required template file is missing", self._messages())
 
+    def test_matching_stable_template_id_passes(self) -> None:
+        self.assertValid()
+
+    def test_missing_stable_template_id_declaration_fails(self) -> None:
+        readme = self.root / "templates/example-template/README.md"
+        readme.write_text(
+            readme.read_text(encoding="utf-8").replace(
+                "Stable template ID: `example-template`\n\n", ""
+            ),
+            encoding="utf-8",
+        )
+        self.assertIn("exactly one stable template ID declaration", self._messages())
+
+    def test_duplicate_stable_template_id_declarations_fail(self) -> None:
+        readme = self.root / "templates/example-template/README.md"
+        with readme.open("a", encoding="utf-8") as handle:
+            handle.write("\nStable template ID: `example-template`\n")
+        messages = self._messages()
+        self.assertIn("exactly one stable template ID declaration", messages)
+        self.assertIn("found 2", messages)
+
+    def test_mismatched_stable_template_id_reports_actual_and_expected(self) -> None:
+        readme = self.root / "templates/example-template/README.md"
+        readme.write_text(
+            readme.read_text(encoding="utf-8").replace(
+                "Stable template ID: `example-template`",
+                "Stable template ID: `different-template`",
+            ),
+            encoding="utf-8",
+        )
+        messages = self._messages()
+        self.assertIn("declares stable template ID 'different-template'", messages)
+        self.assertIn("expected directory ID 'example-template'", messages)
+
+    def test_examples_and_mentions_are_not_stable_template_id_declarations(self) -> None:
+        readme = self.root / "templates/example-template/README.md"
+        with readme.open("a", encoding="utf-8") as handle:
+            handle.write(
+                "\nAn unrelated mention of `different-template` remains prose.\n\n"
+                "```markdown\nStable template ID: `example-template`\n```\n"
+            )
+        self.assertValid()
+
     def test_dangling_relative_link_fails(self) -> None:
         with (self.root / "README.md").open("a", encoding="utf-8") as handle:
             handle.write("\n[Missing](missing.md)\n")
@@ -288,6 +331,13 @@ class RepositoryValidatorTests(unittest.TestCase):
     def test_invalid_template_id_fails(self) -> None:
         invalid_directory = self.root / "templates/Example_template"
         (self.root / "templates/example-template").rename(invalid_directory)
+        readme_path = invalid_directory / "README.md"
+        readme_path.write_text(
+            readme_path.read_text(encoding="utf-8").replace(
+                "example-template", "Example_template"
+            ),
+            encoding="utf-8",
+        )
         catalog_path = self.root / "CATALOG.md"
         catalog_path.write_text(
             catalog_path.read_text(encoding="utf-8").replace("example-template", "Example_template"),

@@ -26,6 +26,9 @@ from urllib.parse import unquote
 
 
 TEMPLATE_ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+STABLE_TEMPLATE_ID_DECLARATION_RE = re.compile(
+    r"^Stable template ID: `([^`\n]+)`[ \t]*$", re.MULTILINE
+)
 ORDINARY_PATH_COMPONENT_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 ORDINARY_FILENAME_RE = re.compile(
     r"^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)*$"
@@ -138,6 +141,7 @@ class RepositoryValidator:
         self._validate_repository_structure_snapshot()
         self._validate_markdown_documents()
         self._validate_template_structure()
+        self._validate_stable_template_ids()
         self._validate_catalog_membership()
         self._validate_template_titles()
         self._validate_markdown_links()
@@ -418,6 +422,31 @@ class RepositoryValidator:
                 self._add(child / missing_name, "required template file is missing")
             for unexpected_name in sorted(actual_entries - EXPECTED_TEMPLATE_FILES):
                 self._add(child / unexpected_name, "unexpected entry in template directory")
+
+    def _validate_stable_template_ids(self) -> None:
+        for template_id, directory in sorted(self.template_directories.items()):
+            readme_path = directory / "README.md"
+            readme_text = self.text_files.get(readme_path)
+            if readme_text is None:
+                continue
+
+            structural_text = markdown_without_fenced_code(readme_text)
+            declarations = STABLE_TEMPLATE_ID_DECLARATION_RE.findall(structural_text)
+            if len(declarations) != 1:
+                self._add(
+                    readme_path,
+                    "template README must contain exactly one stable template ID declaration "
+                    f"using the repository convention; found {len(declarations)}",
+                )
+                continue
+
+            declared_id = declarations[0]
+            if declared_id != template_id:
+                self._add(
+                    readme_path,
+                    f"declares stable template ID {declared_id!r}; "
+                    f"expected directory ID {template_id!r}",
+                )
 
     def _validate_catalog_membership(self) -> None:
         catalog_path = self.root / "CATALOG.md"
