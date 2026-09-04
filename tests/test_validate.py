@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 import importlib.util
-from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import textwrap
 import unittest
-
+from pathlib import Path
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR_PATH = REPOSITORY_ROOT / "scripts" / "validate.py"
@@ -153,6 +152,7 @@ class RepositoryValidatorTests(unittest.TestCase):
             "ADOPTION.md",
             "AGENTS.md",
             "CHANGELOG.md",
+            "CODE_OF_CONDUCT.md",
             "CONTRIBUTING.md",
             "MAINTAINING.md",
             "NAMING.md",
@@ -160,6 +160,7 @@ class RepositoryValidatorTests(unittest.TestCase):
         ):
             self._write(path, f"# {path}\n")
         self._write("LICENSE", "License\n")
+        self._write(".markdownlint-cli2.jsonc", "{}\n")
         self._refresh_structure_snapshot()
         self.assertValid()
 
@@ -181,13 +182,20 @@ class RepositoryValidatorTests(unittest.TestCase):
                 self._write(path, "# Invalid\n" if path.endswith(".md") else "invalid\n")
                 self._refresh_structure_snapshot()
                 messages = self._messages()
-                invalid_directory = path.split("/")[0] if path in (
-                    "Project_Docs/example.md",
-                    "project.docs/example.md",
-                ) else None
+                invalid_directory = (
+                    path.split("/")[0]
+                    if path
+                    in (
+                        "Project_Docs/example.md",
+                        "project.docs/example.md",
+                    )
+                    else None
+                )
                 expected_path = invalid_directory or path
                 self.assertIn(expected_path, messages)
-                self.assertIn("lowercase ASCII alphanumeric words separated by single hyphens", messages)
+                self.assertIn(
+                    "lowercase ASCII alphanumeric words separated by single hyphens", messages
+                )
                 target = self.root / path
                 target.unlink()
                 if invalid_directory:
@@ -530,7 +538,9 @@ class RepositoryValidatorTests(unittest.TestCase):
 
     def test_fenced_reference_definition_is_not_active(self) -> None:
         with (self.root / "README.md").open("a", encoding="utf-8") as handle:
-            handle.write("\nSee [catalog][catalog-ref].\n\n```markdown\n[catalog-ref]: CATALOG.md\n```\n")
+            handle.write(
+                "\nSee [catalog][catalog-ref].\n\n```markdown\n[catalog-ref]: CATALOG.md\n```\n"
+            )
         self.assertIn("reference-style link definition does not exist", self._messages())
 
     def test_malformed_reference_definition_fails_cleanly(self) -> None:
@@ -599,14 +609,14 @@ class RepositoryValidatorTests(unittest.TestCase):
         (self.root / "templates/example-template").rename(invalid_directory)
         readme_path = invalid_directory / "README.md"
         readme_path.write_text(
-            readme_path.read_text(encoding="utf-8").replace(
-                "example-template", "Example_template"
-            ),
+            readme_path.read_text(encoding="utf-8").replace("example-template", "Example_template"),
             encoding="utf-8",
         )
         catalog_path = self.root / "CATALOG.md"
         catalog_path.write_text(
-            catalog_path.read_text(encoding="utf-8").replace("example-template", "Example_template"),
+            catalog_path.read_text(encoding="utf-8").replace(
+                "example-template", "Example_template"
+            ),
             encoding="utf-8",
         )
         self.assertIn("template ID must use lowercase ASCII", self._messages())
@@ -692,7 +702,9 @@ class RepositoryValidatorTests(unittest.TestCase):
     def test_title_mismatch_fails(self) -> None:
         catalog_path = self.root / "CATALOG.md"
         catalog_path.write_text(
-            catalog_path.read_text(encoding="utf-8").replace("Example Standard", "Different Standard"),
+            catalog_path.read_text(encoding="utf-8").replace(
+                "Example Standard", "Different Standard"
+            ),
             encoding="utf-8",
         )
         self.assertIn("human-facing template titles do not agree", self._messages())
@@ -723,7 +735,9 @@ class RepositoryValidatorTests(unittest.TestCase):
     def test_internal_symlink_is_rejected(self) -> None:
         (self.root / "catalog-link.md").symlink_to(self.root / "CATALOG.md")
         self._refresh_structure_snapshot()
-        self.assertIn("symbolic links are not allowed; the link target was not read", self._messages())
+        self.assertIn(
+            "symbolic links are not allowed; the link target was not read", self._messages()
+        )
 
     def test_missing_final_newline_fails(self) -> None:
         (self.root / "notes.txt").write_text("missing newline", encoding="utf-8")

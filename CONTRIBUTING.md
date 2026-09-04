@@ -67,6 +67,15 @@ python3 -m unittest discover -s tests
 python3 scripts/validate.py
 ```
 
+CI also checks Markdown hygiene, Python lint and formatting, and GitHub Actions workflows. When a contribution affects those files, run the applicable supplemental checks locally:
+
+```bash
+markdownlint-cli2
+ruff check scripts tests
+ruff format --check scripts tests
+actionlint .github/workflows/*.yml
+```
+
 When an intentional change adds, removes, or moves repository paths, regenerate the reviewed structure snapshot before validation:
 
 ```bash

@@ -25,6 +25,26 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: "3.13"
+      - name: Lint Markdown
+        uses: DavidAnson/markdownlint-cli2-action@v24.2.0
+        with:
+          globs: |
+            **/*.md
+            !.git/**
+      - name: Lint Python
+        uses: astral-sh/ruff-action@v4.1.0
+        with:
+          args: check scripts tests
+          version: "0.16.6"
+      - name: Check Python formatting
+        uses: astral-sh/ruff-action@v4.1.0
+        with:
+          args: format --check scripts tests
+          version: "0.16.6"
+      - name: Lint GitHub Actions
+        uses: raven-actions/actionlint@v2.2.0
+        with:
+          version: "1.7.12"
       - name: Run validator tests
         run: python3 -m unittest discover -s tests
       - name: Validate repository
