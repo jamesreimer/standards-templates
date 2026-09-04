@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import importlib.util
+import io
 import subprocess
 import sys
 import tempfile
 import textwrap
 import unittest
 from pathlib import Path
+from unittest import mock
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR_PATH = REPOSITORY_ROOT / "scripts" / "validate.py"
@@ -163,6 +165,25 @@ class RepositoryValidatorTests(unittest.TestCase):
         self._write(".markdownlint-cli2.jsonc", "{}\n")
         self._refresh_structure_snapshot()
         self.assertValid()
+
+    def test_valid_jsonc_file_is_validated_as_text(self) -> None:
+        self._write(".markdownlint-cli2.jsonc", "{}\n")
+        self._refresh_structure_snapshot()
+        self.assertValid()
+
+    def test_jsonc_file_without_final_newline_fails(self) -> None:
+        path = self._write(".markdownlint-cli2.jsonc", "{}\n")
+        self._refresh_structure_snapshot()
+        path.write_text("{}", encoding="utf-8")
+        self.assertIn(
+            ".markdownlint-cli2.jsonc: text file must end with a newline", self._messages()
+        )
+
+    def test_invalid_utf8_jsonc_file_fails(self) -> None:
+        path = self._write(".markdownlint-cli2.jsonc", "{}\n")
+        self._refresh_structure_snapshot()
+        path.write_bytes(b"\xff\n")
+        self.assertIn(".markdownlint-cli2.jsonc: text file is not valid UTF-8", self._messages())
 
     def test_repository_path_naming_rejects_ordinary_invalid_names(self) -> None:
         invalid_paths = (
@@ -722,6 +743,53 @@ class RepositoryValidatorTests(unittest.TestCase):
         (self.root / "tracked-note.txt").unlink()
         self.assertIn("tracked-note.txt: repository file could not be read", self._messages())
 
+    def test_git_enumeration_failure_preserves_caller_semantics(self) -> None:
+        (self.root / ".git").mkdir()
+        result = subprocess.CompletedProcess([], 1, stdout=b"", stderr=b"Git detail\n")
+        with mock.patch.object(VALIDATE.subprocess, "run", return_value=result):
+            validator = VALIDATE.RepositoryValidator(self.root)
+            self.assertEqual([], validator._repository_files_for_validation())
+            self.assertEqual(
+                [".: could not enumerate repository files with Git"],
+                [str(finding) for finding in validator.findings],
+            )
+            with self.assertRaisesRegex(RuntimeError, "Git detail"):
+                VALIDATE.visible_repository_files(self.root)
+
+    def test_invalid_utf8_git_file_list_preserves_caller_semantics(self) -> None:
+        (self.root / ".git").mkdir()
+        result = subprocess.CompletedProcess([], 0, stdout=b"\xff\0", stderr=b"")
+        with mock.patch.object(VALIDATE.subprocess, "run", return_value=result):
+            validator = VALIDATE.RepositoryValidator(self.root)
+            self.assertEqual([], validator._repository_files_for_validation())
+            self.assertIn("not valid UTF-8", str(validator.findings[0]))
+            with self.assertRaisesRegex(RuntimeError, "not valid UTF-8"):
+                VALIDATE.visible_repository_files(self.root)
+
+    def test_git_mode_repository_files_are_deterministically_sorted(self) -> None:
+        self._write("z-last.txt", "last\n")
+        self._write("a-first.txt", "first\n")
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        subprocess.run(["git", "-C", str(self.root), "add", "."], check=True)
+        resolved_root = self.root.resolve()
+        relative_paths = [
+            path.relative_to(resolved_root).as_posix()
+            for path in VALIDATE.visible_repository_files(self.root)
+        ]
+        self.assertEqual(sorted(relative_paths), relative_paths)
+
+    def test_git_mode_symlink_is_rejected_without_reading_target(self) -> None:
+        with tempfile.TemporaryDirectory() as external_directory:
+            external_target = Path(external_directory) / "external.md"
+            external_target.write_bytes(b"\xff\n")
+            (self.root / "external.md").symlink_to(external_target)
+            self._refresh_structure_snapshot()
+            subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+            subprocess.run(["git", "-C", str(self.root), "add", "."], check=True)
+            messages = self._messages()
+        self.assertIn("symbolic links are not allowed; the link target was not read", messages)
+        self.assertNotIn("not valid UTF-8", messages)
+
     def test_external_symlink_is_rejected_without_reading_target(self) -> None:
         with tempfile.TemporaryDirectory() as external_directory:
             external_target = Path(external_directory) / "external.md"
@@ -742,6 +810,16 @@ class RepositoryValidatorTests(unittest.TestCase):
     def test_missing_final_newline_fails(self) -> None:
         (self.root / "notes.txt").write_text("missing newline", encoding="utf-8")
         self.assertIn("text file must end with a newline", self._messages())
+
+    def test_summary_counts_only_validated_markdown_files(self) -> None:
+        self._write(".venv/ignored.md", "# Ignored\n")
+        validator_file = self.root / "scripts" / "validate.py"
+        with (
+            mock.patch.object(VALIDATE, "__file__", str(validator_file)),
+            mock.patch("sys.stdout", new_callable=io.StringIO) as stdout,
+        ):
+            self.assertEqual(0, VALIDATE.main())
+        self.assertIn("4 Markdown files", stdout.getvalue())
 
     def test_stale_repository_structure_snapshot_fails(self) -> None:
         self._write("new-file.txt", "new structure\n")

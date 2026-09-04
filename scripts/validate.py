@@ -52,7 +52,18 @@ EXPECTED_TEMPLATE_FILES = {"README.md", "standard.md"}
 JUNK_FILE_NAMES = {".DS_Store", "Thumbs.db"}
 IGNORED_DIRECTORY_NAMES = {".git", ".venv"}
 TEXT_FILE_NAMES = {".editorconfig", ".gitattributes", ".gitignore", "LICENSE"}
-TEXT_FILE_SUFFIXES = {".cfg", ".ini", ".json", ".md", ".py", ".toml", ".txt", ".yaml", ".yml"}
+TEXT_FILE_SUFFIXES = {
+    ".cfg",
+    ".ini",
+    ".json",
+    ".jsonc",
+    ".md",
+    ".py",
+    ".toml",
+    ".txt",
+    ".yaml",
+    ".yml",
+}
 STRUCTURE_SNAPSHOT_PATH = "repository-structure.txt"
 STRUCTURE_UPDATE_COMMAND = "python3 scripts/update_repository_structure.py"
 ROOT_PATH_NAME_EXCEPTIONS = {
@@ -134,6 +145,19 @@ class MarkdownDocument:
     @property
     def anchors(self) -> set[str]:
         return {heading.slug for heading in self.headings}
+
+
+@dataclass(frozen=True)
+class RepositoryFileEnumeration:
+    files: tuple[Path, ...]
+    junk_files: tuple[Path, ...] = ()
+    junk_directories: tuple[Path, ...] = ()
+
+
+class RepositoryEnumerationError(RuntimeError):
+    def __init__(self, message: str, validation_reason: str) -> None:
+        super().__init__(message)
+        self.validation_reason = validation_reason
 
 
 class RepositoryValidator:
@@ -221,66 +245,17 @@ class RepositoryValidator:
                 self._add(path, "references the prohibited template metadata filename")
 
     def _repository_files_for_validation(self) -> list[Path]:
-        if (self.root / ".git").exists():
-            result = subprocess.run(
-                [
-                    "git",
-                    "-C",
-                    str(self.root),
-                    "ls-files",
-                    "--cached",
-                    "--others",
-                    "--exclude-standard",
-                    "-z",
-                ],
-                check=False,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-            if result.returncode == 0:
-                try:
-                    relative_paths = [
-                        relative_path.decode("utf-8")
-                        for relative_path in result.stdout.split(b"\0")
-                        if relative_path
-                    ]
-                except UnicodeDecodeError as error:
-                    self._add(
-                        self.root,
-                        f"Git returned a repository path that is not valid UTF-8 ({error})",
-                    )
-                    return []
-                return sorted(self.root / Path(relative_path) for relative_path in relative_paths)
-            self._add(self.root, "could not enumerate repository files with Git")
+        try:
+            enumeration = enumerate_repository_files(self.root)
+        except RepositoryEnumerationError as error:
+            self._add(self.root, error.validation_reason)
             return []
 
-        repository_files: list[Path] = []
-        for current, directory_names, file_names in os.walk(self.root):
-            current_path = Path(current)
-            directory_names.sort()
-            file_names.sort()
-
-            retained_directories: list[str] = []
-            for directory_name in directory_names:
-                directory_path = current_path / directory_name
-                if directory_name == "__pycache__":
-                    self._add(directory_path, "junk artifact directory is not allowed")
-                    continue
-                if directory_name in IGNORED_DIRECTORY_NAMES:
-                    continue
-                if directory_path.is_symlink():
-                    repository_files.append(directory_path)
-                    continue
-                retained_directories.append(directory_name)
-            directory_names[:] = retained_directories
-
-            for file_name in file_names:
-                path = current_path / file_name
-                if file_name in JUNK_FILE_NAMES or path.suffix.lower() == ".pyc":
-                    self._add(path, "junk artifact file is not allowed")
-                    continue
-                repository_files.append(path)
-        return repository_files
+        for path in enumeration.junk_directories:
+            self._add(path, "junk artifact directory is not allowed")
+        for path in enumeration.junk_files:
+            self._add(path, "junk artifact file is not allowed")
+        return list(enumeration.files)
 
     @staticmethod
     def _is_text_file(path: Path) -> bool:
@@ -917,8 +892,8 @@ def normalize_reference_label(label: str) -> str:
     return " ".join(label.strip().split()).casefold()
 
 
-def visible_repository_files(root: Path) -> list[Path]:
-    """Return visible tracked and unignored files used by the structure snapshot."""
+def enumerate_repository_files(root: Path) -> RepositoryFileEnumeration:
+    """Enumerate visible repository paths without following symlink targets."""
     root = root.resolve()
     if (root / ".git").exists():
         result = subprocess.run(
@@ -938,7 +913,10 @@ def visible_repository_files(root: Path) -> list[Path]:
         )
         if result.returncode != 0:
             detail = result.stderr.decode("utf-8", errors="replace").strip()
-            raise RuntimeError(detail or "Git could not enumerate repository files")
+            raise RepositoryEnumerationError(
+                detail or "Git could not enumerate repository files",
+                "could not enumerate repository files with Git",
+            )
         try:
             relative_paths = [
                 relative_path.decode("utf-8")
@@ -946,30 +924,47 @@ def visible_repository_files(root: Path) -> list[Path]:
                 if relative_path
             ]
         except UnicodeDecodeError as error:
-            raise RuntimeError(
-                f"Git returned a repository path that is not valid UTF-8 ({error})"
-            ) from error
-        return sorted(root / Path(relative_path) for relative_path in relative_paths)
+            message = f"Git returned a repository path that is not valid UTF-8 ({error})"
+            raise RepositoryEnumerationError(message, message) from error
+        return RepositoryFileEnumeration(
+            tuple(sorted(root / Path(relative_path) for relative_path in relative_paths))
+        )
 
     files: list[Path] = []
+    junk_files: list[Path] = []
+    junk_directories: list[Path] = []
     for current, directory_names, file_names in os.walk(root):
         current_path = Path(current)
+        directory_names.sort()
+        file_names.sort()
         retained_directories: list[str] = []
-        for directory_name in sorted(directory_names):
+        for directory_name in directory_names:
             directory_path = current_path / directory_name
-            if directory_name in IGNORED_DIRECTORY_NAMES | {"__pycache__"}:
+            if directory_name == "__pycache__":
+                junk_directories.append(directory_path)
+                continue
+            if directory_name in IGNORED_DIRECTORY_NAMES:
                 continue
             if directory_path.is_symlink():
                 files.append(directory_path)
                 continue
             retained_directories.append(directory_name)
         directory_names[:] = retained_directories
-        for file_name in sorted(file_names):
+        for file_name in file_names:
             path = current_path / file_name
             if file_name in JUNK_FILE_NAMES or path.suffix.lower() == ".pyc":
+                junk_files.append(path)
                 continue
             files.append(path)
-    return files
+    return RepositoryFileEnumeration(tuple(files), tuple(junk_files), tuple(junk_directories))
+
+
+def visible_repository_files(root: Path) -> list[Path]:
+    """Return visible tracked and unignored files used by the structure snapshot."""
+    try:
+        return list(enumerate_repository_files(root).files)
+    except RepositoryEnumerationError as error:
+        raise RuntimeError(str(error)) from error
 
 
 def render_repository_structure(root: Path) -> str:
@@ -1126,7 +1121,8 @@ def validate_repository(root: Path) -> list[Finding]:
 
 def main() -> int:
     repository_root = Path(__file__).resolve().parents[1]
-    findings = validate_repository(repository_root)
+    validator = RepositoryValidator(repository_root)
+    findings = validator.validate()
     if findings:
         for finding in findings:
             print(finding, file=sys.stderr)
@@ -1134,7 +1130,7 @@ def main() -> int:
         return 1
 
     template_count = sum(1 for child in (repository_root / "templates").iterdir() if child.is_dir())
-    markdown_count = sum(path.suffix.lower() == ".md" for path in repository_root.rglob("*.md"))
+    markdown_count = len(validator.markdown_documents)
     print(f"Validation passed: {template_count} templates, {markdown_count} Markdown files.")
     return 0
 
