@@ -29,6 +29,14 @@ TEMPLATE_ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 STABLE_TEMPLATE_ID_DECLARATION_RE = re.compile(
     r"^Stable template ID: `([^`\n]+)`[ \t]*$", re.MULTILINE
 )
+LOCAL_REQUIREMENT_SCHEME_DECLARATION_RE = re.compile(
+    r"^`([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-NNN)` identifies a local requirement "
+    r"synthesized by this template\b",
+    re.MULTILINE,
+)
+LOCAL_REQUIREMENT_DEFINITION_RE = re.compile(
+    r"^\*\*([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+) — [^*\n]+\.\*\*", re.MULTILINE
+)
 ORDINARY_PATH_COMPONENT_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 ORDINARY_FILENAME_RE = re.compile(
     r"^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)*$"
@@ -142,6 +150,7 @@ class RepositoryValidator:
         self._validate_markdown_documents()
         self._validate_template_structure()
         self._validate_stable_template_ids()
+        self._validate_local_requirement_ids()
         self._validate_catalog_membership()
         self._validate_template_titles()
         self._validate_markdown_links()
@@ -447,6 +456,58 @@ class RepositoryValidator:
                     f"declares stable template ID {declared_id!r}; "
                     f"expected directory ID {template_id!r}",
                 )
+
+    def _validate_local_requirement_ids(self) -> None:
+        for directory in sorted(self.template_directories.values()):
+            standard_path = directory / "standard.md"
+            standard_text = self.text_files.get(standard_path)
+            if standard_text is None:
+                continue
+
+            structural_text = markdown_without_fenced_code(standard_text)
+            schemes = LOCAL_REQUIREMENT_SCHEME_DECLARATION_RE.findall(structural_text)
+            if len(schemes) > 1:
+                self._add(
+                    standard_path,
+                    f"declares {len(schemes)} local requirement ID schemes {schemes!r}; "
+                    "expected at most one declaration using 'PREFIX-NNN'",
+                )
+                continue
+            if not schemes:
+                continue
+
+            scheme = schemes[0]
+            prefix = scheme.removesuffix("-NNN")
+            expected_id_re = re.compile(rf"^{re.escape(prefix)}-[0-9]{{3}}$")
+            definition_ids: list[tuple[str, int]] = []
+            for match in LOCAL_REQUIREMENT_DEFINITION_RE.finditer(structural_text):
+                requirement_id = match.group(1)
+                line_number = structural_text.count("\n", 0, match.start()) + 1
+                if not expected_id_re.fullmatch(requirement_id):
+                    self._add(
+                        standard_path,
+                        f"requirement definition label {requirement_id!r} does not match "
+                        f"declared scheme {scheme!r}; expected prefix {prefix!r} "
+                        "with exactly three decimal digits",
+                        line_number,
+                    )
+                    continue
+                definition_ids.append((requirement_id, line_number))
+
+            id_counts = Counter(requirement_id for requirement_id, _ in definition_ids)
+            for requirement_id, count in sorted(id_counts.items()):
+                if count > 1:
+                    duplicate_line = [
+                        line_number
+                        for candidate_id, line_number in definition_ids
+                        if candidate_id == requirement_id
+                    ][1]
+                    self._add(
+                        standard_path,
+                        f"duplicate local requirement ID {requirement_id!r}; "
+                        f"declared scheme is {scheme!r}",
+                        duplicate_line,
+                    )
 
     def _validate_catalog_membership(self) -> None:
         catalog_path = self.root / "CATALOG.md"
