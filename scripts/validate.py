@@ -37,6 +37,9 @@ LOCAL_REQUIREMENT_SCHEME_DECLARATION_RE = re.compile(
 LOCAL_REQUIREMENT_DEFINITION_RE = re.compile(
     r"^\*\*([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+) — [^*\n]+\.\*\*", re.MULTILINE
 )
+LOCAL_REQUIREMENT_REFERENCE_RE = re.compile(
+    r"^([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)-([0-9]{3})$"
+)
 ORDINARY_PATH_COMPONENT_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 ORDINARY_FILENAME_RE = re.compile(
     r"^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)*$"
@@ -140,6 +143,8 @@ class RepositoryValidator:
         self.markdown_documents: dict[Path, MarkdownDocument] = {}
         self.template_directories: dict[str, Path] = {}
         self.catalog_titles: dict[str, str] = {}
+        self.local_requirement_definitions: dict[str, list[tuple[Path, int]]] = {}
+        self.local_requirement_prefixes: set[str] = set()
         self.repository_files: set[str] = set()
         self.repository_directories: set[str] = {"."}
 
@@ -151,6 +156,7 @@ class RepositoryValidator:
         self._validate_template_structure()
         self._validate_stable_template_ids()
         self._validate_local_requirement_ids()
+        self._validate_local_requirement_references()
         self._validate_catalog_membership()
         self._validate_template_titles()
         self._validate_markdown_links()
@@ -466,6 +472,9 @@ class RepositoryValidator:
 
             structural_text = markdown_without_fenced_code(standard_text)
             schemes = LOCAL_REQUIREMENT_SCHEME_DECLARATION_RE.findall(structural_text)
+            self.local_requirement_prefixes.update(
+                scheme.removesuffix("-NNN") for scheme in schemes
+            )
             if len(schemes) > 1:
                 self._add(
                     standard_path,
@@ -493,6 +502,9 @@ class RepositoryValidator:
                     )
                     continue
                 definition_ids.append((requirement_id, line_number))
+                self.local_requirement_definitions.setdefault(requirement_id, []).append(
+                    (standard_path, line_number)
+                )
 
             id_counts = Counter(requirement_id for requirement_id, _ in definition_ids)
             for requirement_id, count in sorted(id_counts.items()):
@@ -508,6 +520,38 @@ class RepositoryValidator:
                         f"declared scheme is {scheme!r}",
                         duplicate_line,
                     )
+
+    def _validate_local_requirement_references(self) -> None:
+        for directory in sorted(self.template_directories.values()):
+            standard_path = directory / "standard.md"
+            standard_text = self.text_files.get(standard_path)
+            if standard_text is None:
+                continue
+
+            markdown_lines, _ = scan_markdown_lines(standard_text)
+            for markdown_line in markdown_lines:
+                for code_span in scan_inline_code_spans(markdown_line.text):
+                    reference_match = LOCAL_REQUIREMENT_REFERENCE_RE.fullmatch(code_span)
+                    if reference_match is None:
+                        continue
+                    prefix = reference_match.group(1)
+                    if prefix not in self.local_requirement_prefixes:
+                        continue
+
+                    definitions = self.local_requirement_definitions.get(code_span, [])
+                    if len(definitions) == 1:
+                        continue
+                    if not definitions:
+                        reason = (
+                            f"unresolved local requirement reference {code_span!r}; "
+                            f"no valid definition exists for declared prefix {prefix!r}"
+                        )
+                    else:
+                        reason = (
+                            f"local requirement reference {code_span!r} resolves to "
+                            f"{len(definitions)} definitions; expected exactly one"
+                        )
+                    self._add(standard_path, reason, markdown_line.number)
 
     def _validate_catalog_membership(self) -> None:
         catalog_path = self.root / "CATALOG.md"
@@ -698,6 +742,27 @@ def strip_inline_code(line: str) -> str:
             characters[position] = " "
         index = closing + len(delimiter)
     return "".join(characters)
+
+
+def scan_inline_code_spans(line: str) -> list[str]:
+    """Return exact contents of closed backtick-delimited inline code spans."""
+    spans: list[str] = []
+    index = 0
+    while index < len(line):
+        if line[index] != "`":
+            index += 1
+            continue
+        run_end = index
+        while run_end < len(line) and line[run_end] == "`":
+            run_end += 1
+        delimiter = line[index:run_end]
+        closing = line.find(delimiter, run_end)
+        if closing == -1:
+            index = run_end
+            continue
+        spans.append(line[run_end:closing])
+        index = closing + len(delimiter)
+    return spans
 
 
 def is_closing_fence(line: str, character: str, minimum_length: int) -> bool:
