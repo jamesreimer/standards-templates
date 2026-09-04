@@ -68,3 +68,4 @@ templates/web-styling-architecture/README.md
 templates/web-styling-architecture/standard.md
 tests/
 tests/test_validate.py
+web-standards-assessment-guidance.md
