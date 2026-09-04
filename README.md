@@ -38,43 +38,9 @@ Adoption creates a new organizational artifact governed by the adopter. The upst
 
 See [ADOPTION.md](ADOPTION.md) for the adoption and relationship model.
 
-## Naming
-
-Each template has:
-
-- a short, stable folder ID that identifies its durable subject; and
-- a separate human-facing title that describes the document clearly and accurately.
-
-See [NAMING.md](NAMING.md) for the **template naming** standard used inside this repository. Repository naming and filesystem naming are separate reusable subjects covered by the [`repository-naming`](templates/repository-naming/) and [`filesystem-naming`](templates/filesystem-naming/) templates.
-
-## Repository structure
-
-```text
-templates/
-└── <template-id>/
-    ├── README.md
-    └── standard.md
-```
-
-Each template directory contains the reusable document and adoption guidance specific to that template.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the contributor path and [MAINTAINING.md](MAINTAINING.md) for the repository's maintenance and review path.
-
-Automated coding agents should also follow [AGENTS.md](AGENTS.md), which routes agent work through the repository's maintainer, contribution, and applicable naming and authoring guidance.
-
-## Template catalog
-
-See [CATALOG.md](CATALOG.md) for the current reusable template inventory, each template's durable subject, and important boundaries between existing templates.
-
-The catalog describes only templates that currently exist; it is not a roadmap or backlog.
-
-## Non-normative Web Standards Suite guidance
-
-See [Web Standards Suite Assessment Guidance](web-standards-assessment-guidance.md) for non-normative assistance with assessment and evidence recording. It does not create adoption or conformance authority or a normative dependency.
-
 ## Repository validation
 
-Run the unit tests and validator, which require Python 3.9 or later and Git but no third-party Python packages, before submitting or merging changes:
+Repository integrity is checked by a dependency-free Python validator and its behavioral unit-test suite. Run both, which require Python 3.9 or later and Git, before submitting or merging changes:
 
 ```bash
 python3 -m unittest discover -s tests
@@ -109,6 +75,42 @@ python3 scripts/setup_git_hooks.py
 Setup is idempotent when `core.hooksPath` already names `.githooks`. It refuses
 to replace a different existing hooks path unless you explicitly run
 `python3 scripts/setup_git_hooks.py --force`.
+
+## Template catalog
+
+See [CATALOG.md](CATALOG.md) for the current reusable template inventory, each template's durable subject, and important boundaries between existing templates.
+
+The catalog describes only templates that currently exist; it is not a roadmap or backlog.
+
+## Repository structure
+
+```text
+templates/
+└── <template-id>/
+    ├── README.md
+    └── standard.md
+```
+
+Each template directory contains the reusable document and adoption guidance specific to that template.
+
+## Naming
+
+Each template has:
+
+- a short, stable folder ID that identifies its durable subject; and
+- a separate human-facing title that describes the document clearly and accurately.
+
+See [NAMING.md](NAMING.md) for the **template naming** standard used inside this repository. Repository naming and filesystem naming are separate reusable subjects covered by the [`repository-naming`](templates/repository-naming/) and [`filesystem-naming`](templates/filesystem-naming/) templates.
+
+## Non-normative Web Standards Suite guidance
+
+See [Web Standards Suite Assessment Guidance](web-standards-assessment-guidance.md) for non-normative assistance with assessment and evidence recording. It does not create adoption or conformance authority or a normative dependency.
+
+## Contributing and maintenance
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the contributor path and [MAINTAINING.md](MAINTAINING.md) for the repository's maintenance and review path.
+
+Automated coding agents should also follow [AGENTS.md](AGENTS.md), which routes agent work through the repository's maintainer, contribution, and applicable naming and authoring guidance.
 
 ## License
 
