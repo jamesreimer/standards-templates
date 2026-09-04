@@ -74,7 +74,7 @@ See [Web Standards Suite Assessment Guidance](web-standards-assessment-guidance.
 
 ## Repository validation
 
-Run the unit tests and validator, which require Python 3 and Git but no third-party Python packages, before submitting or merging changes:
+Run the unit tests and validator, which require Python 3.9 or later and Git but no third-party Python packages, before submitting or merging changes:
 
 ```bash
 python3 -m unittest discover -s tests
