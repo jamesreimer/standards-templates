@@ -77,6 +77,8 @@ Proportionality changes assessment scope, not the truthfulness requirement. Ever
 
 ## 4. Integration recommendation
 
-Prefer one organization-neutral assessment-guidance document or guidance section that is explicitly non-normative and referenced from the Web Standards Suite documentation. Avoid scattering duplicate prose into each normative standard unless later review identifies a genuinely standard-specific clarification need.
+Use one organization-neutral assessment-guidance document or guidance section that is explicitly non-normative and referenced from the Web Standards Suite documentation.
+
+Avoid scattering duplicate guidance into each normative standard unless a genuinely standard-specific clarification is later identified.
 
 The guidance should make clear that it assists assessment and evidence recording; it does not create new conformance requirements or override normative text.

@@ -21,7 +21,6 @@ LICENSE
 MAINTAINING.md
 NAMING.md
 README.md
-WEB_STANDARDS_ASSESSMENT_GUIDANCE.md
 repository-structure.txt
 scripts/
 scripts/setup_git_hooks.py
@@ -69,3 +68,4 @@ templates/web-styling-architecture/README.md
 templates/web-styling-architecture/standard.md
 tests/
 tests/test_validate.py
+web-standards-assessment-guidance.md

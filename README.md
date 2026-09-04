@@ -70,7 +70,7 @@ The catalog describes only templates that currently exist; it is not a roadmap o
 
 ## Non-normative Web Standards Suite guidance
 
-See [Web Standards Suite Assessment Guidance](WEB_STANDARDS_ASSESSMENT_GUIDANCE.md) for non-normative assistance with assessment and evidence recording. It does not create adoption or conformance authority or a normative dependency.
+See [Web Standards Suite Assessment Guidance](web-standards-assessment-guidance.md) for non-normative assistance with assessment and evidence recording. It does not create adoption or conformance authority or a normative dependency.
 
 ## Repository validation
 
