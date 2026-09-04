@@ -141,6 +141,7 @@ class RepositoryValidatorTests(unittest.TestCase):
             "WEB_GUIDANCE.md",
             "web_guidance.md",
             "Project_Docs/example.md",
+            "project.docs/example.md",
             "docs/ordinary_file.txt",
             "docs/example guide.md",
             "docs/example--guide.md",
@@ -153,12 +154,16 @@ class RepositoryValidatorTests(unittest.TestCase):
                 self._write(path, "# Invalid\n" if path.endswith(".md") else "invalid\n")
                 self._refresh_structure_snapshot()
                 messages = self._messages()
-                expected_path = path.split("/")[0] if path.startswith("Project_Docs/") else path
+                invalid_directory = path.split("/")[0] if path in (
+                    "Project_Docs/example.md",
+                    "project.docs/example.md",
+                ) else None
+                expected_path = invalid_directory or path
                 self.assertIn(expected_path, messages)
                 self.assertIn("lowercase ASCII alphanumeric words separated by single hyphens", messages)
                 target = self.root / path
                 target.unlink()
-                if path.startswith("Project_Docs/"):
+                if invalid_directory:
                     target.parent.rmdir()
 
     def test_root_exception_does_not_allow_arbitrary_uppercase_markdown(self) -> None:

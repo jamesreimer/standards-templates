@@ -26,7 +26,8 @@ from urllib.parse import unquote
 
 
 TEMPLATE_ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-ORDINARY_PATH_COMPONENT_RE = re.compile(
+ORDINARY_PATH_COMPONENT_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+ORDINARY_FILENAME_RE = re.compile(
     r"^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)*$"
 )
 PYTHON_FILENAME_RE = re.compile(r"^(?:[a-z][a-z0-9]*(?:_[a-z0-9]+)*|__init__)\.py$")
@@ -285,7 +286,8 @@ class RepositoryValidator:
                 )
             return
 
-        if not ORDINARY_PATH_COMPONENT_RE.fullmatch(name):
+        expected_pattern = ORDINARY_PATH_COMPONENT_RE if is_directory else ORDINARY_FILENAME_RE
+        if not expected_pattern.fullmatch(name):
             self._add(
                 self.root / relative_path,
                 f"path component {name!r} must use lowercase ASCII alphanumeric words "
