@@ -12,18 +12,17 @@ semantic strength.
 
 from __future__ import annotations
 
-from collections import Counter
-from dataclasses import dataclass
 import html
 import os
-from pathlib import Path
 import posixpath
 import re
 import subprocess
 import sys
 import unicodedata
+from collections import Counter
+from dataclasses import dataclass
+from pathlib import Path
 from urllib.parse import unquote
-
 
 TEMPLATE_ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 STABLE_TEMPLATE_ID_DECLARATION_RE = re.compile(
@@ -37,13 +36,9 @@ LOCAL_REQUIREMENT_SCHEME_DECLARATION_RE = re.compile(
 LOCAL_REQUIREMENT_DEFINITION_RE = re.compile(
     r"^\*\*([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+) — [^*\n]+\.\*\*", re.MULTILINE
 )
-LOCAL_REQUIREMENT_REFERENCE_RE = re.compile(
-    r"^([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)-([0-9]{3})$"
-)
+LOCAL_REQUIREMENT_REFERENCE_RE = re.compile(r"^([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)-([0-9]{3})$")
 ORDINARY_PATH_COMPONENT_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-ORDINARY_FILENAME_RE = re.compile(
-    r"^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)*$"
-)
+ORDINARY_FILENAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)*$")
 PYTHON_FILENAME_RE = re.compile(r"^(?:[a-z][a-z0-9]*(?:_[a-z0-9]+)*|__init__)\.py$")
 CATALOG_ENTRY_RE = re.compile(r"^### `([^`]+)`[ \t]*$", re.MULTILINE)
 HEADING_RE = re.compile(r"^(#{1,6})(?:[ \t]+|$)(.*)$")
@@ -65,6 +60,7 @@ ROOT_PATH_NAME_EXCEPTIONS = {
     "AGENTS.md",
     "CATALOG.md",
     "CHANGELOG.md",
+    "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md",
     "LICENSE",
     "MAINTAINING.md",
@@ -72,7 +68,12 @@ ROOT_PATH_NAME_EXCEPTIONS = {
     "README.md",
     "SECURITY.md",
 }
-ROOT_TOOL_FILE_NAMES = {".editorconfig", ".gitattributes", ".gitignore"}
+ROOT_TOOL_FILE_NAMES = {
+    ".editorconfig",
+    ".gitattributes",
+    ".gitignore",
+    ".markdownlint-cli2.jsonc",
+}
 TOOL_OWNED_ROOT_DIRECTORIES = {".github", ".githooks", ".vscode"}
 PYTHON_OWNED_ROOT_DIRECTORIES = {"scripts", "tests"}
 
@@ -189,7 +190,11 @@ class RepositoryValidator:
         for path in repository_paths:
             file_name = path.name
             relative_parts = path.relative_to(self.root).parts
-            if "__pycache__" in relative_parts or file_name in JUNK_FILE_NAMES or path.suffix.lower() == ".pyc":
+            if (
+                "__pycache__" in relative_parts
+                or file_name in JUNK_FILE_NAMES
+                or path.suffix.lower() == ".pyc"
+            ):
                 self._add(path, "junk artifact file is not allowed")
                 continue
             if file_name == TEMPLATE_METADATA_NAME:
@@ -218,7 +223,16 @@ class RepositoryValidator:
     def _repository_files_for_validation(self) -> list[Path]:
         if (self.root / ".git").exists():
             result = subprocess.run(
-                ["git", "-C", str(self.root), "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+                [
+                    "git",
+                    "-C",
+                    str(self.root),
+                    "ls-files",
+                    "--cached",
+                    "--others",
+                    "--exclude-standard",
+                    "-z",
+                ],
                 check=False,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -231,7 +245,10 @@ class RepositoryValidator:
                         if relative_path
                     ]
                 except UnicodeDecodeError as error:
-                    self._add(self.root, f"Git returned a repository path that is not valid UTF-8 ({error})")
+                    self._add(
+                        self.root,
+                        f"Git returned a repository path that is not valid UTF-8 ({error})",
+                    )
                     return []
                 return sorted(self.root / Path(relative_path) for relative_path in relative_paths)
             self._add(self.root, "could not enumerate repository files with Git")
@@ -292,11 +309,7 @@ class RepositoryValidator:
             if len(parts) == 3 and not is_directory and name in EXPECTED_TEMPLATE_FILES:
                 return
 
-        if (
-            not is_directory
-            and parts[0] in PYTHON_OWNED_ROOT_DIRECTORIES
-            and name.endswith(".py")
-        ):
+        if not is_directory and parts[0] in PYTHON_OWNED_ROOT_DIRECTORIES and name.endswith(".py"):
             if not PYTHON_FILENAME_RE.fullmatch(name):
                 self._add(
                     self.root / relative_path,
@@ -380,9 +393,17 @@ class RepositoryValidator:
                 label = normalize_reference_label(definition_match.group(1))
                 destination = parse_link_destination(definition_match.group(2))
                 if not destination:
-                    self._add(path, f"malformed reference-style link definition: {definition_match.group(1)}", line_number)
+                    self._add(
+                        path,
+                        f"malformed reference-style link definition: {definition_match.group(1)}",
+                        line_number,
+                    )
                 elif label in reference_definitions:
-                    self._add(path, f"duplicate reference-style link definition: {definition_match.group(1)}", line_number)
+                    self._add(
+                        path,
+                        f"duplicate reference-style link definition: {definition_match.group(1)}",
+                        line_number,
+                    )
                 else:
                     reference_definitions[label] = MarkdownLink(destination, line_number)
                 continue
@@ -402,7 +423,9 @@ class RepositoryValidator:
         for label, line_number in reference_uses:
             definition = reference_definitions.get(label)
             if definition is None:
-                self._add(path, f"reference-style link definition does not exist: {label}", line_number)
+                self._add(
+                    path, f"reference-style link definition does not exist: {label}", line_number
+                )
                 continue
             links.append(definition)
 
@@ -430,7 +453,10 @@ class RepositoryValidator:
             template_id = child.name
             self.template_directories[template_id] = child
             if not TEMPLATE_ID_RE.fullmatch(template_id):
-                self._add(child, "template ID must use lowercase ASCII alphanumerics separated by single hyphens")
+                self._add(
+                    child,
+                    "template ID must use lowercase ASCII alphanumerics separated by single hyphens",
+                )
 
             actual_entries = {entry.name for entry in child.iterdir()}
             for missing_name in sorted(EXPECTED_TEMPLATE_FILES - actual_entries):
@@ -565,8 +591,12 @@ class RepositoryValidator:
         if not section_match:
             self._add(catalog_path, "catalog is missing the Templates section")
             return
-        next_section = re.search(r"^## [^#].*$", structural_text[section_match.end() :], re.MULTILINE)
-        section_end = section_match.end() + next_section.start() if next_section else len(catalog_text)
+        next_section = re.search(
+            r"^## [^#].*$", structural_text[section_match.end() :], re.MULTILINE
+        )
+        section_end = (
+            section_match.end() + next_section.start() if next_section else len(catalog_text)
+        )
         templates_section = structural_text[section_match.end() : section_end]
         entry_matches = list(CATALOG_ENTRY_RE.finditer(templates_section))
         entry_ids = [entry.group(1) for entry in entry_matches]
@@ -574,23 +604,33 @@ class RepositoryValidator:
 
         for template_id, count in sorted(entry_counts.items()):
             if count != 1:
-                self._add(catalog_path, f"template {template_id!r} appears {count} times in the catalog")
+                self._add(
+                    catalog_path, f"template {template_id!r} appears {count} times in the catalog"
+                )
 
         directory_ids = set(self.template_directories)
         catalog_ids = set(entry_ids)
         for template_id in sorted(directory_ids - catalog_ids):
-            self._add(catalog_path, f"template directory {template_id!r} is missing from the catalog")
+            self._add(
+                catalog_path, f"template directory {template_id!r} is missing from the catalog"
+            )
         for template_id in sorted(catalog_ids - directory_ids):
             self._add(catalog_path, f"catalog entry {template_id!r} has no template directory")
 
         for index, entry in enumerate(entry_matches):
             template_id = entry.group(1)
             start = entry.end()
-            end = entry_matches[index + 1].start() if index + 1 < len(entry_matches) else len(templates_section)
+            end = (
+                entry_matches[index + 1].start()
+                if index + 1 < len(entry_matches)
+                else len(templates_section)
+            )
             entry_body = templates_section[start:end]
             title_match = re.search(r"^\*\*([^\n]+)\*\*[ \t]*$", entry_body, re.MULTILINE)
             if not title_match:
-                self._add(catalog_path, f"catalog entry {template_id!r} is missing its human-facing title")
+                self._add(
+                    catalog_path, f"catalog entry {template_id!r} is missing its human-facing title"
+                )
                 continue
             self.catalog_titles[template_id] = title_match.group(1).strip()
 
@@ -612,11 +652,16 @@ class RepositoryValidator:
                 if title_match:
                     readme_title = title_match.group(1).strip()
                 else:
-                    self._add(readme_path, "cannot find the human-facing title using the repository convention")
+                    self._add(
+                        readme_path,
+                        "cannot find the human-facing title using the repository convention",
+                    )
 
             standard_title: str | None = None
             if standard_document is not None:
-                h1_headings = [heading for heading in standard_document.headings if heading.level == 1]
+                h1_headings = [
+                    heading for heading in standard_document.headings if heading.level == 1
+                ]
                 if len(h1_headings) == 1:
                     standard_title = h1_headings[0].text
 
@@ -629,7 +674,9 @@ class RepositoryValidator:
             distinct_titles = {title for title in available_titles.values() if title is not None}
             if len(distinct_titles) > 1:
                 details = ", ".join(
-                    f"{source}={title!r}" for source, title in available_titles.items() if title is not None
+                    f"{source}={title!r}"
+                    for source, title in available_titles.items()
+                    if title is not None
                 )
                 self._add(directory, f"human-facing template titles do not agree ({details})")
 
@@ -653,14 +700,18 @@ class RepositoryValidator:
                     target_relative = source_relative
 
                 if target_relative == ".." or target_relative.startswith("../"):
-                    self._add(source_path, f"local link escapes the repository: {destination}", link.line)
+                    self._add(
+                        source_path, f"local link escapes the repository: {destination}", link.line
+                    )
                     continue
 
                 if (
                     target_relative not in self.repository_files
                     and target_relative not in self.repository_directories
                 ):
-                    self._add(source_path, f"local link target does not exist: {destination}", link.line)
+                    self._add(
+                        source_path, f"local link target does not exist: {destination}", link.line
+                    )
                     continue
 
                 target_path = self.root / Path(target_relative)
@@ -668,10 +719,18 @@ class RepositoryValidator:
                 if not separator:
                     continue
                 if target_relative in self.repository_directories:
-                    self._add(source_path, f"cannot validate an anchor on a directory link: {destination}", link.line)
+                    self._add(
+                        source_path,
+                        f"cannot validate an anchor on a directory link: {destination}",
+                        link.line,
+                    )
                     continue
                 if target_path.suffix.lower() != ".md":
-                    self._add(source_path, f"anchor target is not a Markdown document: {destination}", link.line)
+                    self._add(
+                        source_path,
+                        f"anchor target is not a Markdown document: {destination}",
+                        link.line,
+                    )
                     continue
 
                 target_document = self.markdown_documents.get(target_path)
@@ -680,7 +739,9 @@ class RepositoryValidator:
                     continue
                 anchor = unquote(fragment)
                 if not anchor or anchor not in target_document.anchors:
-                    self._add(source_path, f"Markdown anchor does not exist: {destination}", link.line)
+                    self._add(
+                        source_path, f"Markdown anchor does not exist: {destination}", link.line
+                    )
 
     def _validate_bcp14_near_misses(self, path: Path, content: str) -> None:
         markdown_lines, _ = scan_markdown_lines(content)
@@ -700,7 +761,9 @@ class RepositoryValidator:
                 candidate = f"{tokens[index].group()} {tokens[index + 1].group()}"
                 if candidate in BCP14_PHRASE_FORMS:
                     continue
-                if any(is_phrase_near_miss(candidate, canonical) for canonical in BCP14_PHRASE_FORMS):
+                if any(
+                    is_phrase_near_miss(candidate, canonical) for canonical in BCP14_PHRASE_FORMS
+                ):
                     self._add(
                         path,
                         f"malformed BCP 14 keyword near-miss {candidate!r}; spelling only was checked",
@@ -714,7 +777,9 @@ class RepositoryValidator:
                 candidate = token_match.group()
                 if candidate in BCP14_SINGLE_FORMS:
                     continue
-                if any(is_single_near_miss(candidate, canonical) for canonical in BCP14_SINGLE_FORMS):
+                if any(
+                    is_single_near_miss(candidate, canonical) for canonical in BCP14_SINGLE_FORMS
+                ):
                     self._add(
                         path,
                         f"malformed BCP 14 keyword near-miss {candidate!r}; spelling only was checked",
@@ -857,7 +922,16 @@ def visible_repository_files(root: Path) -> list[Path]:
     root = root.resolve()
     if (root / ".git").exists():
         result = subprocess.run(
-            ["git", "-C", str(root), "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+            [
+                "git",
+                "-C",
+                str(root),
+                "ls-files",
+                "--cached",
+                "--others",
+                "--exclude-standard",
+                "-z",
+            ],
             check=False,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -872,7 +946,9 @@ def visible_repository_files(root: Path) -> list[Path]:
                 if relative_path
             ]
         except UnicodeDecodeError as error:
-            raise RuntimeError(f"Git returned a repository path that is not valid UTF-8 ({error})") from error
+            raise RuntimeError(
+                f"Git returned a repository path that is not valid UTF-8 ({error})"
+            ) from error
         return sorted(root / Path(relative_path) for relative_path in relative_paths)
 
     files: list[Path] = []
@@ -997,7 +1073,9 @@ def damerau_levenshtein(left: str, right: str) -> int:
                 and left[row - 1] == right[column - 2]
                 and left[row - 2] == right[column - 1]
             ):
-                distances[row][column] = min(distances[row][column], distances[row - 2][column - 2] + 1)
+                distances[row][column] = min(
+                    distances[row][column], distances[row - 2][column - 2] + 1
+                )
     return distances[-1][-1]
 
 

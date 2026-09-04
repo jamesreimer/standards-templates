@@ -4,10 +4,10 @@
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
 import stat
 import subprocess
 import sys
+from pathlib import Path
 
 
 def configure_hooks(repository_root: Path, *, force: bool = False) -> None:

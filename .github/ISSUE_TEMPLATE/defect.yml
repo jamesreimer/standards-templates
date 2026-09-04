@@ -1,0 +1,28 @@
+name: Repository defect or correction
+description: Report a concrete problem with repository content or tooling.
+title: ""
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong?
+      description: Describe the defect or correction needed.
+    validations:
+      required: true
+  - type: input
+    id: area
+    attributes:
+      label: Affected area
+      description: Name the file, template, tool, or repository area when known.
+  - type: textarea
+    id: impact
+    attributes:
+      label: Why does it matter?
+      description: Describe the consequence or confusion caused by the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Evidence or context
+      description: Add examples, links, or reproduction details when useful.
