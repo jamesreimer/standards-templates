@@ -8,13 +8,7 @@ This document describes how this repository is maintained. It records the mainta
 
 Maintain the smallest coherent library that can meet its current responsibilities without speculative growth.
 
-Apply this decision model when considering additions to templates, repository structure, metadata, validation, automation, taxonomy, or related machinery:
-
-1. **Build now** only when the need is concrete or imminent, confidence is high, the change is proportionate, and it naturally belongs to the repository's current responsibility.
-2. **Name a trigger** when a real need depends on a specific future condition. Record the trigger instead of implementing the addition prematurely; a named trigger is not a roadmap commitment.
-3. **Leave speculative needs unbuilt** when they lack a concrete forcing function.
-
-Prior success, repetition, or convenience does not automatically justify expansion. A concrete failure may still demonstrate that an addition is needed. This model governs whether to add repository material; it does not determine the authority, scope, or normative content of a standard or policy.
+Apply the repository-wide [addition-decision model](README.md#design-principle) when considering templates, repository structure, metadata, validation, automation, taxonomy, or related machinery.
 
 Reusable documents may acknowledge domain-specific implementations or sibling standards, but do not present one domain's answer as the universal answer.
 

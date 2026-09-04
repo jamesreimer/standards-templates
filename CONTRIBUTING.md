@@ -4,13 +4,7 @@ Keep contributions bounded to a concrete or imminent need that is high-confidenc
 
 ## Addition decisions
 
-For additions to templates, repository structure, metadata, validation, automation, taxonomy, or related machinery:
-
-- **Build now** only when the need is concrete or imminent, confidence is high, the change is proportionate, and it naturally belongs to the repository's current responsibility.
-- **Name a trigger** when a real need depends on a specific future condition. Record the trigger instead of implementing the addition prematurely; a named trigger is not a roadmap commitment.
-- **Leave speculative needs unbuilt** when they lack a concrete forcing function.
-
-Prior success, repetition, or convenience does not automatically justify expansion. A concrete failure may still demonstrate that an addition is needed. This model governs whether to make a repository addition; it does not determine the authority or normative content of a standard or policy.
+Apply the repository-wide [addition-decision model](README.md#design-principle) before adding templates, repository structure, metadata, validation, automation, taxonomy, or related machinery.
 
 ## New template
 
