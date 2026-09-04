@@ -26,6 +26,11 @@ from urllib.parse import unquote
 
 
 TEMPLATE_ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+ORDINARY_PATH_COMPONENT_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+ORDINARY_FILENAME_RE = re.compile(
+    r"^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)*$"
+)
+PYTHON_FILENAME_RE = re.compile(r"^(?:[a-z][a-z0-9]*(?:_[a-z0-9]+)*|__init__)\.py$")
 CATALOG_ENTRY_RE = re.compile(r"^### `([^`]+)`[ \t]*$", re.MULTILINE)
 HEADING_RE = re.compile(r"^(#{1,6})(?:[ \t]+|$)(.*)$")
 FENCE_RE = re.compile(r"^[ \t]{0,3}(`{3,}|~{3,})(.*)$")
@@ -41,6 +46,21 @@ TEXT_FILE_NAMES = {".editorconfig", ".gitattributes", ".gitignore", "LICENSE"}
 TEXT_FILE_SUFFIXES = {".cfg", ".ini", ".json", ".md", ".py", ".toml", ".txt", ".yaml", ".yml"}
 STRUCTURE_SNAPSHOT_PATH = "repository-structure.txt"
 STRUCTURE_UPDATE_COMMAND = "python3 scripts/update_repository_structure.py"
+ROOT_PATH_NAME_EXCEPTIONS = {
+    "ADOPTION.md",
+    "AGENTS.md",
+    "CATALOG.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "MAINTAINING.md",
+    "NAMING.md",
+    "README.md",
+    "SECURITY.md",
+}
+ROOT_TOOL_FILE_NAMES = {".editorconfig", ".gitattributes", ".gitignore"}
+TOOL_OWNED_ROOT_DIRECTORIES = {".github", ".githooks", ".vscode"}
+PYTHON_OWNED_ROOT_DIRECTORIES = {"scripts", "tests"}
 
 BCP14_SINGLE_FORMS = (
     "MUST",
@@ -114,6 +134,7 @@ class RepositoryValidator:
 
     def validate(self) -> list[Finding]:
         self._scan_repository_files()
+        self._validate_repository_path_names()
         self._validate_repository_structure_snapshot()
         self._validate_markdown_documents()
         self._validate_template_structure()
@@ -228,6 +249,50 @@ class RepositoryValidator:
     @staticmethod
     def _is_text_file(path: Path) -> bool:
         return path.name in TEXT_FILE_NAMES or path.suffix.lower() in TEXT_FILE_SUFFIXES
+
+    def _validate_repository_path_names(self) -> None:
+        for relative_path in sorted(self.repository_directories - {"."}):
+            self._validate_repository_path_name(relative_path, is_directory=True)
+        for relative_path in sorted(self.repository_files):
+            self._validate_repository_path_name(relative_path, is_directory=False)
+
+    def _validate_repository_path_name(self, relative_path: str, *, is_directory: bool) -> None:
+        parts = Path(relative_path).parts
+        if not parts:
+            return
+
+        name = parts[-1]
+        if parts[0] in TOOL_OWNED_ROOT_DIRECTORIES:
+            return
+        if len(parts) == 1 and name in ROOT_TOOL_FILE_NAMES | ROOT_PATH_NAME_EXCEPTIONS:
+            return
+
+        if parts[0] == "templates":
+            if len(parts) == 2 and is_directory:
+                return
+            if len(parts) == 3 and not is_directory and name in EXPECTED_TEMPLATE_FILES:
+                return
+
+        if (
+            not is_directory
+            and parts[0] in PYTHON_OWNED_ROOT_DIRECTORIES
+            and name.endswith(".py")
+        ):
+            if not PYTHON_FILENAME_RE.fullmatch(name):
+                self._add(
+                    self.root / relative_path,
+                    f"path component {name!r} must use lowercase ASCII snake_case "
+                    "with a lowercase .py extension in this Python-owned directory",
+                )
+            return
+
+        expected_pattern = ORDINARY_PATH_COMPONENT_RE if is_directory else ORDINARY_FILENAME_RE
+        if not expected_pattern.fullmatch(name):
+            self._add(
+                self.root / relative_path,
+                f"path component {name!r} must use lowercase ASCII alphanumeric words "
+                "separated by single hyphens, with a lowercase extension when applicable",
+            )
 
     def _validate_markdown_documents(self) -> None:
         for path, content in sorted(self.text_files.items()):
