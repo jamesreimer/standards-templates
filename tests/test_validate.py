@@ -109,6 +109,87 @@ class RepositoryValidatorTests(unittest.TestCase):
     def test_known_good_repository_passes(self) -> None:
         self.assertValid()
 
+    def test_repository_path_naming_accepts_owned_and_ordinary_conventions(self) -> None:
+        for path in (
+            "docs/example-guide.md",
+            "assets/example.txt",
+            "web-standards-assessment-guidance.md",
+            ".github/workflows/validate.yml",
+            ".github/pull_request_template.md",
+            ".vscode/settings.json",
+            ".githooks/pre-commit",
+            "scripts/example_tool.py",
+            "tests/test_example.py",
+        ):
+            self._write(path, "# Example\n" if path.endswith(".md") else "example\n")
+        for path in (
+            "ADOPTION.md",
+            "AGENTS.md",
+            "CHANGELOG.md",
+            "CONTRIBUTING.md",
+            "MAINTAINING.md",
+            "NAMING.md",
+            "SECURITY.md",
+        ):
+            self._write(path, f"# {path}\n")
+        self._write("LICENSE", "License\n")
+        self._refresh_structure_snapshot()
+        self.assertValid()
+
+    def test_repository_path_naming_rejects_ordinary_invalid_names(self) -> None:
+        invalid_paths = (
+            "WEB_GUIDANCE.md",
+            "web_guidance.md",
+            "Project_Docs/example.md",
+            "docs/ordinary_file.txt",
+            "docs/example guide.md",
+            "docs/example--guide.md",
+            "docs/-example.md",
+            "docs/example-.md",
+            "docs/example.MD",
+        )
+        for path in invalid_paths:
+            with self.subTest(path=path):
+                self._write(path, "# Invalid\n" if path.endswith(".md") else "invalid\n")
+                self._refresh_structure_snapshot()
+                messages = self._messages()
+                expected_path = path.split("/")[0] if path.startswith("Project_Docs/") else path
+                self.assertIn(expected_path, messages)
+                self.assertIn("lowercase ASCII alphanumeric words separated by single hyphens", messages)
+                target = self.root / path
+                target.unlink()
+                if path.startswith("Project_Docs/"):
+                    target.parent.rmdir()
+
+    def test_root_exception_does_not_allow_arbitrary_uppercase_markdown(self) -> None:
+        self._write("UNLISTED_GUIDANCE.md", "# Unlisted Guidance\n")
+        self._refresh_structure_snapshot()
+        self.assertIn("UNLISTED_GUIDANCE.md: path component", self._messages())
+
+    def test_root_exception_does_not_apply_below_root(self) -> None:
+        self._write("docs/README.md", "# Nested Readme\n")
+        self._refresh_structure_snapshot()
+        self.assertIn("docs/README.md: path component", self._messages())
+
+    def test_arbitrary_dot_directory_is_not_tool_owned(self) -> None:
+        self._write(".custom/settings.json", "{}\n")
+        self._refresh_structure_snapshot()
+        self.assertIn(".custom: path component", self._messages())
+
+    def test_python_filename_must_use_python_snake_case(self) -> None:
+        self._write("scripts/Example_Tool.py", "example = True\n")
+        self._refresh_structure_snapshot()
+        messages = self._messages()
+        self.assertIn("scripts/Example_Tool.py", messages)
+        self.assertIn("lowercase ASCII snake_case", messages)
+
+    def test_repository_path_naming_scans_existing_tracked_paths(self) -> None:
+        self._write("docs/legacy_Name.md", "# Legacy Name\n")
+        self._refresh_structure_snapshot()
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        subprocess.run(["git", "-C", str(self.root), "add", "."], check=True)
+        self.assertIn("docs/legacy_Name.md: path component", self._messages())
+
     def test_template_missing_readme_fails(self) -> None:
         (self.root / "templates/example-template/README.md").unlink()
         self.assertIn("required template file is missing", self._messages())
@@ -169,9 +250,9 @@ class RepositoryValidatorTests(unittest.TestCase):
         self.assertIn("local link target does not exist", self._messages())
 
     def test_balanced_parenthesis_link_destination_passes(self) -> None:
-        self._write("docs/file_(one).md", "# Parenthesized File\n")
+        self._write(".github/file_(one).md", "# Parenthesized File\n")
         with (self.root / "README.md").open("a", encoding="utf-8") as handle:
-            handle.write("\n[Example](docs/file_(one).md)\n")
+            handle.write("\n[Example](.github/file_(one).md)\n")
         self._refresh_structure_snapshot()
         self.assertValid()
 
