@@ -47,6 +47,9 @@ templates/repository-naming/standard.md
 templates/responsive-web-layout/
 templates/responsive-web-layout/README.md
 templates/responsive-web-layout/standard.md
+templates/shared-asset-provenance/
+templates/shared-asset-provenance/README.md
+templates/shared-asset-provenance/standard.md
 templates/standards-adoption-model/
 templates/standards-adoption-model/README.md
 templates/standards-adoption-model/standard.md
