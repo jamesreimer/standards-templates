@@ -6,7 +6,7 @@ This document describes how this repository is maintained. It records the mainta
 
 ## Maintenance principles
 
-Maintain the smallest coherent library that can meet its current responsibilities without speculative growth.
+Maintain a coherent library whose growth is justified by demonstrated need rather than constrained by size or driven by speculative expansion.
 
 Apply the repository-wide [addition-decision model](README.md#design-principle) when considering templates, repository structure, metadata, validation, automation, taxonomy, or related machinery.
 
