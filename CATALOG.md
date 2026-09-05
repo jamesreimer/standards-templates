@@ -82,6 +82,22 @@ Important boundaries:
 - does not govern repository identities;
 - yields to stronger legitimate technical or external naming requirements.
 
+### Shared Assets and Provenance
+
+#### `shared-asset-provenance`
+
+**Shared Asset Provenance Standard**
+
+Governs shared-asset relationship meaning, source provenance, object-appropriate immutable consumed identity, content correspondence, and maintenance distinctions across copied, adapted, generated, installed, bootstrap-owned, contractual, and impact-only relationships.
+
+Important boundaries:
+
+- does not determine organizational standards adoption or continuing upstream authority;
+- does not determine repository topology;
+- does not define publication or deployment lifecycle;
+- does not grant live operational execution authority;
+- does not require one manifest schema, VCS, package manager, provenance platform, or automation system.
+
 ### Web Standards Suite
 
 This catalog describes the suite relationship already established by the templates; placement here does not create authority or dependency.
@@ -213,6 +229,10 @@ Important boundaries:
 - `filesystem-naming` governs file, directory, and path-component naming.
 
 These responsibilities are distinct. Their presentation order is a discovery aid, not a mandatory sequence or dependency chain.
+
+**Shared Assets and Provenance**
+
+`shared-asset-provenance` governs relationship meaning, source provenance, immutable consumed identity, and verification of consumed content. Provenance does not itself preserve upstream organizational authority. Repository placement and topology remain owned by `project-repository-model`; organizational standards adoption remains owned by `standards-adoption-model`. Catalog grouping itself creates no authority or adoption dependency.
 
 **Web Standards Suite**
 
