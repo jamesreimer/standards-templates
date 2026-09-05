@@ -40,7 +40,7 @@ LOCAL_REQUIREMENT_REFERENCE_RE = re.compile(r"^([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)-(
 ORDINARY_PATH_COMPONENT_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 ORDINARY_FILENAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)*$")
 PYTHON_FILENAME_RE = re.compile(r"^(?:[a-z][a-z0-9]*(?:_[a-z0-9]+)*|__init__)\.py$")
-CATALOG_ENTRY_RE = re.compile(r"^### `([^`]+)`[ \t]*$", re.MULTILINE)
+CATALOG_ENTRY_HEADING_RE = re.compile(r"^`([^`]+)`$")
 HEADING_RE = re.compile(r"^(#{1,6})(?:[ \t]+|$)(.*)$")
 FENCE_RE = re.compile(r"^[ \t]{0,3}(`{3,}|~{3,})(.*)$")
 TOKEN_RE = re.compile(r"(?<![A-Z0-9_])[A-Z0-9]+(?![A-Z0-9_])")
@@ -557,24 +557,67 @@ class RepositoryValidator:
     def _validate_catalog_membership(self) -> None:
         catalog_path = self.root / "CATALOG.md"
         catalog_text = self.text_files.get(catalog_path)
+        catalog_document = self.markdown_documents.get(catalog_path)
         if catalog_text is None:
             self._add(catalog_path, "catalog is missing or unreadable")
             return
 
+        if catalog_document is None:
+            self._add(catalog_path, "catalog Markdown structure is unavailable")
+            return
+
         structural_text = markdown_without_fenced_code(catalog_text)
-        section_match = re.search(r"^## Templates[ \t]*$", structural_text, re.MULTILINE)
-        if not section_match:
+        templates_headings = [
+            heading
+            for heading in catalog_document.headings
+            if heading.level == 2 and heading.text == "Templates"
+        ]
+        if not templates_headings:
             self._add(catalog_path, "catalog is missing the Templates section")
             return
-        next_section = re.search(
-            r"^## [^#].*$", structural_text[section_match.end() :], re.MULTILINE
-        )
-        section_end = (
-            section_match.end() + next_section.start() if next_section else len(catalog_text)
-        )
-        templates_section = structural_text[section_match.end() : section_end]
-        entry_matches = list(CATALOG_ENTRY_RE.finditer(templates_section))
-        entry_ids = [entry.group(1) for entry in entry_matches]
+        if len(templates_headings) != 1:
+            self._add(
+                catalog_path,
+                f"catalog must contain exactly one Templates section; found {len(templates_headings)}",
+            )
+            return
+
+        templates_heading = templates_headings[0]
+        templates_index = catalog_document.headings.index(templates_heading)
+        section_headings: list[Heading] = []
+        next_h2: Heading | None = None
+        for heading in catalog_document.headings[templates_index + 1 :]:
+            if heading.level == 2:
+                next_h2 = heading
+                break
+            section_headings.append(heading)
+
+        entry_headings: list[tuple[Heading, str]] = []
+        current_h3: Heading | None = None
+        current_h4: Heading | None = None
+        for heading in section_headings:
+            if heading.level == 3:
+                current_h3 = (
+                    heading if CATALOG_ENTRY_HEADING_RE.fullmatch(heading.text) is None else None
+                )
+                current_h4 = None
+                continue
+            entry_match = CATALOG_ENTRY_HEADING_RE.fullmatch(heading.text)
+            if heading.level == 4:
+                current_h4 = heading
+                if current_h3 is not None and entry_match is not None:
+                    entry_headings.append((heading, entry_match.group(1)))
+                continue
+            if (
+                heading.level == 5
+                and current_h3 is not None
+                and current_h4 is not None
+                and CATALOG_ENTRY_HEADING_RE.fullmatch(current_h4.text) is None
+                and entry_match is not None
+            ):
+                entry_headings.append((heading, entry_match.group(1)))
+
+        entry_ids = [template_id for _, template_id in entry_headings]
         entry_counts = Counter(entry_ids)
 
         for template_id, count in sorted(entry_counts.items()):
@@ -592,15 +635,15 @@ class RepositoryValidator:
         for template_id in sorted(catalog_ids - directory_ids):
             self._add(catalog_path, f"catalog entry {template_id!r} has no template directory")
 
-        for index, entry in enumerate(entry_matches):
-            template_id = entry.group(1)
-            start = entry.end()
-            end = (
-                entry_matches[index + 1].start()
-                if index + 1 < len(entry_matches)
-                else len(templates_section)
+        structural_lines = structural_text.splitlines(keepends=True)
+        section_end_line = next_h2.line - 1 if next_h2 is not None else len(structural_lines)
+        for index, (entry_heading, template_id) in enumerate(entry_headings):
+            entry_end_line = (
+                entry_headings[index + 1][0].line - 1
+                if index + 1 < len(entry_headings)
+                else section_end_line
             )
-            entry_body = templates_section[start:end]
+            entry_body = "".join(structural_lines[entry_heading.line : entry_end_line])
             title_match = re.search(r"^\*\*([^\n]+)\*\*[ \t]*$", entry_body, re.MULTILINE)
             if not title_match:
                 self._add(

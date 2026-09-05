@@ -12,13 +12,13 @@ This file is a current-state catalog, not a roadmap. Planned, deferred, or merel
 
 ## Templates
 
-Repository validation machine-reads this single section and its level-three template-ID headings (for example, ``### `standards-authoring` ``). Preserve that structure when editing the catalog.
+Repository validation machine-reads this single section. Its subject and suite hierarchy structures discovery, and its backticked stable-ID headings identify template entries. Grouping does not itself create authority, adoption dependency, or shared lifecycle.
 
-**Standards Governance and Authoring**
+### Standards Governance and Authoring
 
 These related subjects are grouped for discovery; they do not form a suite or adoption bundle.
 
-### `standards-authoring`
+#### `standards-authoring`
 
 **Standards and Policy Authoring Standard**
 
@@ -30,7 +30,7 @@ Important boundaries:
 - does not determine who has authority to adopt a standard or policy;
 - does not define a complete controlled-document lifecycle or a separate approval workflow.
 
-### `standards-adoption-model`
+#### `standards-adoption-model`
 
 **Organizational Standards Adoption and Ownership Policy**
 
@@ -42,11 +42,11 @@ Important boundaries:
 - does not determine repository topology;
 - does not make upstream template changes automatically authoritative downstream.
 
-**Repository Architecture and Naming**
+### Repository Architecture and Naming
 
 These templates are independently adoptable. Their order below is a discovery or reading aid, not a required adoption sequence.
 
-### `project-repository-model`
+#### `project-repository-model`
 
 **Project Repository Responsibility Standard**
 
@@ -58,7 +58,7 @@ Important boundaries:
 - does not determine how a justified repository should be named;
 - defers organizational adoption and canonical governance of reusable standards material to `standards-adoption-model`.
 
-### `repository-naming`
+#### `repository-naming`
 
 **Repository Naming Standard**
 
@@ -70,7 +70,7 @@ Important boundaries:
 - does not determine whether an additional repository is justified;
 - does not govern file or directory naming.
 
-### `filesystem-naming`
+#### `filesystem-naming`
 
 **File and Directory Naming Standard**
 
@@ -82,13 +82,13 @@ Important boundaries:
 - does not govern repository identities;
 - yields to stronger legitimate technical or external naming requirements.
 
-**Web Standards Suite**
+### Web Standards Suite
 
 This catalog describes the suite relationship already established by the templates; placement here does not create authority or dependency.
 
-**Web Experience Baseline**
+#### Web Experience Baseline
 
-### `web-experience-baseline`
+##### `web-experience-baseline`
 
 **Web Experience Baseline Standard**
 
@@ -101,11 +101,11 @@ Important boundaries:
 - does not require Web Styling Architecture, define Enhanced conformance or domain profiles, or automatically incorporate later companion revisions;
 - does not establish organizational authority, release approval, legal certification, public claims, tooling, reporting infrastructure, or automatic downstream updates.
 
-**Required Core Companions (each also independently adoptable)**
+#### Required Core Companions
 
 The six core companions are required only for conformance to the unchanged Web Experience Baseline. Each core companion remains independently adoptable.
 
-### `web-accessibility`
+##### `web-accessibility`
 
 **Web Accessibility Standard**
 
@@ -118,7 +118,7 @@ Important boundaries:
 - distinguishes external WCAG conformance from local-standard conformance and incomplete assessment;
 - does not provide legal certification, complete inclusive-design coverage, organizational approval authority, or automatic downstream updates.
 
-### `web-content-semantics`
+##### `web-content-semantics`
 
 **Web Content and Semantics Standard**
 
@@ -131,7 +131,7 @@ Important boundaries:
 - distinguishes content-semantic results from accessibility, platform-specification, legal, editorial, and whole-suite conclusions;
 - does not prescribe brand voice, house style, a universal reading level, editorial workflows, or automatic downstream updates.
 
-### `web-design-foundations`
+##### `web-design-foundations`
 
 **Web Design Foundations Standard**
 
@@ -144,7 +144,7 @@ Important boundaries:
 - does not own accessibility, content semantics, responsive layout, interaction behavior, motion, CSS architecture, or design-system governance;
 - does not establish legal, brand-approval, or whole-suite conformance or automatic downstream updates.
 
-### `responsive-web-layout`
+##### `responsive-web-layout`
 
 **Responsive Web Layout Standard**
 
@@ -157,7 +157,7 @@ Important boundaries:
 - does not own accessibility, content semantics, visual-foundation calibration, interaction behavior, performance, or CSS architecture;
 - does not establish legal, compatibility, brand-approval, or whole-suite conformance or automatic downstream updates.
 
-### `web-interface-interaction`
+##### `web-interface-interaction`
 
 **Web Interface and Interaction Standard**
 
@@ -170,7 +170,7 @@ Important boundaries:
 - does not own accessibility, content semantics and wording, visual-foundation calibration, responsive layout, performance, security policy, transaction authority, or backend correctness;
 - does not establish legal, brand-approval, or whole-suite conformance or automatic downstream updates.
 
-### `web-quality-verification`
+##### `web-quality-verification`
 
 **Web Quality and Verification Standard**
 
@@ -183,11 +183,11 @@ Important boundaries:
 - does not prescribe universal performance thresholds, browser/device matrices, tooling, service workers, caching, fallbacks, or offline support;
 - does not own sibling substantive conformance, security, privacy, infrastructure operations, deployment, legal conclusions, or automatic downstream updates.
 
-**Optional Companion**
+#### Optional Companion
 
 Web Styling Architecture remains optional and independently adoptable.
 
-### `web-styling-architecture`
+##### `web-styling-architecture`
 
 **Web Styling Architecture Standard**
 
