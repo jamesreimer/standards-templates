@@ -60,7 +60,9 @@ class RepositoryValidatorTests(unittest.TestCase):
 
             ## Templates
 
-            ### `example-template`
+            ### Example Group
+
+            #### `example-template`
 
             **Example Standard**
             """,
@@ -121,7 +123,7 @@ class RepositoryValidatorTests(unittest.TestCase):
             f"# {title}\n\n## Requirements\n\n{textwrap.dedent(standard_body).strip()}\n",
         )
         with (self.root / "CATALOG.md").open("a", encoding="utf-8") as handle:
-            handle.write(f"\n### `{template_id}`\n\n**{title}**\n")
+            handle.write(f"\n#### `{template_id}`\n\n**{title}**\n")
         self._refresh_structure_snapshot()
 
     def _findings(self) -> list:
@@ -136,6 +138,10 @@ class RepositoryValidatorTests(unittest.TestCase):
 
     def test_known_good_repository_passes(self) -> None:
         self.assertValid()
+
+    def test_current_repository_catalog_passes(self) -> None:
+        findings = VALIDATE.validate_repository(REPOSITORY_ROOT)
+        self.assertEqual([], findings, "\n".join(str(finding) for finding in findings))
 
     def test_repository_path_naming_accepts_owned_and_ordinary_conventions(self) -> None:
         for path in (
@@ -693,17 +699,143 @@ class RepositoryValidatorTests(unittest.TestCase):
         self._write("CATALOG.md", "# Template Catalog\n\n## Templates\n")
         self.assertIn("is missing from the catalog", self._messages())
 
+    def test_direct_h4_catalog_entry_under_h3_group_passes(self) -> None:
+        self.assertValid()
+
+    def test_nested_h5_catalog_entry_under_h4_subgroup_passes(self) -> None:
+        self._write(
+            "CATALOG.md",
+            """
+            # Template Catalog
+
+            ## Templates
+
+            ### Example Suite
+
+            #### Required Companions
+
+            ##### `example-template`
+
+            **Example Standard**
+            """,
+        )
+        self.assertValid()
+
+    def test_duplicate_catalog_template_id_fails(self) -> None:
+        with (self.root / "CATALOG.md").open("a", encoding="utf-8") as handle:
+            handle.write("\n#### `example-template`\n\n**Example Standard**\n")
+        self.assertIn("appears 2 times in the catalog", self._messages())
+
+    def test_unknown_catalog_template_id_fails(self) -> None:
+        with (self.root / "CATALOG.md").open("a", encoding="utf-8") as handle:
+            handle.write("\n#### `missing-template`\n\n**Missing Standard**\n")
+        self.assertIn("has no template directory", self._messages())
+
+    def test_catalog_entry_outside_templates_section_does_not_count(self) -> None:
+        self._write(
+            "CATALOG.md",
+            """
+            # Template Catalog
+
+            ## Templates
+
+            ## Other Section
+
+            ### Example Group
+
+            #### `example-template`
+
+            **Example Standard**
+            """,
+        )
+        self.assertIn("is missing from the catalog", self._messages())
+
+    def test_catalog_parsing_stops_at_next_h2(self) -> None:
+        self._write(
+            "CATALOG.md",
+            """
+            # Template Catalog
+
+            ## Templates
+
+            ### Example Group
+
+            ## Relationship Summary
+
+            ### Example Group
+
+            #### `example-template`
+
+            **Example Standard**
+            """,
+        )
+        self.assertIn("is missing from the catalog", self._messages())
+
+    def test_h3_stable_id_heading_does_not_count(self) -> None:
+        self._write(
+            "CATALOG.md",
+            """
+            # Template Catalog
+
+            ## Templates
+
+            ### `example-template`
+
+            **Example Standard**
+            """,
+        )
+        self.assertIn("is missing from the catalog", self._messages())
+
+    def test_h4_entry_under_stable_id_h3_does_not_count(self) -> None:
+        self._write(
+            "CATALOG.md",
+            """
+            # Template Catalog
+
+            ## Templates
+
+            ### `invalid-group`
+
+            #### `example-template`
+
+            **Example Standard**
+            """,
+        )
+        self.assertIn("is missing from the catalog", self._messages())
+
+    def test_h5_stable_id_without_h4_subgroup_does_not_count(self) -> None:
+        self._write(
+            "CATALOG.md",
+            """
+            # Template Catalog
+
+            ## Templates
+
+            ### Example Group
+
+            ##### `example-template`
+
+            **Example Standard**
+            """,
+        )
+        self.assertIn("is missing from the catalog", self._messages())
+
+    def test_duplicate_templates_sections_fail(self) -> None:
+        with (self.root / "CATALOG.md").open("a", encoding="utf-8") as handle:
+            handle.write("\n## Templates\n")
+        self.assertIn("must contain exactly one Templates section; found 2", self._messages())
+
     def test_fenced_catalog_entry_does_not_count(self) -> None:
         self._write(
             "CATALOG.md",
-            "# Template Catalog\n\n## Templates\n\n```markdown\n### `example-template`\n\n**Example Standard**\n```\n",
+            "# Template Catalog\n\n## Templates\n\n### Example Group\n\n```markdown\n#### `example-template`\n\n**Example Standard**\n```\n",
         )
         self.assertIn("is missing from the catalog", self._messages())
 
     def test_fenced_catalog_title_does_not_count(self) -> None:
         self._write(
             "CATALOG.md",
-            "# Template Catalog\n\n## Templates\n\n### `example-template`\n\n```markdown\n**Example Standard**\n```\n",
+            "# Template Catalog\n\n## Templates\n\n### Example Group\n\n#### `example-template`\n\n```markdown\n**Example Standard**\n```\n",
         )
         self.assertIn("is missing its human-facing title", self._messages())
 
@@ -717,7 +849,7 @@ class RepositoryValidatorTests(unittest.TestCase):
 
     def test_catalog_entry_without_directory_fails(self) -> None:
         with (self.root / "CATALOG.md").open("a", encoding="utf-8") as handle:
-            handle.write("\n### `missing-template`\n\n**Missing Standard**\n")
+            handle.write("\n#### `missing-template`\n\n**Missing Standard**\n")
         self.assertIn("has no template directory", self._messages())
 
     def test_title_mismatch_fails(self) -> None:
