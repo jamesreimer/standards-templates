@@ -38,6 +38,9 @@ templates/
 templates/filesystem-naming/
 templates/filesystem-naming/README.md
 templates/filesystem-naming/standard.md
+templates/operational-execution-contract/
+templates/operational-execution-contract/README.md
+templates/operational-execution-contract/standard.md
 templates/project-repository-model/
 templates/project-repository-model/README.md
 templates/project-repository-model/standard.md

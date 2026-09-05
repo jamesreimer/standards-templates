@@ -98,6 +98,22 @@ Important boundaries:
 - does not grant live operational execution authority;
 - does not require one manifest schema, VCS, package manager, provenance platform, or automation system.
 
+### Operational Execution
+
+#### `operational-execution-contract`
+
+**Operational Execution Contract Standard**
+
+Defines explicit execution authority, scope, protected boundaries, validation, completion and stop conditions, and proportionate rollback or recovery expectations for consequential work, including delegated and automated execution.
+
+Important boundaries:
+
+- applies execution-contract overhead in proportion to operational consequence, without requiring a formal contract for every routine or low-consequence action;
+- distinguishes planning, implementation, publication, and live operational authority without prescribing one approval hierarchy or number of approval stages;
+- permits non-semantic mechanical corrections within authorized scope while requiring explicit authority for material scope expansion;
+- does not determine repository topology, organizational standards adoption, shared-asset provenance, or publication and deployment lifecycle states;
+- does not define general task management, incident-response procedure, or one work-management, deployment, or automation platform.
+
 ### Web Standards Suite
 
 This catalog describes the suite relationship already established by the templates; placement here does not create authority or dependency.
@@ -233,6 +249,10 @@ These responsibilities are distinct. Their presentation order is a discovery aid
 **Shared Assets and Provenance**
 
 `shared-asset-provenance` governs relationship meaning, source provenance, immutable consumed identity, and verification of consumed content. Provenance does not itself preserve upstream organizational authority. Repository placement and topology remain owned by `project-repository-model`; organizational standards adoption remains owned by `standards-adoption-model`. Catalog grouping itself creates no authority or adoption dependency.
+
+**Operational Execution**
+
+`operational-execution-contract` governs what consequential execution is authorized to affect, what remains protected, how completion is verified, and where execution must stop. Repository topology remains owned by `project-repository-model`, organizational standards adoption by `standards-adoption-model`, and source provenance and immutable consumed identity by `shared-asset-provenance`. Artifact identity, readiness, or publication does not itself authorize operational action. Catalog grouping creates no authority or adoption dependency.
 
 **Web Standards Suite**
 
