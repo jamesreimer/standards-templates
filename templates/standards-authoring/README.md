@@ -47,6 +47,16 @@ These informative questions help human reviewers and AI agents apply the [candid
 - Has finalization changed already approved content, requiring renewed review and the approval required by the existing process?
 - Are historical descriptions, quotations, and informative counterexamples clearly identified so that they are not mistaken for current-state claims?
 
+## Agent integration
+
+Route human or automated implementation work to the adopted local artifact when creating or revising normative standards or policies. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
+
+Adapt this optional snippet for `AGENTS.md` or an equivalent contributor/automation entry point. Replace `<local-standard-path>` with the adopted artifact's location. Neither `AGENTS.md` nor a particular agent product is required; this snippet is informative routing guidance, not independent authority.
+
+```text
+Before drafting or materially revising normative requirements, read and apply the organization's adopted Standards and Policy Authoring Standard at <local-standard-path>. Use it for authoring discipline; adoption authority remains with the organization's governing adoption process.
+```
+
 ## Likely organization-specific review points
 
 Before adoption, an organization should consider whether it needs to adapt:

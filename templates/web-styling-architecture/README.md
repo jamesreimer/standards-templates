@@ -37,6 +37,16 @@ In addition to the universal review, determine:
 11. Which companion standards own the visual, layout, interaction, accessibility, content, or quality consequences of those styles?
 12. Which existing architecture rules must be preserved rather than replaced by a new methodology?
 
+## Agent integration
+
+Route human or automated implementation work to the adopted local artifact when materially changing or evaluating style ownership, influence, overrides, containment, or styling change boundaries. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
+
+Adapt this optional snippet for `AGENTS.md` or an equivalent contributor/automation entry point. Replace `<local-standard-path>` with the adopted artifact's location. Neither `AGENTS.md` nor a particular agent product is required; this snippet is informative routing guidance, not independent authority.
+
+```text
+For material styling-architecture changes or evaluation, read and apply the organization's adopted Web Styling Architecture Standard at <local-standard-path>. Its results do not establish visual, layout, accessibility, interaction, content, or quality conformance. This independently adoptable optional companion is not required for Web Experience Baseline conformance.
+```
+
 ## Likely adaptation choices
 
 An adopter may need to define:

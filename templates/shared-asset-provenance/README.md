@@ -51,6 +51,16 @@ For this standard specifically, also determine:
 
 Do not replace an existing competent provenance or artifact-control system merely to conform to an example representation from this template.
 
+## Agent integration
+
+Route human or automated implementation work to the adopted local artifact when consuming, copying, adapting, generating, installing, propagating, publishing, or depending on shared or external governed material within a covered source/consumer relationship. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
+
+Adapt this optional snippet for `AGENTS.md` or an equivalent contributor/automation entry point. Replace `<local-standard-path>` with the adopted artifact's location. Neither `AGENTS.md` nor a particular agent product is required; this snippet is informative routing guidance, not independent authority.
+
+```text
+Read and apply the organization's adopted Shared Asset Provenance Standard at <local-standard-path> for covered shared-material work, including source identity, consumed state, correspondence, maintenance relationships, and required governed targets. Follow the applicable relationship rather than assuming universal synchronization; provenance evidence does not grant execution or adoption authority.
+```
+
 ## Likely organization-specific review points
 
 An adopting organization may need to adapt:
