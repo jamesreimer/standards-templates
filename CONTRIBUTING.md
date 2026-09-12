@@ -2,6 +2,22 @@
 
 Keep contributions bounded to a concrete or imminent need that is high-confidence, proportionate, and within the repository's current responsibility, or to a concrete defect. Use [MAINTAINING.md](MAINTAINING.md) for the maintainer review criteria, [NAMING.md](NAMING.md) for template identity and titles, and [CATALOG.md](CATALOG.md) to check current ownership and boundaries.
 
+## Branch names and pull request titles
+
+Use a conventional type prefix that describes the work for new contribution branches and pull request titles. Use the same type for the branch and its pull request:
+
+| Type | Work | Branch example | Pull request title example |
+| --- | --- | --- | --- |
+| `feat` | New or extended functionality or normative requirements | `feat/execution-path-rules` | `feat: extend execution-path rules` |
+| `fix` | Corrections to defects | `fix/broken-catalog-link` | `fix: correct broken catalog link` |
+| `docs` | Documentation and guidance changes | `docs/contribution-naming` | `docs: document contribution naming` |
+| `chore` | Repository maintenance or configuration | `chore/update-validation-config` | `chore: update validation configuration` |
+| `refactor` | Restructuring without changing behavior or normative meaning | `refactor/validator-helpers` | `refactor: simplify validator helpers` |
+
+Format branch names as `<type>/<short-kebab-case-description>` and pull request titles as `<type>: <concise description>`. Choose the type from the substance of the change; a normative requirement change is not merely documentation work because it is written in Markdown.
+
+Do not use actor or tool names such as `codex/` as branch prefixes. This convention applies to human and automated contributions alike.
+
 ## Addition decisions
 
 Apply the repository-wide [addition-decision model](README.md#design-principle) before adding templates, repository structure, metadata, validation, automation, taxonomy, or related machinery.
