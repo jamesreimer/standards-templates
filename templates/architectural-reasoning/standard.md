@@ -48,6 +48,8 @@ The authority relationships MAY be expressed in prose or existing review records
 
 The reasoning MUST identify the Architectural Unit and its responsibility before choosing which artifact or repository should change. Ownership MUST follow the system responsibility, rather than the location of the symptom or the tool that exposed it.
 
+When execution or analysis exposes a separate architectural, structural, validation, control, implementation, deployment, or similar defect with its own responsibility or consequence, the reasoning MUST model that defect as a separate Architectural Unit rather than silently absorb it into the original unit.
+
 When determining whether work refines an existing system or establishes a new one, the reasoning MUST compare the relevant:
 
 - responsibility;
