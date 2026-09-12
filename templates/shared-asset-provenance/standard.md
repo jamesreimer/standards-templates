@@ -142,6 +142,16 @@ Where ownership or maintenance responsibility differs from source provenance, th
 
 The existence of provenance does not require continuing upstream authority.
 
+### 4.1 Source-Managed Propagation
+
+When a declared relationship retains source control of a Shared Asset's content or maintenance, a change to that governed material MUST be established at the source responsible for that scope before downstream material is represented as the corresponding source-managed update. A downstream edit or an intermediary's distribution activity MUST NOT silently redefine that source or reverse the declared maintenance relationship.
+
+Where material passes through an intermediary, the relationship MUST distinguish the source responsible for the governed material from an intermediary that only copies, packages, or delivers it. An intermediary MAY legitimately own a distinct generated or published object; that role does not automatically transfer authority over its inputs.
+
+Propagation MUST preserve the declared relationship semantics and the correspondence required for the consumed state. Consumers MAY retain an earlier identified state when the relationship and applicable requirements permit it; a newer upstream state does not itself require simultaneous updates.
+
+These rules do not impose continuing source control on Adapted Copies or Bootstrap-Owned material whose maintenance has legitimately transferred. They do not prescribe repository hierarchy, delivery order among consumers, or one synchronization mechanism.
+
 ## 5. Authoritative Consumption
 
 Authoritative Consumption MUST bind the governed input to:
@@ -300,6 +310,18 @@ Where Authoritative Consumption depends on an exact published contract or artifa
 
 Repository revision identity is unnecessary when the governed published object already exposes an equivalent immutable identity.
 
+### 15.1 Required Shared Targets
+
+When the declared use of a Shared Asset requires another governed shared asset, contract, schema, published artifact, or comparable target, the reference and required target MUST be considered together in planning and verifying that relationship. Merely carrying the reference does not establish a complete usable dependency.
+
+Before a propagated or consumed asset is represented as complete for that declared use, verification MUST establish that its required targets are available and resolvable in the intended consumer context and correspond to the target identities required by the relationship. Where those targets participate in Authoritative Consumption, the Source Identity, Immutable Consumed Identity, and content-correspondence requirements of Sections 5–8 apply to them as well.
+
+Required targets MAY be provided in the same bundle or resolved separately through an appropriate source. The relationship does not require copying a target that is legitimately consumed as a contract or separately supplied artifact. When a target itself requires governed shared material for the declared use, verification MUST include that dependency to the extent the governed result relies on it.
+
+If a required target is absent, unresolved, or inconsistent with its required identity, the affected relationship MUST remain incomplete and MUST NOT support an authoritative conclusion that depends on that target. A planned later delivery or successful verification of the referring asset alone does not satisfy this condition.
+
+This section governs shared-target relationship integrity. It does not define ordinary same-repository link completeness, a universal dependency inventory, or publication and deployment stages. It does not require every informative link or optional dependency to become a required target, and it does not prohibit distributing explicitly incomplete working material that is not represented as ready for the affected use.
+
 ## 16. Impact-Only Relationships
 
 A relationship MAY be recorded solely to identify:
@@ -364,6 +386,8 @@ It MUST NOT:
 
 Automation performing Authoritative Consumption MUST fail closed when it cannot verify a required Source Identity, Immutable Consumed Identity, or content correspondence.
 
+This includes the required shared targets on which that consumption depends under Section 15.1.
+
 Failing closed does not require destructive rollback. It requires withholding the governed success, approval, synchronization, generation, execution, or other authoritative conclusion that depended on the unverified input.
 
 ## 19. Exceptions
@@ -422,6 +446,8 @@ It does not determine repository topology. Repository separation may create rela
 It does not define publication or deployment lifecycle. Published artifacts may participate in governed relationships without making publication state part of this standard.
 
 It does not grant authority for live operational execution. An execution process may consume provenance evidence without deriving execution authority from that evidence.
+
+[`architectural-reasoning`](../architectural-reasoning/standard.md) determines the required capability or responsibility and the consequences of dependency changes. This standard verifies the shared-source relationship and target evidence supporting the declared use. [`operational-execution-contract`](../operational-execution-contract/standard.md) governs authority to execute consequential changes. These references clarify ownership without creating adoption dependencies.
 
 ## 22. Anti-Patterns
 

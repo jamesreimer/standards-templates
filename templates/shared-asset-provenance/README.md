@@ -44,6 +44,9 @@ For this standard specifically, also determine:
 - where ownership intentionally transfers to the consumer;
 - whether any current automation assumes that all copies or dependencies follow the same update model;
 - whether local working-state changes can silently alter material represented as immutable authoritative input;
+- whether distribution intermediaries are being mistaken for the source responsible for the governed content, or have a distinct legitimate object ownership;
+- whether required shared targets resolve in each intended consumer context, and whether existing dependency or artifact evidence verifies the targets needed for the declared use;
+- whether staged updates or retained earlier states preserve the declared maintenance relationship and required target integrity;
 - whether adoption would duplicate or conflict with existing source-management, software-supply-chain, package, release, artifact, or governance controls.
 
 Do not replace an existing competent provenance or artifact-control system merely to conform to an example representation from this template.
@@ -64,6 +67,7 @@ An adopting organization may need to adapt:
 - what evidence must be retained and for how long;
 - where relationship records live;
 - which automation may verify or synchronize relationships;
+- how required shared targets are resolved and verified, including separately supplied contracts or artifacts;
 - what equivalent controls are acceptable when the default verification mechanism does not fit.
 
 These are adaptation choices, not requirements to create a new manifest schema or tooling platform.
@@ -79,6 +83,8 @@ This template governs:
 - source-versus-local authority distinction;
 - Immutable Consumed Identity;
 - correspondence between declared identity and content actually consumed;
+- source-managed propagation through intermediaries without silently transferring source responsibility;
+- required shared-target resolution and identity for the declared consumer use;
 - maintenance distinctions between exact, adapted, generated, installed, bootstrap-owned, contractual, and impact-only relationships.
 
 It does not determine:
@@ -91,6 +97,10 @@ It does not determine:
 - exact package-manager or version-control behavior;
 - one required Relationship Record;
 - one required provenance or attestation system.
+
+Required shared-target integrity does not create general same-repository link rules or publication-stage requirements. The standard permits staged propagation and separately resolved targets while withholding completeness or authoritative-use claims that depend on unresolved targets.
+
+For architectural dependency purpose and impact, see [`architectural-reasoning`](../architectural-reasoning/). For authority to perform consequential changes, see [`operational-execution-contract`](../operational-execution-contract/). These references do not require adopting those templates.
 
 For repository-responsibility decisions, see [`project-repository-model`](../project-repository-model/).
 
