@@ -112,7 +112,9 @@ Important boundaries:
 - does not determine repository topology;
 - does not define publication or deployment lifecycle;
 - does not grant live operational execution authority;
-- does not require one manifest schema, VCS, package manager, provenance platform, or automation system.
+- does not require one manifest schema, VCS, package manager, provenance platform, or automation system;
+- preserves source-managed relationships through distribution intermediaries and verifies required shared targets for the declared consumer use;
+- does not impose ordinary same-repository link completeness, simultaneous consumer updates, or architectural dependency-design responsibility.
 
 ### Operational Execution
 
