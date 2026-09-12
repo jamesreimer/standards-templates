@@ -171,6 +171,8 @@ If execution reveals that a Material Scope Expansion is required, the Executor M
 
 The Execution Contract MUST then be updated, replaced, or otherwise explicitly extended through the organization's appropriate authority path before the broader work proceeds.
 
+When the architectural model, authority, ownership, or boundary on which an Execution Contract materially relies is superseded, affected execution MUST stop until the contract has been re-evaluated against the current model and confirmed valid, either unchanged or after revision or replacement through the applicable authority path. This requirement applies even when the reclassification does not increase scope or consequence.
+
 Discovery of additional nearby work does not itself constitute authorization.
 
 A Material Scope Expansion includes, for example:
