@@ -77,6 +77,10 @@ A change that would authorize materially different systems, actions, consequence
 
 A non-substantive adjustment needed to make already authorized work conform to ordinary repository, formatting, linting, serialization, packaging, or tooling requirements without changing the intended outcome, normative meaning, protected boundaries, or authorized consequence.
 
+**Established Path**
+
+A previously validated operating pattern, interface, identity, tool, or workflow for the relevant capability and authority boundary. Prior validation is evidence of suitability, not continuing authorization or proof that current conditions are unchanged.
+
 ## 4. When an Execution Contract Is Required
 
 Consequential work within the scope of this standard MUST have an Execution Contract before execution crosses into the consequential activity.
@@ -178,6 +182,32 @@ A Material Scope Expansion includes, for example:
 - weakening a protected boundary;
 - changing the intended operational outcome.
 
+### 8.1 Established Paths and Evidence-Driven Escalation
+
+When selecting an execution path, the Executor MUST consider relevant Established Paths and whether they can satisfy the current Execution Contract. Among paths that satisfy its authority, safety, validation, and completion requirements, the Executor SHOULD prefer the least disruptive validated path.
+
+Failure or limitation of one actor, identity, session, interface, tool, or workflow MUST NOT by itself authorize a more privileged, invasive, exceptional, bypass, recovery, or emergency execution path.
+
+Before selecting such a path, the Executor MUST:
+
+- consider whether another Established Path, including an alternative interface or identity, can satisfy the contract within existing authority;
+- identify affirmative evidence that the relevant Established Paths are unavailable, insufficient, or no longer authorized under current conditions;
+- establish that the proposed path is authorized for its actual scope and consequence, obtaining any required Material Scope Expansion before crossing the existing boundary.
+
+Escalation MUST be justified by evidence about the available paths and the contract's requirements, rather than by the fact that an attempt failed. An available alternative identity or credential does not itself confer permission to use it. Prior success does not override changed authority or current validation evidence.
+
+Consideration does not require trying every possible path, repeating an unsafe or known ineffective attempt, or creating a registry of execution paths. The evidence SHOULD be reviewable in the existing execution record in proportion to the consequence. Section 16 governs urgent action when delay would create greater material harm; path assessment MUST NOT be treated as a requirement to exhaust alternatives before action permitted by that exception.
+
+### 8.2 Separately Discovered Defects
+
+Discovery of a separate architectural, implementation, validation, packaging, deployment, control, or similar defect MUST NOT retroactively redefine the original authorized objective or silently broaden its Execution Scope. The defect's remediation MUST be distinguished from the original work when assessing authority, scope, and consequence.
+
+If remediation requires materially different scope, consequence, mutation of a Protected Boundary, or execution authority, it MUST be treated as separately authorized work or explicit Material Scope Expansion under this section before that remediation proceeds. The importance or complexity of the surrounding system does not itself change the authority required for the original action.
+
+When a separate defect blocks safe execution under the current contract, the affected execution MUST pause before violating its required conditions or Protected Boundaries. Such a pause does not change the substantive identity of the original work or authorize correction of the defect. Work that remains safe and authorized MAY continue within the contract's limits.
+
+A correction already within authorized scope MAY proceed under the existing contract; a Mechanical Correction remains governed by Section 9. These distinctions do not require a separate work item for every discovery. Architectural classification and control-design review remain owned by Architectural Reasoning; this section determines the execution consequences of the finding.
+
 ## 9. Mechanical Corrections
 
 A Mechanical Correction MAY be made within an already authorized implementation scope without separate escalation when it:
@@ -222,6 +252,16 @@ Examples may include:
 An Executor MUST NOT cross a Protected Boundary unless separately authorized.
 
 If the intended objective cannot be completed without crossing one, execution MUST stop before doing so.
+
+### 10.1 Defective Controls and Continued Protection
+
+Identifying a control as defective MUST NOT itself authorize bypassing, disabling, or weakening it, or accepting state that violates the condition it protects.
+
+Where a control enforces a required acceptance or safety condition or a Protected Boundary, execution MUST preserve that protection while the defect is unresolved. If the affected action cannot proceed with that protection enforced, it MUST remain stopped until an authorized correction or authorized equivalent protection is in place and validated against the protected condition. Authorization to prepare a correction, or a proposal for substitute protection, does not establish that protection is already effective.
+
+This is a fail-closed requirement for the protected action or state: a defective enforcement mechanism does not make otherwise prohibited state acceptable. It does not require shutting down unrelated safe activity, retaining a particular defective mechanism when equivalent protection is effective, or treating every advisory check as a mandatory gate.
+
+Changes to execution authority or Protected Boundaries remain subject to Sections 8 and 10. An alternative validation disposition under Section 11 MUST NOT be used to silently waive the protection required here. The bounded emergency exception in Section 16 continues to apply when its conditions are met; defect discovery alone does not establish an emergency or expand that exception.
 
 ## 11. Validation
 
@@ -354,6 +394,10 @@ Retention SHOULD be proportionate to the consequence and the organization's legi
 ## 18. Boundaries with Related Standards
 
 This standard governs authorized execution scope, protected boundaries, validation expectations, and completion or stop conditions for consequential work.
+
+It also governs selection among established authorized execution paths, evidence for exceptional escalation, the scope consequences of separately discovered defects, and continued protection while a control is defective.
+
+[`architectural-reasoning`](../architectural-reasoning/standard.md) owns system modeling, proportional architecture, control-design review, final-state reasoning, and architectural dependency impact. OEC applies execution authority to the accepted model without duplicating that design responsibility. This reference clarifies ownership and does not require adopting the sibling template.
 
 It does not determine:
 

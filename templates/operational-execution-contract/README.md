@@ -39,6 +39,9 @@ Before adoption, determine:
 - how the organization currently handles rollback, recovery, validation, and emergency action;
 - whether delegated tools or automation can exercise authority beyond what humans intended;
 - whether existing workflows already allow harmless mechanical implementation corrections without unnecessary escalation;
+- whether established interfaces and identities have clear current authority, and what evidence justifies an exceptional execution path;
+- how separately discovered defects are distinguished from the original objective when deciding scope, pause conditions, and correction authority;
+- whether defective controls continue to protect required conditions during repair, and how equivalent protection is authorized and validated without conflicting with legitimate emergency controls;
 - whether adoption would duplicate or conflict with stronger domain-specific operational controls.
 
 Do not adopt this template merely to make ordinary low-risk work more formal.
@@ -57,6 +60,8 @@ An adopting organization may need to adapt:
 - when rollback or recovery planning is required;
 - how emergency authority is handled;
 - how delegated or automated execution requests review when scope is uncertain;
+- where evidence for execution-path selection and exceptional escalation is retained;
+- how authorized correction or equivalent protection for defective controls is demonstrated;
 - how long execution-contract evidence should be retained.
 
 These are adaptation choices, not requirements to create a new work-management or approval platform.
@@ -71,11 +76,15 @@ This template governs:
 - Completion Boundaries;
 - validation expectations;
 - Material Scope Expansion;
+- established authorized execution paths and evidence-driven escalation;
+- execution scope and pause conditions when separate defects are discovered;
+- continued enforcement of protected conditions while controls are defective;
 - proportionate rollback or recovery expectations;
 - bounded delegated and automated execution.
 
 It does not define:
 
+- system modeling, proportional architecture, control design, final-state reasoning, or architectural dependency impact;
 - repository topology;
 - standards adoption;
 - shared-asset provenance;
@@ -86,6 +95,10 @@ It does not define:
 - one deployment or automation platform.
 
 For repository responsibility, see [`project-repository-model`](../project-repository-model/).
+
+For system modeling and architectural review, including evaluation of defective controls as Architectural Units, see [`architectural-reasoning`](../architectural-reasoning/). This template governs whether and how execution is authorized to act on that review; it does not require adopting the sibling template.
+
+The fail-closed rule protects required acceptance or safety conditions and Protected Boundaries during correction. It permits authorized, validated equivalent protection and retains the standard's bounded emergency exception. It does not turn advisory checks into mandatory gates or require all safe activity to stop.
 
 For standards adoption and organizational authority, see [`standards-adoption-model`](../standards-adoption-model/).
 
