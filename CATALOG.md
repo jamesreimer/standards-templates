@@ -42,6 +42,22 @@ Important boundaries:
 - does not determine repository topology;
 - does not make upstream template changes automatically authoritative downstream.
 
+### Architectural Reasoning
+
+#### `architectural-reasoning`
+
+**Architectural Reasoning Standard**
+
+Defines reasoning about applicable authority, responsibility-based ownership, system identity, boundary reclassification, capability evidence, proportional architecture, durable state, and cross-system dependency impact.
+
+Important boundaries:
+
+- determines the system model and architectural completion evidence without authorizing execution;
+- treats controls as Architectural Units and distinguishes execution-context failure from system-capability failure;
+- leaves execution-path selection, escalation, and authorized handling of discovered defects to Operational Execution Contract;
+- leaves shared-source identity, consumed state, correspondence, and propagation mechanics to Shared Asset Provenance where applicable;
+- does not prescribe organizational adoption, repository topology, publication lifecycle, administrative taxonomy, or a required review tool or record format.
+
 ### Repository Architecture and Naming
 
 These templates are independently adoptable. Their order below is a discovery or reading aid, not a required adoption sequence.
@@ -237,6 +253,10 @@ Important boundaries:
 **Standards Governance and Authoring**
 
 `standards-authoring` governs how reusable normative standards and policies are authored and calibrated. `standards-adoption-model` governs how reusable normative material becomes organizational authority and then follows an independent lifecycle. Their conceptual relationship does not require adopting them together or in a particular order.
+
+**Architectural Reasoning**
+
+`architectural-reasoning` determines the system model: applicable authority, responsibility, system identity, proportionate design, intended durable state, and effects on dependent systems. Operational execution authority remains owned by `operational-execution-contract`; shared-material identity and correspondence by `shared-asset-provenance`; organizational adoption by `standards-adoption-model`; and repository topology and artifact placement by `project-repository-model`. Architectural dependency analysis identifies what a target must provide and what its change affects without prescribing propagation mechanics. These relationships create no adoption dependency.
 
 **Repository Architecture and Naming**
 

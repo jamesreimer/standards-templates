@@ -35,6 +35,9 @@ scripts/setup_git_hooks.py
 scripts/update_repository_structure.py
 scripts/validate.py
 templates/
+templates/architectural-reasoning/
+templates/architectural-reasoning/README.md
+templates/architectural-reasoning/standard.md
 templates/filesystem-naming/
 templates/filesystem-naming/README.md
 templates/filesystem-naming/standard.md
