@@ -127,6 +127,8 @@ Important boundaries:
 - applies execution-contract overhead in proportion to operational consequence, without requiring a formal contract for every routine or low-consequence action;
 - distinguishes planning, implementation, publication, and live operational authority without prescribing one approval hierarchy or number of approval stages;
 - permits non-semantic mechanical corrections within authorized scope while requiring explicit authority for material scope expansion;
+- prefers established authorized execution paths, requires evidence for exceptional escalation, and preserves the original work's identity when separate defects are discovered;
+- requires continued protection of mandatory conditions and Protected Boundaries during control repair, while leaving system modeling and control-design review to `architectural-reasoning`;
 - does not determine repository topology, organizational standards adoption, shared-asset provenance, or publication and deployment lifecycle states;
 - does not define general task management, incident-response procedure, or one work-management, deployment, or automation platform.
 
