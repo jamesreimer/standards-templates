@@ -35,6 +35,16 @@ In addition to the universal review, determine:
 
 These are pre-adoption safety questions, not a prescribed approval ceremony.
 
+## Agent integration
+
+Route human or automated implementation work to the adopted local artifact when materially changing or evaluating web content meaning, semantic structure, audience understanding, or representation integrity. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
+
+Adapt this optional snippet for `AGENTS.md` or an equivalent contributor/automation entry point. Replace `<local-standard-path>` with the adopted artifact's location. Neither `AGENTS.md` nor a particular agent product is required; this snippet is informative routing guidance, not independent authority.
+
+```text
+For material web-content or semantic changes or evaluation, read and apply the organization's adopted Web Content and Semantics Standard at <local-standard-path>. Keep content-semantic conclusions distinct from accessibility, presentation, interaction, quality, editorial approval, and Web Experience Baseline conclusions.
+```
+
 ## Likely organization-specific adaptation choices
 
 Review whether there is a justified need to adapt:
