@@ -50,6 +50,9 @@ templates/project-repository-model/standard.md
 templates/repository-naming/
 templates/repository-naming/README.md
 templates/repository-naming/standard.md
+templates/repository-work-identification/
+templates/repository-work-identification/README.md
+templates/repository-work-identification/standard.md
 templates/responsive-web-layout/
 templates/responsive-web-layout/README.md
 templates/responsive-web-layout/standard.md

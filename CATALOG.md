@@ -98,6 +98,19 @@ Important boundaries:
 - does not govern repository identities;
 - yields to stronger legitimate technical or external naming requirements.
 
+#### `repository-work-identification`
+
+**Repository Work Identification Standard**
+
+Defines truthful, readable identification and classification of repository work through branch names, pull request titles, and issue labels, with locally governed vocabulary and syntax.
+
+Important boundaries:
+
+- governs work identity and classification across related surfaces without requiring identical terminology;
+- keeps workflow state and authority distinct from identity, including when labels represent dimensions governed elsewhere;
+- does not prescribe universal prefixes, title syntax, label sets, or mandatory labels;
+- does not govern repository or filesystem names, repository separation, execution authority, general task management, prioritization methods, release/version names, or commit-message format.
+
 ### Shared Assets and Provenance
 
 #### `shared-asset-provenance`
@@ -267,6 +280,7 @@ Important boundaries:
 - `project-repository-model` governs project repository responsibility, project-state boundaries, and when repository separation is justified.
 - `repository-naming` governs the identity of a repository once its responsibility exists.
 - `filesystem-naming` governs file, directory, and path-component naming.
+- `repository-work-identification` governs branch names, pull request titles, and issue-label semantics without owning workflow state or execution authority.
 
 These responsibilities are distinct. Their presentation order is a discovery aid, not a mandatory sequence or dependency chain.
 
