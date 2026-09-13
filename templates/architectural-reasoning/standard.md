@@ -157,6 +157,12 @@ Before an implementation model is treated as settled, and before architectural c
 
 The review MUST distinguish a settled design from an implemented and verified final state. Unresolved material assumptions MUST NOT be hidden by a completion claim.
 
+Before architectural completion is claimed, material review findings MUST receive an explicit disposition appropriate to their consequence. A finding is material here when its loss or silent dismissal could affect architectural truthfulness, completion, responsibility, boundaries, dependencies, or later reasoning.
+
+Classification as blocking or non-blocking describes whether a finding prevents architectural completion from proceeding; classification alone is not a disposition. A non-blocking finding MAY allow architectural completion to proceed, but MUST NOT be silently discarded merely because it is non-blocking. Dispositions MAY include correction within the current work, retention for bounded follow-up, explicit acceptance or deferral with rationale, or dismissal as not actionable or not applicable with rationale. A disposition does not replace the other completion conditions in this section.
+
+Disposition evidence SHOULD be proportionate to the finding's consequence and MAY use existing review records. This requirement does not prescribe a universal severity taxonomy, ticketing system, separate issue for each finding, particular record format, or formal documentation for trivial stylistic observations that are not material to the architectural conclusion. Whether a finding requires execution to stop, changes authorized scope, or permits remediation remains governed by the applicable execution contract.
+
 Evidence SHOULD be retained where losing it would materially impair later review or cause a superseded model to be treated as current. Existing design documents, change reviews, or equivalent records MAY provide that evidence. This standard does not require a separate checklist artifact or universal record format.
 
 Architectural completion does not grant approval to execute, publish, deploy, or broaden work.
