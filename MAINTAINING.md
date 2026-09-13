@@ -39,6 +39,8 @@ For a justified template:
 7. keep that subject-specific review distinct from likely organization-specific review points, which identify legitimate adaptation choices rather than pre-adoption safety checks;
 8. add the completed template to [CATALOG.md](CATALOG.md) only when it exists.
 
+When creating or materially revising a template, assess whether adopters need explicit agent-integration guidance. When appropriate, include an `Agent integration` section in the template `README.md` as informative adoption/integration material, not in `standard.md`. Identify when the adopted standard should be consulted; adaptable guidance for `AGENTS.md` or an equivalent contributor/automation entry point may be included. Make clear that the adopted local artifact governs after adoption. Do not require a particular agent product or `AGENTS.md`, introduce an adoption dependency, or duplicate the standard's normative requirements. This section is not universally required.
+
 ## External claims
 
 For each load-bearing external claim:
