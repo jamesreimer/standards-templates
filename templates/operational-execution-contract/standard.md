@@ -310,6 +310,19 @@ A Completion Boundary MAY be, for example:
 
 This standard does not prescribe which boundary is appropriate for a particular workflow.
 
+### 12.1 Return-of-Control Information
+
+When execution returns control through completion, stop, pause, or request for review, and later action or review materially depends on understanding the execution result, the Executor SHOULD convey, and the organization SHOULD retain, enough information to determine:
+
+- the material resulting state;
+- validation or recovery performed;
+- unresolved conditions; and
+- follow-up that remains necessary.
+
+The amount and form of the information SHOULD be proportionate to the consequence and the need for later action or review. This standard does not require a universal completion, handoff, or status-report format.
+
+Returning control, recording resulting state, or identifying follow-up does not itself authorize additional execution, Material Scope Expansion, or continuation beyond the existing Execution Contract.
+
 ## 13. Rollback and Recovery
 
 An Execution Contract MUST define rollback or recovery expectations when the work can create material state that is difficult to reverse, destructive, externally consequential, or operationally risky.
@@ -426,6 +439,7 @@ Avoid:
 - using fixed role names where clear authority is sufficient;
 - treating an available credential as permission;
 - redefining success after execution begins to make an incomplete result appear complete;
+- treating a bare stop notice as a sufficient record of consequential partial execution;
 - turning every nearby discovery into authorized additional work;
 - requiring fictional rollback where recovery is the real control;
 - stopping for harmless Mechanical Corrections that remain inside already authorized implementation scope;
