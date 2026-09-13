@@ -157,7 +157,7 @@ Before an implementation model is treated as settled, and before architectural c
 
 The review MUST distinguish a settled design from an implemented and verified final state. Unresolved material assumptions MUST NOT be hidden by a completion claim.
 
-Before architectural completion is claimed, material review findings MUST receive an explicit disposition appropriate to their consequence. A finding is material here when its loss or silent dismissal could affect architectural truthfulness, completion, responsibility, boundaries, dependencies, or later reasoning.
+Before architectural completion is claimed, material review findings MUST receive an explicit architectural disposition appropriate to their consequence. A finding is material here when its loss or silent dismissal could affect architectural truthfulness, completion, responsibility, boundaries, dependencies, or later reasoning.
 
 Classification as blocking or non-blocking describes whether a finding prevents architectural completion from proceeding; classification alone is not a disposition. A non-blocking finding MAY allow architectural completion to proceed, but MUST NOT be silently discarded merely because it is non-blocking. Dispositions MAY include correction within the current work, retention for bounded follow-up, explicit acceptance or deferral with rationale, or dismissal as not actionable or not applicable with rationale. A disposition does not replace the other completion conditions in this section.
 
