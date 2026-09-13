@@ -100,7 +100,7 @@ A change in implementation detail SHOULD NOT trigger renaming or reclassificatio
 
 ## 9. Identification Changes and Historical Material
 
-Before materially renaming branches, changing title syntax, or revising label names or meanings, maintainers MUST assess affected references and interpretations where those changes could disrupt active work or dependent consumers. Relevant consumers may include scripts, filters, dashboards, links, and automation. Required consumers MUST remain able to identify or interpret the affected work correctly through the change.
+Before materially renaming branches, changing title syntax, or revising label names or meanings, maintainers MUST assess affected references and interpretations where those changes could disrupt active work or dependent consumers. Relevant consumers may include scripts, filters, dashboards, links, and automation. Dependent consumers MUST remain able to identify or interpret the affected work correctly through the change.
 
 The assessment SHOULD be proportionate to the actual impact; it does not require a migration project for an ordinary title correction without dependent consumers. This standard does not authorize a rename, classification mutation, or operational migration beyond existing authority.
 
