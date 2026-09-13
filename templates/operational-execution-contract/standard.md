@@ -321,7 +321,7 @@ When execution returns control through completion, stop, pause, or request for r
 
 The amount and form of the information SHOULD be proportionate to the consequence and the need for later action or review. This standard does not require a universal completion, handoff, or status-report format.
 
-Returning control, recording resulting state, or identifying follow-up does not itself authorize additional execution, Material Scope Expansion, or continuation beyond the existing Execution Contract.
+Returning control, recording resulting state, or identifying follow-up does not itself authorize additional execution, Material Scope Expansion, or continuation beyond the existing Execution Contract. Section 16 states additional retention expectations after emergency action.
 
 ## 13. Rollback and Recovery
 
