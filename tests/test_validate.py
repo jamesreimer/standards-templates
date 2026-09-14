@@ -883,6 +883,57 @@ class RepositoryValidatorTests(unittest.TestCase):
         hook.unlink()
         self.assertIn(".githooks/pre-commit: repository file does not exist", self._messages())
 
+    def test_name_policy_findings_survive_indexed_files_becoming_directories(self) -> None:
+        paths = [
+            self._write(name, "fixture\n")
+            for name in (".DS_Store", "scripts/example.pyc", TEMPLATE_METADATA_NAME)
+        ]
+        self._refresh_structure_snapshot()
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        subprocess.run(["git", "-C", str(self.root), "add", "."], check=True)
+        for path in paths:
+            path.unlink()
+            path.mkdir()
+        read_bytes = Path.read_bytes
+        with mock.patch.object(Path, "read_bytes", autospec=True, side_effect=read_bytes) as reads:
+            messages = self._messages()
+        for name in (".DS_Store", "scripts/example.pyc"):
+            self.assertIn(f"{name}: junk artifact file is not allowed", messages)
+        self.assertIn(
+            f"{TEMPLATE_METADATA_NAME}: template metadata files are not allowed", messages
+        )
+        read_paths = [call.args[0] for call in reads.call_args_list]
+        for path in paths:
+            self.assertNotIn(path.resolve(), read_paths)
+
+    def test_name_policy_findings_survive_missing_junk_and_symlinked_metadata(self) -> None:
+        junk = self._write(".DS_Store", "fixture\n")
+        metadata = self._write(TEMPLATE_METADATA_NAME, "fixture\n")
+        self._refresh_structure_snapshot()
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        subprocess.run(["git", "-C", str(self.root), "add", "."], check=True)
+        junk.unlink()
+        metadata.unlink()
+        with tempfile.TemporaryDirectory() as external_directory:
+            target = Path(external_directory) / "external.txt"
+            target.write_bytes(b"\xff\n")
+            metadata.symlink_to(target)
+            read_bytes = Path.read_bytes
+            with mock.patch.object(
+                Path, "read_bytes", autospec=True, side_effect=read_bytes
+            ) as reads:
+                messages = self._messages()
+            self.assertNotIn(
+                self.root.resolve() / TEMPLATE_METADATA_NAME,
+                [call.args[0] for call in reads.call_args_list],
+            )
+        self.assertIn(".DS_Store: junk artifact file is not allowed", messages)
+        self.assertIn(
+            f"{TEMPLATE_METADATA_NAME}: template metadata files are not allowed", messages
+        )
+        self.assertIn("symbolic links are not allowed; the link target was not read", messages)
+        self.assertNotIn("not valid UTF-8", messages)
+
     def test_present_extensionless_file_passes_without_content_read(self) -> None:
         hook = self._write(".githooks/pre-commit", "#!/bin/sh\n")
         self._refresh_structure_snapshot()

@@ -214,8 +214,6 @@ class RepositoryValidator:
 
         component_modes: dict[Path, int | None] = {}
         for path in repository_paths:
-            if not self._is_regular_repository_file(path, component_modes):
-                continue
             file_name = path.name
             relative_parts = path.relative_to(self.root).parts
             if (
@@ -227,6 +225,8 @@ class RepositoryValidator:
                 continue
             if file_name == TEMPLATE_METADATA_NAME:
                 self._add(path, "template metadata files are not allowed")
+            if not self._is_regular_repository_file(path, component_modes):
+                continue
             if not self._is_text_file(path):
                 continue
 
