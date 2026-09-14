@@ -873,7 +873,181 @@ class RepositoryValidatorTests(unittest.TestCase):
         subprocess.run(["git", "init", "-q", str(self.root)], check=True)
         subprocess.run(["git", "-C", str(self.root), "add", "."], check=True)
         (self.root / "tracked-note.txt").unlink()
-        self.assertIn("tracked-note.txt: repository file could not be read", self._messages())
+        self.assertIn("tracked-note.txt: repository file does not exist", self._messages())
+
+    def test_missing_tracked_extensionless_file_fails(self) -> None:
+        hook = self._write(".githooks/pre-commit", "#!/bin/sh\n")
+        self._refresh_structure_snapshot()
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        subprocess.run(["git", "-C", str(self.root), "add", "."], check=True)
+        hook.unlink()
+        self.assertIn(".githooks/pre-commit: repository file does not exist", self._messages())
+
+    def test_name_policy_findings_survive_indexed_files_becoming_directories(self) -> None:
+        paths = [
+            self._write(name, "fixture\n")
+            for name in (".DS_Store", "scripts/example.pyc", TEMPLATE_METADATA_NAME)
+        ]
+        self._refresh_structure_snapshot()
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        subprocess.run(["git", "-C", str(self.root), "add", "."], check=True)
+        for path in paths:
+            path.unlink()
+            path.mkdir()
+        read_bytes = Path.read_bytes
+        with mock.patch.object(Path, "read_bytes", autospec=True, side_effect=read_bytes) as reads:
+            messages = self._messages()
+        for name in (".DS_Store", "scripts/example.pyc"):
+            self.assertIn(f"{name}: junk artifact file is not allowed", messages)
+        self.assertIn(
+            f"{TEMPLATE_METADATA_NAME}: template metadata files are not allowed", messages
+        )
+        read_paths = [call.args[0] for call in reads.call_args_list]
+        for path in paths:
+            self.assertNotIn(path.resolve(), read_paths)
+
+    def test_name_policy_findings_survive_missing_junk_and_symlinked_metadata(self) -> None:
+        junk = self._write(".DS_Store", "fixture\n")
+        metadata = self._write(TEMPLATE_METADATA_NAME, "fixture\n")
+        self._refresh_structure_snapshot()
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        subprocess.run(["git", "-C", str(self.root), "add", "."], check=True)
+        junk.unlink()
+        metadata.unlink()
+        with tempfile.TemporaryDirectory() as external_directory:
+            target = Path(external_directory) / "external.txt"
+            target.write_bytes(b"\xff\n")
+            metadata.symlink_to(target)
+            read_bytes = Path.read_bytes
+            with mock.patch.object(
+                Path, "read_bytes", autospec=True, side_effect=read_bytes
+            ) as reads:
+                messages = self._messages()
+            self.assertNotIn(
+                self.root.resolve() / TEMPLATE_METADATA_NAME,
+                [call.args[0] for call in reads.call_args_list],
+            )
+        self.assertIn(".DS_Store: junk artifact file is not allowed", messages)
+        self.assertIn(
+            f"{TEMPLATE_METADATA_NAME}: template metadata files are not allowed", messages
+        )
+        self.assertIn("symbolic links are not allowed; the link target was not read", messages)
+        self.assertNotIn("not valid UTF-8", messages)
+
+    def test_present_extensionless_file_passes_without_content_read(self) -> None:
+        hook = self._write(".githooks/pre-commit", "#!/bin/sh\n")
+        self._refresh_structure_snapshot()
+        read_bytes = Path.read_bytes
+        with mock.patch.object(Path, "read_bytes", autospec=True, side_effect=read_bytes) as reads:
+            self.assertValid()
+        read_paths = [call.args[0] for call in reads.call_args_list]
+        self.assertIn(self.root.resolve() / "README.md", read_paths)
+        self.assertNotIn(hook.resolve(), read_paths)
+
+    def test_git_mode_symlinked_ancestor_blocks_all_descendant_reads(self) -> None:
+        self._write("docs/first.md", "# First\n")
+        self._write("docs/nested/second.md", "# Second\n")
+        self._refresh_structure_snapshot()
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        subprocess.run(["git", "-C", str(self.root), "add", "."], check=True)
+        ancestor = self.root.resolve() / "docs"
+        with tempfile.TemporaryDirectory() as external_directory:
+            external = Path(external_directory)
+            (external / "nested").mkdir()
+            (external / "first.md").write_bytes(b"\xff\n")
+            (external / "nested/second.md").write_bytes(b"\xff\n")
+            ancestor.rename(external / "original-docs")
+            ancestor.symlink_to(external, target_is_directory=True)
+            read_bytes = Path.read_bytes
+            with mock.patch.object(
+                Path, "read_bytes", autospec=True, side_effect=read_bytes
+            ) as reads:
+                validator = VALIDATE.RepositoryValidator(self.root)
+                findings = validator.validate()
+            read_paths = [call.args[0] for call in reads.call_args_list]
+            self.assertIn(self.root.resolve() / "README.md", read_paths)
+            self.assertFalse(
+                any(path == ancestor or ancestor in path.parents for path in read_paths),
+                read_paths,
+            )
+            symlink_findings = [
+                finding for finding in validator.findings if "symbolic links" in finding.reason
+            ]
+            self.assertEqual(
+                [
+                    VALIDATE.Finding(
+                        "docs", 0, "symbolic links are not allowed; the link target was not read"
+                    )
+                ],
+                symlink_findings,
+            )
+            self.assertNotIn("not valid UTF-8", "\n".join(map(str, findings)))
+
+    def test_enumerated_directory_skips_content_without_type_finding(self) -> None:
+        target = self._write("docs/example.md", "# Example\n")
+        self._refresh_structure_snapshot()
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        subprocess.run(["git", "-C", str(self.root), "add", "."], check=True)
+        target.unlink()
+        target.mkdir()
+        read_bytes = Path.read_bytes
+        with mock.patch.object(Path, "read_bytes", autospec=True, side_effect=read_bytes) as reads:
+            self.assertValid()
+        self.assertNotIn(target.resolve(), [call.args[0] for call in reads.call_args_list])
+
+    def test_invalid_intermediate_component_is_diagnosed_once(self) -> None:
+        for present in (False, True):
+            with self.subTest(present=present):
+                ancestor = self.root.resolve() / "docs"
+                if present:
+                    ancestor.write_text("not a directory\n", encoding="utf-8")
+                validator = VALIDATE.RepositoryValidator(self.root)
+                with (
+                    mock.patch.object(
+                        validator,
+                        "_repository_files_for_validation",
+                        return_value=[ancestor / "first.md", ancestor / "second.md"],
+                    ),
+                    mock.patch.object(Path, "read_bytes") as reads,
+                ):
+                    validator._scan_repository_files()
+                reads.assert_not_called()
+                reason = (
+                    "repository path component is not a directory"
+                    if present
+                    else "repository path component does not exist"
+                )
+                self.assertEqual([VALIDATE.Finding("docs", 0, reason)], validator.findings)
+
+    def test_metadata_failure_blocks_reads_and_does_not_leak_between_scans(self) -> None:
+        target = self.root.resolve() / "README.md"
+        validator = VALIDATE.RepositoryValidator(self.root)
+        lstat = Path.lstat
+
+        def inspect(path: Path):
+            if path == target:
+                raise PermissionError("fixture metadata denied")
+            return lstat(path)
+
+        with (
+            mock.patch.object(validator, "_repository_files_for_validation", return_value=[target]),
+            mock.patch.object(Path, "lstat", autospec=True, side_effect=inspect),
+            mock.patch.object(Path, "read_bytes") as reads,
+        ):
+            validator._scan_repository_files()
+        reads.assert_not_called()
+        self.assertEqual(
+            [
+                VALIDATE.Finding(
+                    "README.md",
+                    0,
+                    "repository path metadata could not be read (fixture metadata denied)",
+                )
+            ],
+            validator.findings,
+        )
+        validator._scan_repository_files()
+        self.assertIn(target, validator.text_files)
 
     def test_git_enumeration_failure_preserves_caller_semantics(self) -> None:
         (self.root / ".git").mkdir()

@@ -16,6 +16,7 @@ import html
 import os
 import posixpath
 import re
+import stat
 import subprocess
 import sys
 import unicodedata
@@ -211,6 +212,7 @@ class RepositoryValidator:
                 self.repository_directories.add(parent.as_posix())
                 parent = parent.parent
 
+        component_modes: dict[Path, int | None] = {}
         for path in repository_paths:
             file_name = path.name
             relative_parts = path.relative_to(self.root).parts
@@ -223,8 +225,7 @@ class RepositoryValidator:
                 continue
             if file_name == TEMPLATE_METADATA_NAME:
                 self._add(path, "template metadata files are not allowed")
-            if path.is_symlink():
-                self._add(path, "symbolic links are not allowed; the link target was not read")
+            if not self._is_regular_repository_file(path, component_modes):
                 continue
             if not self._is_text_file(path):
                 continue
@@ -243,6 +244,60 @@ class RepositoryValidator:
                 self._add(path, "text file must end with a newline")
             if TEMPLATE_METADATA_NAME in content:
                 self._add(path, "references the prohibited template metadata filename")
+
+    def _is_regular_repository_file(
+        self, path: Path, component_modes: dict[Path, int | None]
+    ) -> bool:
+        """Inspect ancestry without following links; cache only within this scan.
+
+        Separate metadata checks and content reads do not prevent concurrent
+        filesystem replacement races.
+        """
+        component = self.root
+        for part in path.relative_to(self.root).parts:
+            component = component / part
+            if component not in component_modes:
+                try:
+                    mode = component.lstat().st_mode
+                except FileNotFoundError:
+                    reason = (
+                        "repository file does not exist"
+                        if component == path
+                        else "repository path component does not exist"
+                    )
+                    self._add(component, reason)
+                    component_modes[component] = None
+                except OSError as error:
+                    self._add(
+                        component,
+                        f"repository path metadata could not be read ({error.strerror or error})",
+                    )
+                    component_modes[component] = None
+                else:
+                    if stat.S_ISLNK(mode):
+                        self._add(
+                            component,
+                            "symbolic links are not allowed; the link target was not read",
+                        )
+                        component_modes[component] = None
+                    else:
+                        component_modes[component] = mode
+
+            mode = component_modes[component]
+            if mode is None:
+                return False
+            if component != path and not stat.S_ISDIR(mode):
+                self._add(component, "repository path component is not a directory")
+                component_modes[component] = None
+                return False
+
+        if stat.S_ISDIR(mode):
+            return False
+        if not stat.S_ISREG(mode):
+            self._add(path, "repository path is not a regular file")
+            component_modes[path] = None
+            return False
+        return True
 
     def _repository_files_for_validation(self) -> list[Path]:
         try:
