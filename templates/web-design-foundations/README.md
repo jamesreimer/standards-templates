@@ -98,9 +98,9 @@ Automated tools can inventory values, calculate measurements, compare screenshot
 
 - [Web Accessibility](../web-accessibility/README.md) owns its selected accessibility target and accessibility-specific evidence and claims.
 - [Web Content and Semantics](../web-content-semantics/README.md) owns intended content meaning, semantic correspondence, and content-semantic claims.
-- A future Responsive Layout template may govern layout transitions, containers, reflow beyond incorporated accessibility requirements, and responsive media fitting.
-- A future Interface and Interaction template may govern state behavior, feedback, task transitions, and purposeful motion.
-- A future Styling Architecture template may govern selectors, class naming, cascade layers, style ownership, and change containment if independently justified.
-- A future Quality and Verification template may govern performance, compatibility, resilience, and shared evidence-system requirements without taking over this template's specific visual findings.
+- [Responsive Web Layout](../responsive-web-layout/README.md) owns layout transitions, containers, responsive composition and reflow beyond this template's visual-foundation scope, and media fitting.
+- [Web Interface and Interaction](../web-interface-interaction/README.md) owns state behavior, feedback, task transitions, and purposeful interaction behavior.
+- [Web Styling Architecture](../web-styling-architecture/README.md) owns style ownership, selector and cascade relationships, influence, overrides, containment, and styling change boundaries.
+- [Web Quality and Verification](../web-quality-verification/README.md) owns performance, compatibility, resilience, and shared verification context without taking over this template's specific visual findings.
 
-Future references describe boundaries only. They neither require those templates nor claim that unpublished companions already exist.
+These cross-references describe conceptual ownership only. They do not make sibling templates required dependencies or make their adoption automatic.

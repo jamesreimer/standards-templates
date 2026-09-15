@@ -103,8 +103,8 @@ Automated tools can inventory dimensions, detect intersections or overflow, comp
 - [Web Accessibility](../web-accessibility/README.md) owns its selected accessibility target and accessibility-specific reflow, orientation, zoom, focus, and related evidence and claims.
 - [Web Content and Semantics](../web-content-semantics/README.md) owns intended content meaning, semantic sequence, and content-bearing-media meaning.
 - [Web Design Foundations](../web-design-foundations/README.md) owns typography, reading measure, visual hierarchy, spacing-role integrity, and functional visual roles.
-- A future Interface and Interaction template may govern state behavior, feedback, recovery, and task transitions.
-- A future Quality and Verification template may govern performance, compatibility, resilience, and shared evidence-system requirements without taking over this template's specific layout findings.
-- A future Styling Architecture template may govern selectors, class naming, cascade layers, style ownership, and change containment if independently justified.
+- [Web Interface and Interaction](../web-interface-interaction/README.md) owns state behavior, feedback, recovery, and task transitions.
+- [Web Quality and Verification](../web-quality-verification/README.md) owns performance, compatibility, resilience, and shared verification context without taking over this template's specific layout findings.
+- [Web Styling Architecture](../web-styling-architecture/README.md) owns style ownership, selector and cascade relationships, influence, overrides, containment, and styling change boundaries.
 
-Future references describe boundaries only. They neither require those templates nor claim that unpublished companions already exist.
+These cross-references describe conceptual ownership only. They do not make sibling templates required dependencies or make their adoption automatic.
