@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import io
+import os
 import subprocess
 import sys
 import tempfile
@@ -1147,53 +1148,160 @@ class RepositoryValidatorTests(unittest.TestCase):
 
 class GitHookSetupTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.temporary_directory = tempfile.TemporaryDirectory()
-        self.root = Path(self.temporary_directory.name)
-        hook = self.root / ".githooks" / "pre-commit"
-        hook.parent.mkdir()
-        hook.write_text("#!/bin/sh\n", encoding="utf-8")
+        temporary_directory = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary_directory.cleanup)
+        fixture_root = Path(temporary_directory.name)
+        self.root = fixture_root / "repository"
+        self.root.mkdir()
+        self.global_config = fixture_root / "global-config"
+        self.global_config.write_text("", encoding="utf-8")
+        environment = {
+            key: value
+            for key, value in os.environ.items()
+            if key not in {"GIT_CONFIG_COUNT", "GIT_CONFIG_PARAMETERS"}
+            and not key.startswith(("GIT_CONFIG_KEY_", "GIT_CONFIG_VALUE_"))
+        }
+        environment["GIT_CONFIG_GLOBAL"] = str(self.global_config)
+        environment["GIT_CONFIG_NOSYSTEM"] = "1"
+        environment_patch = mock.patch.dict(os.environ, environment, clear=True)
+        environment_patch.start()
+        self.addCleanup(environment_patch.stop)
+        self.hook = self.root / ".githooks" / "pre-commit"
+        self.hook.parent.mkdir()
+        self.hook.write_text("#!/bin/sh\n", encoding="utf-8")
+        self.hook.chmod(0o640)
         subprocess.run(["git", "init", "-q", str(self.root)], check=True)
 
-    def tearDown(self) -> None:
-        self.temporary_directory.cleanup()
-
-    def _hooks_path(self) -> str:
+    def _hooks_path(self, scope: str | None) -> str | None:
+        command = ["git", "-C", str(self.root), "config"]
+        if scope is not None:
+            command.append(f"--{scope}")
         result = subprocess.run(
-            ["git", "-C", str(self.root), "config", "--local", "--get", "core.hooksPath"],
+            [*command, "--get", "core.hooksPath"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertIn(result.returncode, {0, 1}, result.stderr)
+        return result.stdout.removesuffix("\n") if result.returncode == 0 else None
+
+    def _set_hooks_path(self, scope: str, value: str) -> None:
+        subprocess.run(
+            ["git", "-C", str(self.root), "config", f"--{scope}", "core.hooksPath", value],
+            check=True,
+        )
+
+    def test_unset_hooks_path_is_configured(self) -> None:
+        self.assertIsNone(self._hooks_path("local"))
+        self.assertIsNone(self._hooks_path(None))
+        HOOK_SETUP.configure_hooks(self.root)
+        self.assertEqual(".githooks", self._hooks_path("local"))
+        self.assertEqual(".githooks", self._hooks_path(None))
+        self.assertEqual(0o111, self.hook.stat().st_mode & 0o111)
+
+    def test_existing_repository_hooks_path_is_idempotent(self) -> None:
+        self._set_hooks_path("local", ".githooks")
+        HOOK_SETUP.configure_hooks(self.root)
+        HOOK_SETUP.configure_hooks(self.root)
+        self.assertEqual(".githooks", self._hooks_path("local"))
+        self.assertEqual(".githooks", self._hooks_path(None))
+
+    def test_conflicting_hooks_path_is_preserved_and_refused(self) -> None:
+        self._set_hooks_path("local", "custom-hooks")
+        self.assertEqual("custom-hooks", self._hooks_path(None))
+        with self.assertRaisesRegex(RuntimeError, "custom-hooks.*--force"):
+            HOOK_SETUP.configure_hooks(self.root)
+        self.assertEqual("custom-hooks", self._hooks_path("local"))
+        self.assertEqual("custom-hooks", self._hooks_path(None))
+        self.assertEqual(0o640, self.hook.stat().st_mode & 0o777)
+
+    def test_force_replaces_conflicting_hooks_path(self) -> None:
+        self._set_hooks_path("local", "custom-hooks")
+        HOOK_SETUP.configure_hooks(self.root, force=True)
+        self.assertEqual(".githooks", self._hooks_path("local"))
+        self.assertEqual(".githooks", self._hooks_path(None))
+
+    def test_global_conflict_is_preserved_and_refused(self) -> None:
+        self._set_hooks_path("global", "central-hooks")
+        original_global = self.global_config.read_bytes()
+        self.assertIsNone(self._hooks_path("local"))
+        self.assertEqual("central-hooks", self._hooks_path(None))
+        with self.assertRaisesRegex(RuntimeError, "central-hooks.*--force"):
+            HOOK_SETUP.configure_hooks(self.root)
+        self.assertIsNone(self._hooks_path("local"))
+        self.assertEqual("central-hooks", self._hooks_path("global"))
+        self.assertEqual("central-hooks", self._hooks_path(None))
+        self.assertEqual(original_global, self.global_config.read_bytes())
+        self.assertEqual(0o640, self.hook.stat().st_mode & 0o777)
+
+    def test_force_overrides_global_conflict_only_locally(self) -> None:
+        self._set_hooks_path("global", "central-hooks")
+        original_global = self.global_config.read_bytes()
+        self.assertIsNone(self._hooks_path("local"))
+        HOOK_SETUP.configure_hooks(self.root, force=True)
+        self.assertEqual(".githooks", self._hooks_path("local"))
+        self.assertEqual(".githooks", self._hooks_path(None))
+        self.assertEqual("central-hooks", self._hooks_path("global"))
+        self.assertEqual(original_global, self.global_config.read_bytes())
+
+    def test_inherited_repository_hooks_path_is_pinned_locally(self) -> None:
+        self._set_hooks_path("global", ".githooks")
+        original_global = self.global_config.read_bytes()
+        self.assertIsNone(self._hooks_path("local"))
+        self.assertEqual(".githooks", self._hooks_path(None))
+        HOOK_SETUP.configure_hooks(self.root)
+        self.assertEqual(".githooks", self._hooks_path("local"))
+        self.assertEqual(".githooks", self._hooks_path(None))
+        self.assertEqual(".githooks", self._hooks_path("global"))
+        self.assertEqual(original_global, self.global_config.read_bytes())
+
+    def test_force_cannot_override_persistent_worktree_configuration(self) -> None:
+        subprocess.run(
+            ["git", "-C", str(self.root), "config", "--local", "extensions.worktreeConfig", "true"],
+            check=True,
+        )
+        self._set_hooks_path("worktree", "worktree-hooks")
+        worktree_config = self.root / ".git" / "config.worktree"
+        original_worktree = worktree_config.read_bytes()
+        self.assertIsNone(self._hooks_path("local"))
+        self.assertEqual("worktree-hooks", self._hooks_path("worktree"))
+        self.assertEqual("worktree-hooks", self._hooks_path(None))
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with (
+            mock.patch.object(
+                HOOK_SETUP, "__file__", str(self.root / "scripts" / "setup_git_hooks.py")
+            ),
+            mock.patch.object(sys, "argv", ["setup_git_hooks.py", "--force"]),
+            mock.patch.object(sys, "stdout", stdout),
+            mock.patch.object(sys, "stderr", stderr),
+            mock.patch.object(Path, "chmod") as chmod,
+        ):
+            self.assertEqual(1, HOOK_SETUP.main())
+        chmod.assert_not_called()
+        self.assertNotIn("Git hooks configured:", stdout.getvalue())
+        self.assertIn("repository-local core.hooksPath was written", stderr.getvalue())
+        self.assertIn("higher-precedence", stderr.getvalue())
+        self.assertIn("worktree-hooks", stderr.getvalue())
+        self.assertEqual(".githooks", self._hooks_path("local"))
+        self.assertEqual("worktree-hooks", self._hooks_path("worktree"))
+        self.assertEqual("worktree-hooks", self._hooks_path(None))
+        self.assertEqual(original_worktree, worktree_config.read_bytes())
+        extension = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(self.root),
+                "config",
+                "--local",
+                "--get",
+                "extensions.worktreeConfig",
+            ],
             check=True,
             capture_output=True,
             text=True,
         )
-        return result.stdout.strip()
-
-    def test_unset_hooks_path_is_configured(self) -> None:
-        HOOK_SETUP.configure_hooks(self.root)
-        self.assertEqual(".githooks", self._hooks_path())
-
-    def test_existing_repository_hooks_path_is_idempotent(self) -> None:
-        subprocess.run(
-            ["git", "-C", str(self.root), "config", "--local", "core.hooksPath", ".githooks"],
-            check=True,
-        )
-        HOOK_SETUP.configure_hooks(self.root)
-        self.assertEqual(".githooks", self._hooks_path())
-
-    def test_conflicting_hooks_path_is_preserved_and_refused(self) -> None:
-        subprocess.run(
-            ["git", "-C", str(self.root), "config", "--local", "core.hooksPath", "custom-hooks"],
-            check=True,
-        )
-        with self.assertRaisesRegex(RuntimeError, "--force"):
-            HOOK_SETUP.configure_hooks(self.root)
-        self.assertEqual("custom-hooks", self._hooks_path())
-
-    def test_force_replaces_conflicting_hooks_path(self) -> None:
-        subprocess.run(
-            ["git", "-C", str(self.root), "config", "--local", "core.hooksPath", "custom-hooks"],
-            check=True,
-        )
-        HOOK_SETUP.configure_hooks(self.root, force=True)
-        self.assertEqual(".githooks", self._hooks_path())
+        self.assertEqual("true", extension.stdout.strip())
+        self.assertEqual(0o640, self.hook.stat().st_mode & 0o777)
 
 
 if __name__ == "__main__":
