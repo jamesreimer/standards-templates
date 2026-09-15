@@ -85,3 +85,15 @@ No other proposed web standard is made a dependency by this template. Its adjace
 - [W3C Evaluating Web Accessibility Overview](https://www.w3.org/WAI/test-evaluate/) — informative evaluation guidance.
 - [Understanding Conformance](https://www.w3.org/WAI/WCAG22/Understanding/conformance.html) — informative explanation, not replacement normative text.
 - [ARIA Authoring Practices Guide introduction](https://www.w3.org/WAI/ARIA/apg/about/introduction/) — informative implementation guidance, not an additional conformance target.
+
+## Related templates
+
+- [Web Content and Semantics](../web-content-semantics/README.md) owns intended content meaning, semantic correspondence, structure, language semantics, and content-semantic conclusions.
+- [Web Design Foundations](../web-design-foundations/README.md) owns typography, visual hierarchy, spacing relationships, and functional visual roles.
+- [Responsive Web Layout](../responsive-web-layout/README.md) owns responsive composition, spatial adaptation, overflow, and media fitting.
+- [Web Interface and Interaction](../web-interface-interaction/README.md) owns task-state behavior, feedback, recovery, and interaction continuity.
+- [Web Quality and Verification](../web-quality-verification/README.md) owns performance, compatibility, resilience, and quality evidence without taking over this template's subject-specific findings.
+- [Web Styling Architecture](../web-styling-architecture/README.md) owns style ownership, influence, overrides, containment, and change boundaries. It is independently adoptable and optional, outside the Baseline required companion set.
+- [Web Experience Baseline](../web-experience-baseline/README.md) composes the six required core Web Standards into Baseline-level claims while preserving this template's subject ownership and independent adoption.
+
+These cross-references describe conceptual ownership only. They do not make sibling templates required dependencies or make their adoption automatic.

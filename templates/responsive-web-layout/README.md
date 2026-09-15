@@ -106,5 +106,6 @@ Automated tools can inventory dimensions, detect intersections or overflow, comp
 - [Web Interface and Interaction](../web-interface-interaction/README.md) owns state behavior, feedback, recovery, and task transitions.
 - [Web Quality and Verification](../web-quality-verification/README.md) owns performance, compatibility, resilience, and shared verification context without taking over this template's specific layout findings.
 - [Web Styling Architecture](../web-styling-architecture/README.md) owns style ownership, selector and cascade relationships, influence, overrides, containment, and styling change boundaries.
+- [Web Experience Baseline](../web-experience-baseline/README.md) composes the six required core Web Standards into Baseline-level claims while preserving this template's subject ownership and independent adoption.
 
 These cross-references describe conceptual ownership only. They do not make sibling templates required dependencies or make their adoption automatic.
