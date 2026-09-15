@@ -116,6 +116,6 @@ A spreadsheet, issue tracker, evidence database, test orchestrator, or generated
 
 The six core companions above are required only for a claim to the unchanged Web Experience Baseline. Each remains independently adoptable and governable on its own.
 
-A future Web Styling Architecture template may be adopted separately if independently justified. It is not a Baseline dependency unless a deliberately adopted later Baseline revision changes the dependency model.
+[Web Styling Architecture](../web-styling-architecture/README.md) is an independently adoptable optional companion. It is not a dependency of the unchanged Baseline; only a deliberately revised and adopted later Baseline can change that dependency model.
 
 Enhanced conformance and domain profiles remain deferred pending evidence from separately authorized pilots.

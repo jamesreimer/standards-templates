@@ -105,7 +105,7 @@ Automated tools can measure timing, execute browser tests, compare revisions, in
 - [Web Design Foundations](../web-design-foundations/README.md) retains visual-foundation conclusions.
 - [Responsive Web Layout](../responsive-web-layout/README.md) retains layout and responsive-composition conclusions.
 - [Web Interface and Interaction](../web-interface-interaction/README.md) retains task-state and interaction conclusions.
-- A future Styling Architecture template may govern style ownership and change containment if independently justified.
-- A future Web Experience Baseline may compose declared companion results into suite-level claims without changing this template's independent adoption.
+- [Web Styling Architecture](../web-styling-architecture/README.md) owns style ownership and change containment and remains independently adoptable.
+- [Web Experience Baseline](../web-experience-baseline/README.md) composes the six required core Web Standards into Baseline-level claims while preserving this template's subject ownership and independent adoption.
 
-Future references describe boundaries only. They neither require those templates nor claim that unpublished companions already exist.
+These cross-references describe conceptual ownership only. They do not make sibling templates required dependencies or make their adoption automatic.

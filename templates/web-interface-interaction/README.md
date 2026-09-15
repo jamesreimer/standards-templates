@@ -106,7 +106,7 @@ Automated tools can exercise actions, capture events, compare state, inspect net
 - [Web Content and Semantics](../web-content-semantics/README.md) owns intended message meaning, labels, instructions, error content, and semantic structure.
 - [Web Design Foundations](../web-design-foundations/README.md) owns visual hierarchy and visual-role calibration for interaction states.
 - [Responsive Web Layout](../responsive-web-layout/README.md) owns spatial adaptation, clipping, overflow, overlay fitting, and responsive composition.
-- A future Quality and Verification template may govern performance, compatibility, resilience, and shared evidence-system requirements without taking over this template's interaction-specific findings.
-- A future Styling Architecture template may govern style ownership and change containment if independently justified.
+- [Web Quality and Verification](../web-quality-verification/README.md) owns performance, compatibility, resilience, and shared verification context without taking over this template's interaction-specific findings.
+- [Web Styling Architecture](../web-styling-architecture/README.md) owns style ownership and change containment; interaction behavior remains owned by this template.
 
-Future references describe boundaries only. They neither require those templates nor claim that unpublished companions already exist.
+These cross-references describe conceptual ownership only. They do not make sibling templates required dependencies or make their adoption automatic.
