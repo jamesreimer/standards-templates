@@ -91,3 +91,15 @@ The same observation may support more than one assessment when it genuinely addr
 - [W3C: Inline markup and bidirectional text](https://www.w3.org/International/articles/inline-bidi-markup/) — informative directionality guidance.
 - [Web Accessibility Standard](../web-accessibility/standard.md) — independently adoptable sibling owning accessibility targets, evidence, and claims.
 - [GOV.UK: Understand content design](https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/plan-manage-content/understand-content-design/) and [USWDS design principles](https://designsystem.digital.gov/design-principles/) — comparative first-party guidance, not universal normative dependencies.
+
+## Related templates
+
+- [Web Accessibility](../web-accessibility/README.md) owns accessibility-specific requirements, evidence, and conclusions under its selected accessibility target.
+- [Web Design Foundations](../web-design-foundations/README.md) owns typography, visual hierarchy, spacing relationships, and functional visual roles.
+- [Responsive Web Layout](../responsive-web-layout/README.md) owns responsive composition, spatial adaptation, overflow, and media fitting.
+- [Web Interface and Interaction](../web-interface-interaction/README.md) owns task-state behavior, feedback, recovery, and interaction continuity.
+- [Web Quality and Verification](../web-quality-verification/README.md) owns performance, compatibility, resilience, and quality evidence without taking over this template's subject-specific findings.
+- [Web Styling Architecture](../web-styling-architecture/README.md) owns style ownership, influence, overrides, containment, and change boundaries. It is independently adoptable and optional, outside the Baseline required companion set.
+- [Web Experience Baseline](../web-experience-baseline/README.md) composes the six required core Web Standards into Baseline-level claims while preserving this template's subject ownership and independent adoption.
+
+These cross-references describe conceptual ownership only. They do not make sibling templates required dependencies or make their adoption automatic.
