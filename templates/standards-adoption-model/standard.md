@@ -85,6 +85,12 @@ An organization MUST NOT knowingly establish two canonical artifacts with ambigu
 
 Where the proposed and existing authority overlap, the adoption decision SHOULD record which artifact takes precedence and whether the source material is integrated, supersedes or is superseded by existing authority, or remains applicable only within a distinct retained boundary.
 
+Where the recorded overlap disposition requires changes to existing local authority or its implementing machinery, the organization SHOULD bring its operative governance state into conformity through its normal change process within a bounded, reviewable timeframe. Existing authority and its implementing machinery MAY be retained where independently necessary or assigned a distinct retained boundary by the disposition.
+
+An organization MUST NOT represent a recorded disposition as its current governance state while machinery it supersedes remains operative contrary to that disposition unless the record truthfully identifies the retained or transitional operation and the conditions for its resolution.
+
+An organization MUST NOT treat an adoption disposition as authority to remove, bypass, weaken, or deactivate a control, and MUST NOT reduce existing protection before the adopted or retained authority actually supplies the required protection.
+
 When existing authority is sufficient, or the additional adoption machinery would be disproportionate to the value gained, the organization SHOULD reject or defer adoption.
 
 General applicability, source quality, copying convenience, or usefulness as an adoption exercise does not by itself establish that the material should become organizational authority.
@@ -237,6 +243,7 @@ Avoid:
 - adopting generally applicable or convenient material without determining that it adds durable value;
 - skipping review of existing authority, material conflicts, or accidental weakening and supersession;
 - leaving materially overlapping canonical artifacts with ambiguous precedence;
+- recording an overlap disposition while leaving superseded machinery operative in parallel without truthfully representing the retained or transitional state and its resolution conditions;
 - adding duplicative governance machinery or disruptive migration work when existing authority is sufficient.
 
 ## 14. Default Policy
@@ -246,6 +253,8 @@ Unless an organization deliberately establishes a different authority relationsh
 > **External or reusable source material becomes organizational authority only through deliberate organizational adoption.**
 >
 > **Existing authority should be reviewed and material overlap resolved before adoption; two canonical artifacts must not be knowingly left with ambiguous authority over the same material consequence.**
+>
+> **Operative governance should be brought into conformity with recorded overlap dispositions while preserving existing protection until the adopted or retained authority actually supplies it.**
 >
 > **The adopted result is governed canonically by the adopting organization for its assigned scope.**
 >
