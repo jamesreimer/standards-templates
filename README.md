@@ -72,9 +72,12 @@ Git hooks are optional and are not installed by validation or CI. To run the sam
 python3 scripts/setup_git_hooks.py
 ```
 
-Setup is idempotent when `core.hooksPath` already names `.githooks`. It refuses
-to replace a different existing hooks path unless you explicitly run
-`python3 scripts/setup_git_hooks.py --force`.
+Setup is idempotent when the effective `core.hooksPath` is already `.githooks`
+and pins that setting in repository-local configuration. It refuses to write a
+local override for a different effective hooks path unless you explicitly run
+`python3 scripts/setup_git_hooks.py --force`. The override writes only the local
+`.githooks` setting; higher-precedence Git configuration may still control the
+effective hooks path, in which case setup reports that it did not become effective.
 
 ## Template catalog
 

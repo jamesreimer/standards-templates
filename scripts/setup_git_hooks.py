@@ -26,23 +26,43 @@ def configure_hooks(repository_root: Path, *, force: bool = False) -> None:
         raise RuntimeError(f"not the root of a Git repository: {repository_root}")
 
     existing = subprocess.run(
-        ["git", "-C", str(repository_root), "config", "--local", "--get", "core.hooksPath"],
+        ["git", "-C", str(repository_root), "config", "--get", "core.hooksPath"],
         check=False,
         capture_output=True,
         text=True,
     )
     if existing.returncode not in {0, 1}:
         raise RuntimeError(existing.stderr.strip() or "could not read core.hooksPath")
-    existing_path = existing.stdout.strip() if existing.returncode == 0 else ""
-    if existing_path and existing_path != ".githooks" and not force:
+    existing_path = existing.stdout.removesuffix("\n") if existing.returncode == 0 else None
+    if existing_path is not None and existing_path != ".githooks" and not force:
         raise RuntimeError(
-            f"core.hooksPath is already {existing_path!r}; rerun with --force to replace it"
+            f"effective core.hooksPath is {existing_path!r}; "
+            "rerun with --force to write the repository-local override"
         )
 
     subprocess.run(
         ["git", "-C", str(repository_root), "config", "--local", "core.hooksPath", ".githooks"],
         check=True,
     )
+    effective = subprocess.run(
+        ["git", "-C", str(repository_root), "config", "--get", "core.hooksPath"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if effective.returncode != 0:
+        raise RuntimeError(
+            "repository-local core.hooksPath was written as '.githooks', "
+            "but the effective value could not be verified: "
+            + (effective.stderr.strip() or "effective core.hooksPath is unavailable")
+        )
+    effective_path = effective.stdout.removesuffix("\n")
+    if effective_path != ".githooks":
+        raise RuntimeError(
+            "repository-local core.hooksPath was written as '.githooks', "
+            "but higher-precedence configuration still controls the effective value "
+            f"{effective_path!r}; the local setting did not become effective"
+        )
     executable_mode = hook_path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
     hook_path.chmod(executable_mode)
 
@@ -52,7 +72,7 @@ def main() -> int:
     parser.add_argument(
         "--force",
         action="store_true",
-        help="replace a different existing core.hooksPath value",
+        help="write a repository-local override for a different effective core.hooksPath",
     )
     arguments = parser.parse_args()
     repository_root = Path(__file__).resolve().parents[1]
