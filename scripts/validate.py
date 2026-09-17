@@ -1,997 +1,243 @@
 #!/usr/bin/env python3
 """Validate mechanical repository invariants without third-party dependencies.
 
-The BCP 14 check is deliberately narrow: it detects close spelling mistakes in
-uppercase canonical forms found in Markdown prose. Short forms only permit a
-missing or duplicated final character; longer forms must share their first
-three and final characters before edit distance is considered. The check
-ignores lowercase prose, fenced code, inline code, and larger identifiers, and
-it never infers normative intent or judges whether a keyword has the correct
-semantic strength.
+This script is a managed baseline file. It is intended to stay byte-identical
+across repositories that adopt it. Everything repository-specific belongs in
+``validate.json`` (which checks run, and with what globs) or in an optional
+``scripts/validate_local.py`` module that contributes additional findings.
+
+The checks here cover mechanical invariants only. Scope, boundaries, normative
+calibration, and prose quality remain human and AI review responsibilities.
+
+Runs on Python 3.9 and later with the standard library alone.
 """
 
 from __future__ import annotations
 
-import html
+import importlib.util
+import json
 import os
-import posixpath
 import re
 import stat
 import subprocess
 import sys
-import unicodedata
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import unquote
 
-TEMPLATE_ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-STABLE_TEMPLATE_ID_DECLARATION_RE = re.compile(
-    r"^Stable template ID: `([^`\n]+)`[ \t]*$", re.MULTILINE
-)
-LOCAL_REQUIREMENT_SCHEME_DECLARATION_RE = re.compile(
-    r"^`([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-NNN)` identifies a local requirement "
-    r"synthesized by this template\b",
-    re.MULTILINE,
-)
-LOCAL_REQUIREMENT_DEFINITION_RE = re.compile(
-    r"^\*\*([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+) — [^*\n]+\.\*\*", re.MULTILINE
-)
-LOCAL_REQUIREMENT_REFERENCE_RE = re.compile(r"^([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)-([0-9]{3})$")
-ORDINARY_PATH_COMPONENT_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-ORDINARY_FILENAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)*$")
-PYTHON_FILENAME_RE = re.compile(r"^(?:[a-z][a-z0-9]*(?:_[a-z0-9]+)*|__init__)\.py$")
-CATALOG_ENTRY_HEADING_RE = re.compile(r"^`([^`]+)`$")
-HEADING_RE = re.compile(r"^(#{1,6})(?:[ \t]+|$)(.*)$")
-FENCE_RE = re.compile(r"^[ \t]{0,3}(`{3,}|~{3,})(.*)$")
-TOKEN_RE = re.compile(r"(?<![A-Z0-9_])[A-Z0-9]+(?![A-Z0-9_])")
-REFERENCE_DEFINITION_RE = re.compile(r"^[ \t]{0,3}\[([^\]\n]+)\]:[ \t]*(.*)$")
-REFERENCE_LINK_RE = re.compile(r"(?<!!)\[([^\]\n]+)\]\[([^\]\n]*)\]")
-
-TEMPLATE_METADATA_NAME = "template" + ".yaml"
-EXPECTED_TEMPLATE_FILES = {"README.md", "standard.md"}
-JUNK_FILE_NAMES = {".DS_Store", "Thumbs.db"}
-IGNORED_DIRECTORY_NAMES = {".git", ".venv"}
-TEXT_FILE_NAMES = {".editorconfig", ".gitattributes", ".gitignore", "LICENSE"}
-TEXT_FILE_SUFFIXES = {
-    ".cfg",
-    ".ini",
-    ".json",
-    ".jsonc",
-    ".md",
-    ".py",
-    ".toml",
-    ".txt",
-    ".yaml",
-    ".yml",
-}
+CONFIG_PATH = "validate.json"
 STRUCTURE_SNAPSHOT_PATH = "repository-structure.txt"
 STRUCTURE_UPDATE_COMMAND = "python3 scripts/update_repository_structure.py"
-ROOT_PATH_NAME_EXCEPTIONS = {
-    "ADOPTION.md",
-    "AGENTS.md",
-    "CATALOG.md",
-    "CHANGELOG.md",
-    "CODE_OF_CONDUCT.md",
-    "CONTRIBUTING.md",
-    "LICENSE",
-    "MAINTAINING.md",
-    "NAMING.md",
-    "README.md",
-    "SECURITY.md",
-}
-ROOT_TOOL_FILE_NAMES = {
-    ".editorconfig",
-    ".gitattributes",
-    ".gitignore",
-    ".markdownlint-cli2.jsonc",
-}
-TOOL_OWNED_ROOT_DIRECTORIES = {".github", ".githooks", ".vscode"}
-PYTHON_OWNED_ROOT_DIRECTORIES = {"scripts", "tests"}
+LOCAL_CHECK_PATH = "scripts/validate_local.py"
 
-BCP14_SINGLE_FORMS = (
-    "MUST",
-    "SHOULD",
-    "MAY",
-    "SHALL",
-    "REQUIRED",
-    "RECOMMENDED",
-    "OPTIONAL",
-)
-BCP14_PHRASE_FORMS = (
-    "MUST NOT",
-    "SHOULD NOT",
-    "SHALL NOT",
-    "NOT RECOMMENDED",
-)
+DEFAULT_TEXT_GLOBS = [
+    "**/*.cfg",
+    "**/*.css",
+    "**/*.html",
+    "**/*.ini",
+    "**/*.js",
+    "**/*.json",
+    "**/*.jsonc",
+    "**/*.jsx",
+    "**/*.md",
+    "**/*.mjs",
+    "**/*.py",
+    "**/*.sh",
+    "**/*.toml",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.txt",
+    "**/*.xml",
+    "**/*.yaml",
+    "**/*.yml",
+    "**/.editorconfig",
+    "**/.gitattributes",
+    "**/.gitignore",
+    ".githooks/*",
+]
+
+DEFAULT_CONFIG = {
+    "junk-artifacts": {
+        "enabled": True,
+        "names": [".DS_Store", "Thumbs.db", "desktop.ini"],
+        "patterns": ["**/*.pyc", "**/*.pyo", "**/*.orig", "**/*.rej", "**/*~"],
+        "directories": ["__pycache__"],
+    },
+    "text-encoding": {
+        "enabled": True,
+        "globs": list(DEFAULT_TEXT_GLOBS),
+    },
+    "final-newline": {
+        "enabled": True,
+        "globs": list(DEFAULT_TEXT_GLOBS),
+    },
+    "required-files": {
+        "enabled": True,
+        "paths": [],
+    },
+    "markdown-links": {
+        "enabled": True,
+        "globs": ["**/*.md"],
+    },
+    "markdown-headings": {
+        "enabled": True,
+        "globs": ["**/*.md"],
+    },
+    "credential-files": {
+        "enabled": True,
+        "patterns": [
+            "**/.env",
+            "**/.env.*",
+            "**/*.pem",
+            "**/*.p12",
+            "**/*.pfx",
+            "**/*.jks",
+            "**/*.keystore",
+            "**/id_rsa",
+            "**/id_dsa",
+            "**/id_ecdsa",
+            "**/id_ed25519",
+        ],
+        "allow": [
+            "**/.env.example",
+            "**/.env.sample",
+            "**/.env.*.example",
+            "**/*.pub",
+        ],
+    },
+    "path-names": {
+        "enabled": False,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+        "scope": ["**"],
+        "exempt": [],
+        "rules": [],
+    },
+    "structure-snapshot": {
+        "enabled": False,
+        "path": STRUCTURE_SNAPSHOT_PATH,
+    },
+}
+
+CHECK_NAMES = tuple(DEFAULT_CONFIG)
 
 
 @dataclass(frozen=True, order=True)
 class Finding:
+    """A single mechanical defect, ordered for deterministic output."""
+
     path: str
     line: int
     reason: str
+    check: str = ""
 
     def __str__(self) -> str:
         location = f"{self.path}:{self.line}" if self.line else self.path
-        return f"{location}: {self.reason}"
+        suffix = f" [{self.check}]" if self.check else ""
+        return f"{location}: {self.reason}{suffix}"
 
 
 @dataclass(frozen=True)
-class Heading:
-    level: int
-    text: str
-    slug: str
-    line: int
+class CheckContext:
+    """Read-only repository view handed to local checks."""
 
+    root: Path
+    files: tuple
+    text: dict
 
-@dataclass(frozen=True)
-class MarkdownLink:
-    destination: str
-    line: int
 
+class ConfigError(RuntimeError):
+    """Raised when validate.json cannot be understood."""
 
-@dataclass(frozen=True)
-class MarkdownLine:
-    number: int
-    text: str
-    prose: str
 
+_GLOB_CACHE = {}
 
-@dataclass
-class MarkdownDocument:
-    headings: list[Heading]
-    links: list[MarkdownLink]
 
-    @property
-    def anchors(self) -> set[str]:
-        return {heading.slug for heading in self.headings}
+def glob_to_regex(pattern: str):
+    """Translate a glob to a regex where ``**`` alone may cross separators.
 
-
-@dataclass(frozen=True)
-class RepositoryFileEnumeration:
-    files: tuple[Path, ...]
-    junk_files: tuple[Path, ...] = ()
-    junk_directories: tuple[Path, ...] = ()
-
-
-class RepositoryEnumerationError(RuntimeError):
-    def __init__(self, message: str, validation_reason: str) -> None:
-        super().__init__(message)
-        self.validation_reason = validation_reason
-
-
-class RepositoryValidator:
-    def __init__(self, root: Path) -> None:
-        self.root = root.resolve()
-        self.findings: list[Finding] = []
-        self.text_files: dict[Path, str] = {}
-        self.markdown_documents: dict[Path, MarkdownDocument] = {}
-        self.template_directories: dict[str, Path] = {}
-        self.catalog_titles: dict[str, str] = {}
-        self.local_requirement_definitions: dict[str, list[tuple[Path, int]]] = {}
-        self.local_requirement_prefixes: set[str] = set()
-        self.repository_files: set[str] = set()
-        self.repository_directories: set[str] = {"."}
-
-    def validate(self) -> list[Finding]:
-        self._scan_repository_files()
-        self._validate_repository_path_names()
-        self._validate_repository_structure_snapshot()
-        self._validate_markdown_documents()
-        self._validate_template_structure()
-        self._validate_stable_template_ids()
-        self._validate_local_requirement_ids()
-        self._validate_local_requirement_references()
-        self._validate_catalog_membership()
-        self._validate_template_titles()
-        self._validate_markdown_links()
-        return sorted(set(self.findings))
-
-    def _relative(self, path: Path) -> str:
-        try:
-            relative = path.relative_to(self.root)
-        except ValueError:
-            return str(path)
-        return str(relative) if str(relative) != "." else "."
-
-    def _add(self, path: Path, reason: str, line: int = 0) -> None:
-        self.findings.append(Finding(self._relative(path), line, reason))
-
-    def _scan_repository_files(self) -> None:
-        if not self.root.is_dir():
-            self._add(self.root, "repository root does not exist")
-            return
-
-        repository_paths = self._repository_files_for_validation()
-        for path in repository_paths:
-            relative_path = path.relative_to(self.root).as_posix()
-            self.repository_files.add(relative_path)
-            parent = Path(relative_path).parent
-            while parent != Path("."):
-                self.repository_directories.add(parent.as_posix())
-                parent = parent.parent
-
-        component_modes: dict[Path, int | None] = {}
-        for path in repository_paths:
-            file_name = path.name
-            relative_parts = path.relative_to(self.root).parts
-            if (
-                "__pycache__" in relative_parts
-                or file_name in JUNK_FILE_NAMES
-                or path.suffix.lower() == ".pyc"
-            ):
-                self._add(path, "junk artifact file is not allowed")
-                continue
-            if file_name == TEMPLATE_METADATA_NAME:
-                self._add(path, "template metadata files are not allowed")
-            if not self._is_regular_repository_file(path, component_modes):
-                continue
-            if not self._is_text_file(path):
-                continue
-
-            try:
-                content = path.read_bytes().decode("utf-8")
-            except UnicodeDecodeError as error:
-                self._add(path, f"text file is not valid UTF-8 ({error})")
-                continue
-            except OSError as error:
-                self._add(path, f"repository file could not be read ({error.strerror or error})")
-                continue
-
-            self.text_files[path] = content
-            if not content.endswith("\n"):
-                self._add(path, "text file must end with a newline")
-            if TEMPLATE_METADATA_NAME in content:
-                self._add(path, "references the prohibited template metadata filename")
-
-    def _is_regular_repository_file(
-        self, path: Path, component_modes: dict[Path, int | None]
-    ) -> bool:
-        """Inspect ancestry without following links; cache only within this scan.
-
-        Separate metadata checks and content reads do not prevent concurrent
-        filesystem replacement races.
-        """
-        component = self.root
-        for part in path.relative_to(self.root).parts:
-            component = component / part
-            if component not in component_modes:
-                try:
-                    mode = component.lstat().st_mode
-                except FileNotFoundError:
-                    reason = (
-                        "repository file does not exist"
-                        if component == path
-                        else "repository path component does not exist"
-                    )
-                    self._add(component, reason)
-                    component_modes[component] = None
-                except OSError as error:
-                    self._add(
-                        component,
-                        f"repository path metadata could not be read ({error.strerror or error})",
-                    )
-                    component_modes[component] = None
-                else:
-                    if stat.S_ISLNK(mode):
-                        self._add(
-                            component,
-                            "symbolic links are not allowed; the link target was not read",
-                        )
-                        component_modes[component] = None
-                    else:
-                        component_modes[component] = mode
-
-            mode = component_modes[component]
-            if mode is None:
-                return False
-            if component != path and not stat.S_ISDIR(mode):
-                self._add(component, "repository path component is not a directory")
-                component_modes[component] = None
-                return False
-
-        if stat.S_ISDIR(mode):
-            return False
-        if not stat.S_ISREG(mode):
-            self._add(path, "repository path is not a regular file")
-            component_modes[path] = None
-            return False
-        return True
-
-    def _repository_files_for_validation(self) -> list[Path]:
-        try:
-            enumeration = enumerate_repository_files(self.root)
-        except RepositoryEnumerationError as error:
-            self._add(self.root, error.validation_reason)
-            return []
-
-        for path in enumeration.junk_directories:
-            self._add(path, "junk artifact directory is not allowed")
-        for path in enumeration.junk_files:
-            self._add(path, "junk artifact file is not allowed")
-        return list(enumeration.files)
-
-    @staticmethod
-    def _is_text_file(path: Path) -> bool:
-        return path.name in TEXT_FILE_NAMES or path.suffix.lower() in TEXT_FILE_SUFFIXES
-
-    def _validate_repository_path_names(self) -> None:
-        for relative_path in sorted(self.repository_directories - {"."}):
-            self._validate_repository_path_name(relative_path, is_directory=True)
-        for relative_path in sorted(self.repository_files):
-            self._validate_repository_path_name(relative_path, is_directory=False)
-
-    def _validate_repository_path_name(self, relative_path: str, *, is_directory: bool) -> None:
-        parts = Path(relative_path).parts
-        if not parts:
-            return
-
-        name = parts[-1]
-        if parts[0] in TOOL_OWNED_ROOT_DIRECTORIES:
-            return
-        if len(parts) == 1 and name in ROOT_TOOL_FILE_NAMES | ROOT_PATH_NAME_EXCEPTIONS:
-            return
-
-        if parts[0] == "templates":
-            if len(parts) == 2 and is_directory:
-                return
-            if len(parts) == 3 and not is_directory and name in EXPECTED_TEMPLATE_FILES:
-                return
-
-        if not is_directory and parts[0] in PYTHON_OWNED_ROOT_DIRECTORIES and name.endswith(".py"):
-            if not PYTHON_FILENAME_RE.fullmatch(name):
-                self._add(
-                    self.root / relative_path,
-                    f"path component {name!r} must use lowercase ASCII snake_case "
-                    "with a lowercase .py extension in this Python-owned directory",
-                )
-            return
-
-        expected_pattern = ORDINARY_PATH_COMPONENT_RE if is_directory else ORDINARY_FILENAME_RE
-        if not expected_pattern.fullmatch(name):
-            self._add(
-                self.root / relative_path,
-                f"path component {name!r} must use lowercase ASCII alphanumeric words "
-                "separated by single hyphens, with a lowercase extension when applicable",
-            )
-
-    def _validate_markdown_documents(self) -> None:
-        for path, content in sorted(self.text_files.items()):
-            if path.suffix.lower() != ".md":
-                continue
-            document = self._parse_markdown(path, content)
-            self.markdown_documents[path] = document
-            self._validate_bcp14_near_misses(path, content)
-
-    def _validate_repository_structure_snapshot(self) -> None:
-        snapshot_path = self.root / STRUCTURE_SNAPSHOT_PATH
-        actual = self.text_files.get(snapshot_path)
-        if actual is None:
-            self._add(
-                snapshot_path,
-                f"repository structure snapshot is missing or unreadable; run {STRUCTURE_UPDATE_COMMAND}",
-            )
-            return
-        try:
-            expected = render_repository_structure(self.root)
-        except RuntimeError as error:
-            self._add(snapshot_path, f"could not generate expected repository structure: {error}")
-            return
-        if actual != expected:
-            self._add(
-                snapshot_path,
-                "repository structure differs from the committed snapshot; "
-                f"if intentional, run {STRUCTURE_UPDATE_COMMAND}; "
-                "otherwise restore the unexpected paths",
-            )
-
-    def _parse_markdown(self, path: Path, content: str) -> MarkdownDocument:
-        headings: list[Heading] = []
-        links: list[MarkdownLink] = []
-        slug_counts: Counter[str] = Counter()
-        used_slugs: set[str] = set()
-        previous_heading_level = 0
-        markdown_lines, fence_start_line = scan_markdown_lines(content)
-        reference_definitions: dict[str, MarkdownLink] = {}
-        reference_uses: list[tuple[str, int]] = []
-
-        for markdown_line in markdown_lines:
-            line_number = markdown_line.number
-            line = markdown_line.text
-
-            heading_match = HEADING_RE.match(line)
-            if heading_match:
-                level = len(heading_match.group(1))
-                heading_text = re.sub(r"[ \t]+#+[ \t]*$", "", heading_match.group(2)).strip()
-                base_slug = github_heading_slug(heading_text)
-                slug = unique_heading_slug(base_slug, slug_counts, used_slugs)
-                headings.append(Heading(level, heading_text, slug, line_number))
-                if previous_heading_level == 0 and level != 1:
-                    self._add(path, f"first heading must be H1, found H{level}", line_number)
-                elif previous_heading_level and level > previous_heading_level + 1:
-                    self._add(
-                        path,
-                        f"heading level skips from H{previous_heading_level} to H{level}",
-                        line_number,
-                    )
-                previous_heading_level = level
-
-            prose_line = markdown_line.prose
-            definition_match = REFERENCE_DEFINITION_RE.match(prose_line)
-            if definition_match:
-                label = normalize_reference_label(definition_match.group(1))
-                destination = parse_link_destination(definition_match.group(2))
-                if not destination:
-                    self._add(
-                        path,
-                        f"malformed reference-style link definition: {definition_match.group(1)}",
-                        line_number,
-                    )
-                elif label in reference_definitions:
-                    self._add(
-                        path,
-                        f"duplicate reference-style link definition: {definition_match.group(1)}",
-                        line_number,
-                    )
-                else:
-                    reference_definitions[label] = MarkdownLink(destination, line_number)
-                continue
-
-            for raw_destination in scan_inline_link_destinations(prose_line):
-                destination = parse_link_destination(raw_destination)
-                if destination:
-                    links.append(MarkdownLink(destination, line_number))
-
-            for reference_match in REFERENCE_LINK_RE.finditer(prose_line):
-                label_text = reference_match.group(2) or reference_match.group(1)
-                reference_uses.append((normalize_reference_label(label_text), line_number))
-
-        if fence_start_line:
-            self._add(path, "fenced code block is not closed", fence_start_line)
-
-        for label, line_number in reference_uses:
-            definition = reference_definitions.get(label)
-            if definition is None:
-                self._add(
-                    path, f"reference-style link definition does not exist: {label}", line_number
-                )
-                continue
-            links.append(definition)
-
-        h1_count = sum(heading.level == 1 for heading in headings)
-        if h1_count != 1:
-            self._add(path, f"Markdown document must contain exactly one H1; found {h1_count}")
-
-        return MarkdownDocument(headings, links)
-
-    def _validate_template_structure(self) -> None:
-        templates_root = self.root / "templates"
-        if templates_root.is_symlink():
-            return
-        if not templates_root.is_dir():
-            self._add(templates_root, "templates directory is missing")
-            return
-
-        for child in sorted(templates_root.iterdir()):
-            if child.is_symlink():
-                continue
-            if not child.is_dir():
-                self._add(child, "templates directory may contain template directories only")
-                continue
-
-            template_id = child.name
-            self.template_directories[template_id] = child
-            if not TEMPLATE_ID_RE.fullmatch(template_id):
-                self._add(
-                    child,
-                    "template ID must use lowercase ASCII alphanumerics separated by single hyphens",
-                )
-
-            actual_entries = {entry.name for entry in child.iterdir()}
-            for missing_name in sorted(EXPECTED_TEMPLATE_FILES - actual_entries):
-                self._add(child / missing_name, "required template file is missing")
-            for unexpected_name in sorted(actual_entries - EXPECTED_TEMPLATE_FILES):
-                self._add(child / unexpected_name, "unexpected entry in template directory")
-
-    def _validate_stable_template_ids(self) -> None:
-        for template_id, directory in sorted(self.template_directories.items()):
-            readme_path = directory / "README.md"
-            readme_text = self.text_files.get(readme_path)
-            if readme_text is None:
-                continue
-
-            structural_text = markdown_without_fenced_code(readme_text)
-            declarations = STABLE_TEMPLATE_ID_DECLARATION_RE.findall(structural_text)
-            if len(declarations) != 1:
-                self._add(
-                    readme_path,
-                    "template README must contain exactly one stable template ID declaration "
-                    f"using the repository convention; found {len(declarations)}",
-                )
-                continue
-
-            declared_id = declarations[0]
-            if declared_id != template_id:
-                self._add(
-                    readme_path,
-                    f"declares stable template ID {declared_id!r}; "
-                    f"expected directory ID {template_id!r}",
-                )
-
-    def _validate_local_requirement_ids(self) -> None:
-        for directory in sorted(self.template_directories.values()):
-            standard_path = directory / "standard.md"
-            standard_text = self.text_files.get(standard_path)
-            if standard_text is None:
-                continue
-
-            structural_text = markdown_without_fenced_code(standard_text)
-            schemes = LOCAL_REQUIREMENT_SCHEME_DECLARATION_RE.findall(structural_text)
-            self.local_requirement_prefixes.update(
-                scheme.removesuffix("-NNN") for scheme in schemes
-            )
-            if len(schemes) > 1:
-                self._add(
-                    standard_path,
-                    f"declares {len(schemes)} local requirement ID schemes {schemes!r}; "
-                    "expected at most one declaration using 'PREFIX-NNN'",
-                )
-                continue
-            if not schemes:
-                continue
-
-            scheme = schemes[0]
-            prefix = scheme.removesuffix("-NNN")
-            expected_id_re = re.compile(rf"^{re.escape(prefix)}-[0-9]{{3}}$")
-            definition_ids: list[tuple[str, int]] = []
-            for match in LOCAL_REQUIREMENT_DEFINITION_RE.finditer(structural_text):
-                requirement_id = match.group(1)
-                line_number = structural_text.count("\n", 0, match.start()) + 1
-                if not expected_id_re.fullmatch(requirement_id):
-                    self._add(
-                        standard_path,
-                        f"requirement definition label {requirement_id!r} does not match "
-                        f"declared scheme {scheme!r}; expected prefix {prefix!r} "
-                        "with exactly three decimal digits",
-                        line_number,
-                    )
-                    continue
-                definition_ids.append((requirement_id, line_number))
-                self.local_requirement_definitions.setdefault(requirement_id, []).append(
-                    (standard_path, line_number)
-                )
-
-            id_counts = Counter(requirement_id for requirement_id, _ in definition_ids)
-            for requirement_id, count in sorted(id_counts.items()):
-                if count > 1:
-                    duplicate_line = [
-                        line_number
-                        for candidate_id, line_number in definition_ids
-                        if candidate_id == requirement_id
-                    ][1]
-                    self._add(
-                        standard_path,
-                        f"duplicate local requirement ID {requirement_id!r}; "
-                        f"declared scheme is {scheme!r}",
-                        duplicate_line,
-                    )
-
-    def _validate_local_requirement_references(self) -> None:
-        for directory in sorted(self.template_directories.values()):
-            standard_path = directory / "standard.md"
-            standard_text = self.text_files.get(standard_path)
-            if standard_text is None:
-                continue
-
-            markdown_lines, _ = scan_markdown_lines(standard_text)
-            for markdown_line in markdown_lines:
-                for code_span in scan_inline_code_spans(markdown_line.text):
-                    reference_match = LOCAL_REQUIREMENT_REFERENCE_RE.fullmatch(code_span)
-                    if reference_match is None:
-                        continue
-                    prefix = reference_match.group(1)
-                    if prefix not in self.local_requirement_prefixes:
-                        continue
-
-                    definitions = self.local_requirement_definitions.get(code_span, [])
-                    if len(definitions) == 1:
-                        continue
-                    if not definitions:
-                        reason = (
-                            f"unresolved local requirement reference {code_span!r}; "
-                            f"no valid definition exists for declared prefix {prefix!r}"
-                        )
-                    else:
-                        reason = (
-                            f"local requirement reference {code_span!r} resolves to "
-                            f"{len(definitions)} definitions; expected exactly one"
-                        )
-                    self._add(standard_path, reason, markdown_line.number)
-
-    def _validate_catalog_membership(self) -> None:
-        catalog_path = self.root / "CATALOG.md"
-        catalog_text = self.text_files.get(catalog_path)
-        catalog_document = self.markdown_documents.get(catalog_path)
-        if catalog_text is None:
-            self._add(catalog_path, "catalog is missing or unreadable")
-            return
-
-        if catalog_document is None:
-            self._add(catalog_path, "catalog Markdown structure is unavailable")
-            return
-
-        structural_text = markdown_without_fenced_code(catalog_text)
-        templates_headings = [
-            heading
-            for heading in catalog_document.headings
-            if heading.level == 2 and heading.text == "Templates"
-        ]
-        if not templates_headings:
-            self._add(catalog_path, "catalog is missing the Templates section")
-            return
-        if len(templates_headings) != 1:
-            self._add(
-                catalog_path,
-                f"catalog must contain exactly one Templates section; found {len(templates_headings)}",
-            )
-            return
-
-        templates_heading = templates_headings[0]
-        templates_index = catalog_document.headings.index(templates_heading)
-        section_headings: list[Heading] = []
-        next_h2: Heading | None = None
-        for heading in catalog_document.headings[templates_index + 1 :]:
-            if heading.level == 2:
-                next_h2 = heading
-                break
-            section_headings.append(heading)
-
-        entry_headings: list[tuple[Heading, str]] = []
-        current_h3: Heading | None = None
-        current_h4: Heading | None = None
-        for heading in section_headings:
-            if heading.level == 3:
-                current_h3 = (
-                    heading if CATALOG_ENTRY_HEADING_RE.fullmatch(heading.text) is None else None
-                )
-                current_h4 = None
-                continue
-            entry_match = CATALOG_ENTRY_HEADING_RE.fullmatch(heading.text)
-            if heading.level == 4:
-                current_h4 = heading
-                if current_h3 is not None and entry_match is not None:
-                    entry_headings.append((heading, entry_match.group(1)))
-                continue
-            if (
-                heading.level == 5
-                and current_h3 is not None
-                and current_h4 is not None
-                and CATALOG_ENTRY_HEADING_RE.fullmatch(current_h4.text) is None
-                and entry_match is not None
-            ):
-                entry_headings.append((heading, entry_match.group(1)))
-
-        entry_ids = [template_id for _, template_id in entry_headings]
-        entry_counts = Counter(entry_ids)
-
-        for template_id, count in sorted(entry_counts.items()):
-            if count != 1:
-                self._add(
-                    catalog_path, f"template {template_id!r} appears {count} times in the catalog"
-                )
-
-        directory_ids = set(self.template_directories)
-        catalog_ids = set(entry_ids)
-        for template_id in sorted(directory_ids - catalog_ids):
-            self._add(
-                catalog_path, f"template directory {template_id!r} is missing from the catalog"
-            )
-        for template_id in sorted(catalog_ids - directory_ids):
-            self._add(catalog_path, f"catalog entry {template_id!r} has no template directory")
-
-        structural_lines = structural_text.splitlines(keepends=True)
-        section_end_line = next_h2.line - 1 if next_h2 is not None else len(structural_lines)
-        for index, (entry_heading, template_id) in enumerate(entry_headings):
-            entry_end_line = (
-                entry_headings[index + 1][0].line - 1
-                if index + 1 < len(entry_headings)
-                else section_end_line
-            )
-            entry_body = "".join(structural_lines[entry_heading.line : entry_end_line])
-            title_match = re.search(r"^\*\*([^\n]+)\*\*[ \t]*$", entry_body, re.MULTILINE)
-            if not title_match:
-                self._add(
-                    catalog_path, f"catalog entry {template_id!r} is missing its human-facing title"
-                )
-                continue
-            self.catalog_titles[template_id] = title_match.group(1).strip()
-
-    def _validate_template_titles(self) -> None:
-        for template_id, directory in sorted(self.template_directories.items()):
-            readme_path = directory / "README.md"
-            standard_path = directory / "standard.md"
-            readme_text = self.text_files.get(readme_path)
-            standard_document = self.markdown_documents.get(standard_path)
-
-            readme_title: str | None = None
-            if readme_text is not None:
-                structural_text = markdown_without_fenced_code(readme_text)
-                title_match = re.search(
-                    r"^Human-facing title:[ \t]*\n(?:[ \t]*\n)*>[ \t]*\*\*([^\n]+?)\*\*[ \t]*$",
-                    structural_text,
-                    re.MULTILINE,
-                )
-                if title_match:
-                    readme_title = title_match.group(1).strip()
-                else:
-                    self._add(
-                        readme_path,
-                        "cannot find the human-facing title using the repository convention",
-                    )
-
-            standard_title: str | None = None
-            if standard_document is not None:
-                h1_headings = [
-                    heading for heading in standard_document.headings if heading.level == 1
-                ]
-                if len(h1_headings) == 1:
-                    standard_title = h1_headings[0].text
-
-            catalog_title = self.catalog_titles.get(template_id)
-            available_titles = {
-                "template README": readme_title,
-                "standard H1": standard_title,
-                "catalog": catalog_title,
-            }
-            distinct_titles = {title for title in available_titles.values() if title is not None}
-            if len(distinct_titles) > 1:
-                details = ", ".join(
-                    f"{source}={title!r}"
-                    for source, title in available_titles.items()
-                    if title is not None
-                )
-                self._add(directory, f"human-facing template titles do not agree ({details})")
-
-    def _validate_markdown_links(self) -> None:
-        for source_path, document in sorted(self.markdown_documents.items()):
-            for link in document.links:
-                destination = html.unescape(link.destination).strip()
-                if is_external_destination(destination):
-                    continue
-
-                path_part, separator, fragment = destination.partition("#")
-                path_part = unquote(path_part.partition("?")[0]).replace("\\", "/")
-                source_relative = source_path.relative_to(self.root).as_posix()
-                if path_part.startswith("/"):
-                    target_relative = posixpath.normpath(path_part.lstrip("/"))
-                elif path_part:
-                    target_relative = posixpath.normpath(
-                        posixpath.join(posixpath.dirname(source_relative), path_part)
-                    )
-                else:
-                    target_relative = source_relative
-
-                if target_relative == ".." or target_relative.startswith("../"):
-                    self._add(
-                        source_path, f"local link escapes the repository: {destination}", link.line
-                    )
-                    continue
-
-                if (
-                    target_relative not in self.repository_files
-                    and target_relative not in self.repository_directories
-                ):
-                    self._add(
-                        source_path, f"local link target does not exist: {destination}", link.line
-                    )
-                    continue
-
-                target_path = self.root / Path(target_relative)
-
-                if not separator:
-                    continue
-                if target_relative in self.repository_directories:
-                    self._add(
-                        source_path,
-                        f"cannot validate an anchor on a directory link: {destination}",
-                        link.line,
-                    )
-                    continue
-                if target_path.suffix.lower() != ".md":
-                    self._add(
-                        source_path,
-                        f"anchor target is not a Markdown document: {destination}",
-                        link.line,
-                    )
-                    continue
-
-                target_document = self.markdown_documents.get(target_path)
-                if target_document is None:
-                    self._add(source_path, f"anchor target is unreadable: {destination}", link.line)
-                    continue
-                anchor = unquote(fragment)
-                if not anchor or anchor not in target_document.anchors:
-                    self._add(
-                        source_path, f"Markdown anchor does not exist: {destination}", link.line
-                    )
-
-    def _validate_bcp14_near_misses(self, path: Path, content: str) -> None:
-        markdown_lines, _ = scan_markdown_lines(content)
-        for markdown_line in markdown_lines:
-            line_number = markdown_line.number
-            prose = markdown_line.prose
-            prose = re.sub(r"!?\[([^\]]*)\]\([^)]+\)", r"\1", prose)
-            prose = re.sub(r"<https?://[^>]+>", " ", prose, flags=re.IGNORECASE)
-            prose = re.sub(r"https?://\S+", " ", prose, flags=re.IGNORECASE)
-            tokens = list(TOKEN_RE.finditer(prose))
-            consumed_indices: set[int] = set()
-
-            for index in range(len(tokens) - 1):
-                between = prose[tokens[index].end() : tokens[index + 1].start()]
-                if not re.fullmatch(r"\s+", between):
-                    continue
-                candidate = f"{tokens[index].group()} {tokens[index + 1].group()}"
-                if candidate in BCP14_PHRASE_FORMS:
-                    continue
-                if any(
-                    is_phrase_near_miss(candidate, canonical) for canonical in BCP14_PHRASE_FORMS
-                ):
-                    self._add(
-                        path,
-                        f"malformed BCP 14 keyword near-miss {candidate!r}; spelling only was checked",
-                        line_number,
-                    )
-                    consumed_indices.update({index, index + 1})
-
-            for index, token_match in enumerate(tokens):
-                if index in consumed_indices:
-                    continue
-                candidate = token_match.group()
-                if candidate in BCP14_SINGLE_FORMS:
-                    continue
-                if any(
-                    is_single_near_miss(candidate, canonical) for canonical in BCP14_SINGLE_FORMS
-                ):
-                    self._add(
-                        path,
-                        f"malformed BCP 14 keyword near-miss {candidate!r}; spelling only was checked",
-                        line_number,
-                    )
-
-
-def strip_inline_code(line: str) -> str:
-    """Replace backtick-delimited inline code spans with spaces."""
-    characters = list(line)
-    index = 0
-    while index < len(line):
-        if line[index] != "`":
-            index += 1
-            continue
-        run_end = index
-        while run_end < len(line) and line[run_end] == "`":
-            run_end += 1
-        delimiter = line[index:run_end]
-        closing = line.find(delimiter, run_end)
-        if closing == -1:
-            index = run_end
-            continue
-        for position in range(index, closing + len(delimiter)):
-            characters[position] = " "
-        index = closing + len(delimiter)
-    return "".join(characters)
-
-
-def scan_inline_code_spans(line: str) -> list[str]:
-    """Return exact contents of closed backtick-delimited inline code spans."""
-    spans: list[str] = []
-    index = 0
-    while index < len(line):
-        if line[index] != "`":
-            index += 1
-            continue
-        run_end = index
-        while run_end < len(line) and line[run_end] == "`":
-            run_end += 1
-        delimiter = line[index:run_end]
-        closing = line.find(delimiter, run_end)
-        if closing == -1:
-            index = run_end
-            continue
-        spans.append(line[run_end:closing])
-        index = closing + len(delimiter)
-    return spans
-
-
-def is_closing_fence(line: str, character: str, minimum_length: int) -> bool:
-    escaped = re.escape(character)
-    return bool(re.match(rf"^[ \t]{{0,3}}{escaped}{{{minimum_length},}}[ \t]*$", line))
-
-
-def scan_markdown_lines(content: str) -> tuple[list[MarkdownLine], int]:
-    """Return non-fenced lines with inline code masked and any open fence line.
-
-    This is the repository-specific lexical layer shared by structural
-    extraction, headings, links, and BCP 14 checks. It intentionally does not
-    attempt to implement all of CommonMark.
+    ``pathlib`` and ``fnmatch`` disagree about ``**`` across supported Python
+    versions, so the template owns this translation to stay deterministic.
     """
-    lines: list[MarkdownLine] = []
-    fence_character: str | None = None
-    fence_length = 0
-    fence_start_line = 0
+    compiled = _GLOB_CACHE.get(pattern)
+    if compiled is not None:
+        return compiled
 
-    for line_number, line in enumerate(content.splitlines(), 1):
-        if fence_character is not None:
-            if is_closing_fence(line, fence_character, fence_length):
-                fence_character = None
-                fence_length = 0
-                fence_start_line = 0
-            continue
-
-        fence_match = FENCE_RE.match(line)
-        if fence_match:
-            fence = fence_match.group(1)
-            fence_character = fence[0]
-            fence_length = len(fence)
-            fence_start_line = line_number
-            continue
-
-        lines.append(MarkdownLine(line_number, line, strip_inline_code(line)))
-
-    return lines, fence_start_line
-
-
-def markdown_without_fenced_code(content: str) -> str:
-    """Mask fenced lines while preserving offsets used by structural regexes."""
-    visible_line_numbers = {line.number for line in scan_markdown_lines(content)[0]}
-    return "".join(
-        line if line_number in visible_line_numbers else "\n" if line.endswith("\n") else ""
-        for line_number, line in enumerate(content.splitlines(keepends=True), 1)
-    )
-
-
-def scan_inline_link_destinations(line: str) -> list[str]:
-    """Extract inline-link destinations with balanced-parenthesis handling."""
-    destinations: list[str] = []
+    parts = ["^"]
     index = 0
-    while index < len(line):
-        label_start = line.find("[", index)
-        if label_start == -1:
-            break
-        label_end = line.find("]", label_start + 1)
-        if label_end == -1 or label_end + 1 >= len(line) or line[label_end + 1] != "(":
-            index = label_start + 1
-            continue
-
-        destination_start = label_end + 2
-        index = destination_start
-        depth = 1
-        escaped = False
-        while index < len(line):
-            character = line[index]
-            if escaped:
-                escaped = False
-            elif character == "\\":
-                escaped = True
-            elif character == "(":
-                depth += 1
-            elif character == ")":
-                depth -= 1
-                if depth == 0:
-                    destinations.append(line[destination_start:index])
-                    index += 1
-                    break
+    length = len(pattern)
+    while index < length:
+        character = pattern[index]
+        if character == "*":
+            if pattern.startswith("**", index):
+                if pattern.startswith("**/", index):
+                    parts.append("(?:[^/]+/)*")
+                    index += 3
+                    continue
+                parts.append(".*")
+                index += 2
+                continue
+            parts.append("[^/]*")
             index += 1
-    return destinations
+            continue
+        if character == "?":
+            parts.append("[^/]")
+            index += 1
+            continue
+        parts.append(re.escape(character))
+        index += 1
+    parts.append("$")
+    compiled = re.compile("".join(parts))
+    _GLOB_CACHE[pattern] = compiled
+    return compiled
 
 
-def normalize_reference_label(label: str) -> str:
-    """Normalize the supported GitHub-style reference label subset."""
-    return " ".join(label.strip().split()).casefold()
+def matches_any(relative_path: str, patterns) -> bool:
+    return any(glob_to_regex(pattern).match(relative_path) for pattern in patterns)
 
 
-def enumerate_repository_files(root: Path) -> RepositoryFileEnumeration:
-    """Enumerate visible repository paths without following symlink targets."""
+def load_config(root: Path) -> dict:
+    """Merge validate.json over the defaults, rejecting unknown keys."""
+    config = {name: dict(options) for name, options in DEFAULT_CONFIG.items()}
+    config_path = root / CONFIG_PATH
+    if not config_path.is_file():
+        return config
+
+    try:
+        raw = json.loads(config_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError) as error:
+        raise ConfigError(f"{CONFIG_PATH} could not be read ({error})") from error
+    except json.JSONDecodeError as error:
+        raise ConfigError(f"{CONFIG_PATH} is not valid JSON ({error})") from error
+
+    if not isinstance(raw, dict):
+        raise ConfigError(f"{CONFIG_PATH} must contain a JSON object")
+
+    for name, options in raw.items():
+        if name.startswith("_"):
+            continue
+        if name not in config:
+            known = ", ".join(CHECK_NAMES)
+            raise ConfigError(
+                f"{CONFIG_PATH} declares unknown check {name!r}; known checks: {known}"
+            )
+        if not isinstance(options, dict):
+            raise ConfigError(f"{CONFIG_PATH} check {name!r} must map to a JSON object")
+        for key, value in options.items():
+            if key.startswith("_"):
+                continue
+            if key not in config[name]:
+                known = ", ".join(sorted(config[name]))
+                raise ConfigError(
+                    f"{CONFIG_PATH} check {name!r} declares unknown option {key!r}; "
+                    f"known options: {known}"
+                )
+            config[name][key] = value
+    return config
+
+
+def enumerate_repository_files(root: Path):
+    """Return tracked and unignored repository paths, relative and POSIX-style."""
     root = root.resolve()
     if (root / ".git").exists():
         result = subprocess.run(
@@ -1009,227 +255,654 @@ def enumerate_repository_files(root: Path) -> RepositoryFileEnumeration:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
-        if result.returncode != 0:
-            detail = result.stderr.decode("utf-8", errors="replace").strip()
-            raise RepositoryEnumerationError(
-                detail or "Git could not enumerate repository files",
-                "could not enumerate repository files with Git",
+        if result.returncode == 0:
+            return tuple(
+                sorted(
+                    entry.decode("utf-8", errors="replace")
+                    for entry in result.stdout.split(b"\0")
+                    if entry
+                )
             )
-        try:
-            relative_paths = [
-                relative_path.decode("utf-8")
-                for relative_path in result.stdout.split(b"\0")
-                if relative_path
-            ]
-        except UnicodeDecodeError as error:
-            message = f"Git returned a repository path that is not valid UTF-8 ({error})"
-            raise RepositoryEnumerationError(message, message) from error
-        return RepositoryFileEnumeration(
-            tuple(sorted(root / Path(relative_path) for relative_path in relative_paths))
-        )
 
-    files: list[Path] = []
-    junk_files: list[Path] = []
-    junk_directories: list[Path] = []
+    collected = []
     for current, directory_names, file_names in os.walk(root):
         current_path = Path(current)
-        directory_names.sort()
-        file_names.sort()
-        retained_directories: list[str] = []
-        for directory_name in directory_names:
-            directory_path = current_path / directory_name
-            if directory_name == "__pycache__":
-                junk_directories.append(directory_path)
+        retained = []
+        for name in sorted(directory_names):
+            if name == ".git":
                 continue
-            if directory_name in IGNORED_DIRECTORY_NAMES:
+            if (current_path / name).is_symlink():
+                # Record the link without descending through it, so the symlink
+                # check can report it. Descending would leave the repository.
+                collected.append((current_path / name).relative_to(root).as_posix())
                 continue
-            if directory_path.is_symlink():
-                files.append(directory_path)
-                continue
-            retained_directories.append(directory_name)
-        directory_names[:] = retained_directories
-        for file_name in file_names:
-            path = current_path / file_name
-            if file_name in JUNK_FILE_NAMES or path.suffix.lower() == ".pyc":
-                junk_files.append(path)
-                continue
-            files.append(path)
-    return RepositoryFileEnumeration(tuple(files), tuple(junk_files), tuple(junk_directories))
+            retained.append(name)
+        directory_names[:] = retained
+        for file_name in sorted(file_names):
+            relative = (current_path / file_name).relative_to(root)
+            collected.append(relative.as_posix())
+    return tuple(sorted(collected))
 
 
-def visible_repository_files(root: Path) -> list[Path]:
-    """Return visible tracked and unignored files used by the structure snapshot."""
-    try:
-        return list(enumerate_repository_files(root).files)
-    except RepositoryEnumerationError as error:
-        raise RuntimeError(str(error)) from error
+def parent_directories(relative_path: str):
+    """Yield every ancestor directory of a path, nearest root first."""
+    parts = relative_path.split("/")[:-1]
+    for index in range(1, len(parts) + 1):
+        yield "/".join(parts[:index])
 
 
-def render_repository_structure(root: Path) -> str:
-    """Render the exact deterministic format stored in the structure snapshot."""
-    root = root.resolve()
-    file_paths = {path.relative_to(root).as_posix() for path in visible_repository_files(root)}
-    file_paths.add(STRUCTURE_SNAPSHOT_PATH)
+def render_repository_structure(relative_paths) -> str:
+    """Render the deterministic repository structure snapshot."""
+    entries = set()
+    for relative_path in relative_paths:
+        for directory in parent_directories(relative_path):
+            entries.add(f"{directory}/")
+        entries.add(relative_path)
 
-    directory_paths: set[str] = set()
-    for file_path in file_paths:
-        parent = Path(file_path).parent
-        while parent != Path("."):
-            directory_paths.add(f"{parent.as_posix()}/")
-            parent = parent.parent
-
-    entries = sorted(directory_paths | file_paths)
     header = (
         f"# Generated by {STRUCTURE_UPDATE_COMMAND}\n"
         "# Regenerate after intentional repository structure changes.\n\n"
     )
-    return header + "\n".join(entries) + "\n"
+    return header + "\n".join(sorted(entries)) + "\n"
 
 
-def parse_link_destination(raw_destination: str) -> str:
-    destination = raw_destination.strip()
-    if destination.startswith("<"):
-        closing = destination.find(">")
-        return destination[1:closing] if closing != -1 else ""
-    return destination.split(maxsplit=1)[0] if destination else ""
+FENCE_RE = re.compile(r"^[ \t]{0,3}(`{3,}|~{3,})")
+HEADING_RE = re.compile(r"^[ \t]{0,3}(#{1,6})[ \t]+(.*?)[ \t]*#*[ \t]*$")
+INLINE_LINK_RE = re.compile(r"\]\(([^()]*)\)")
+REFERENCE_DEFINITION_RE = re.compile(r"^[ \t]{0,3}\[([^\]]+)\]:[ \t]*(\S+)")
+# Full and collapsed reference links and images: [text][label] and [text][].
+# Shortcut references ([text] alone) are deliberately not matched, because
+# ordinary bracketed prose is indistinguishable from them.
+REFERENCE_USAGE_RE = re.compile(r"\[([^\]\n]+)\]\[([^\]\n]*)\]")
+# A definition line whose destination is missing entirely.
+MALFORMED_DEFINITION_RE = re.compile(r"^[ \t]{0,3}\[([^\]]+)\]:[ \t]*$")
+INLINE_CODE_RE = re.compile(r"`+[^`]*`+")
+EMPHASIS_RE = re.compile(r"[*_~]+")
+MARKDOWN_LINK_TEXT_RE = re.compile(r"\[([^\]]*)\]\([^()]*\)")
+SCHEME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
 
 
-def is_external_destination(destination: str) -> bool:
-    return bool(destination.startswith("//") or re.match(r"^[A-Za-z][A-Za-z0-9+.-]*:", destination))
+def normalize_reference_label(label: str) -> str:
+    """Normalize a link label the way CommonMark matches them.
+
+    Labels match case-insensitively with internal whitespace collapsed, so
+    ``[See Also]`` and ``[see   also]`` refer to the same definition.
+    """
+    return " ".join(label.split()).casefold()
 
 
-def github_heading_slug(heading_text: str) -> str:
-    """Return the GitHub-style base slug needed by this repository's headings."""
-    value = html.unescape(heading_text.strip())
-    value = re.sub(r"!?\[([^\]]+)\]\([^)]+\)", r"\1", value)
-    value = re.sub(r"<[^>]+>", "", value)
-    value = value.replace("`", "").replace("*", "")
-    value = strip_underscore_emphasis(value)
-    slug_characters: list[str] = []
-    for character in value.lower():
-        if character.isspace():
-            slug_characters.append("-")
-        elif character in {"-", "_"}:
-            slug_characters.append(character)
-        elif unicodedata.category(character).startswith(("P", "S")):
+def heading_slug(text: str) -> str:
+    """Approximate GitHub's heading anchor algorithm."""
+    value = MARKDOWN_LINK_TEXT_RE.sub(r"\1", text)
+    value = INLINE_CODE_RE.sub(lambda match: match.group(0).strip("`"), value)
+    value = EMPHASIS_RE.sub("", value)
+    value = value.strip().lower()
+    value = "".join(
+        character for character in value if character.isalnum() or character in {" ", "-", "_"}
+    )
+    return value.replace(" ", "-")
+
+
+def parse_markdown(content: str):
+    """Return anchors, destinations, defined labels, and label usages.
+
+    Everything inside fenced code is ignored, so examples in documentation do
+    not register as real links, definitions, or usages.
+    """
+    anchors = set()
+    counts = Counter()
+    destinations = []
+    defined_labels = {}
+    usages = []
+    headings = []
+    definition_problems = []
+    fence = None
+    fence_line = 0
+    for number, raw_line in enumerate(content.splitlines(), start=1):
+        fence_match = FENCE_RE.match(raw_line)
+        if fence_match:
+            marker = fence_match.group(1)[0]
+            if fence is None:
+                fence = marker
+                fence_line = number
+            elif fence == marker:
+                fence = None
+                fence_line = 0
             continue
-        else:
-            slug_characters.append(character)
-    return "".join(slug_characters)
+        if fence is not None:
+            continue
 
+        heading_match = HEADING_RE.match(raw_line)
+        if heading_match:
+            headings.append((number, len(heading_match.group(1))))
+            base = heading_slug(heading_match.group(2))
+            if base:
+                seen = counts[base]
+                counts[base] += 1
+                anchors.add(base if seen == 0 else f"{base}-{seen}")
 
-def strip_underscore_emphasis(value: str) -> str:
-    """Remove underscore emphasis delimiters without removing intraword underscores."""
-    emphasis = re.compile(r"(?<![\w])(_{1,2})(?=\S)(.+?)(?<=\S)\1(?![\w])")
-    previous = None
-    while value != previous:
-        previous = value
-        value = emphasis.sub(r"\2", value)
-    return value
-
-
-def unique_heading_slug(base_slug: str, counts: Counter[str], used_slugs: set[str]) -> str:
-    candidate = base_slug
-    if candidate in used_slugs:
-        suffix = counts[base_slug] or 1
-        while f"{base_slug}-{suffix}" in used_slugs:
-            suffix += 1
-        candidate = f"{base_slug}-{suffix}"
-        counts[base_slug] = suffix + 1
-    else:
-        counts[base_slug] = 1
-    used_slugs.add(candidate)
-    return candidate
-
-
-def damerau_levenshtein(left: str, right: str) -> int:
-    """Return optimal-string-alignment distance for short keyword candidates."""
-    rows = len(left) + 1
-    columns = len(right) + 1
-    distances = [[0] * columns for _ in range(rows)]
-    for row in range(rows):
-        distances[row][0] = row
-    for column in range(columns):
-        distances[0][column] = column
-
-    for row in range(1, rows):
-        for column in range(1, columns):
-            substitution_cost = 0 if left[row - 1] == right[column - 1] else 1
-            distances[row][column] = min(
-                distances[row - 1][column] + 1,
-                distances[row][column - 1] + 1,
-                distances[row - 1][column - 1] + substitution_cost,
-            )
-            if (
-                row > 1
-                and column > 1
-                and left[row - 1] == right[column - 2]
-                and left[row - 2] == right[column - 1]
-            ):
-                distances[row][column] = min(
-                    distances[row][column], distances[row - 2][column - 2] + 1
+        line = INLINE_CODE_RE.sub("", raw_line)
+        for match in INLINE_LINK_RE.finditer(line):
+            destinations.append((number, match.group(1)))
+        definition = REFERENCE_DEFINITION_RE.match(line)
+        if definition:
+            label = definition.group(1)
+            normalized = normalize_reference_label(label)
+            if normalized in defined_labels:
+                definition_problems.append(
+                    (number, f"duplicate reference-style link definition {label!r}")
                 )
-    return distances[-1][-1]
+            else:
+                defined_labels[normalized] = number
+            destinations.append((number, definition.group(2)))
+            continue
+
+        malformed = MALFORMED_DEFINITION_RE.match(line)
+        if malformed:
+            definition_problems.append(
+                (
+                    number,
+                    f"reference-style link definition {malformed.group(1)!r} has no destination",
+                )
+            )
+            continue
+
+        for match in REFERENCE_USAGE_RE.finditer(line):
+            # A collapsed reference, [text][], takes its label from the text.
+            label = match.group(2) or match.group(1)
+            usages.append((number, label))
+    if fence is not None:
+        definition_problems.append((fence_line, "fenced code block is not closed"))
+    return anchors, destinations, defined_labels, usages, headings, definition_problems
 
 
-def is_single_near_miss(candidate: str, canonical: str) -> bool:
-    if candidate == canonical or not candidate:
-        return False
-    if len(canonical) <= 4:
-        return candidate in {canonical[:-1], canonical + canonical[-1]}
-    if (
-        candidate[:3] != canonical[:3]
-        or candidate[-1] != canonical[-1]
-        or abs(len(candidate) - len(canonical)) > 1
-    ):
-        return False
-    distance = damerau_levenshtein(candidate, canonical)
-    return distance == 1
+def strip_inline_code(line: str) -> str:
+    """Remove inline code spans so prose checks ignore code samples."""
+    return INLINE_CODE_RE.sub("", line)
 
 
-def is_phrase_near_miss(candidate: str, canonical: str) -> bool:
-    candidate_words = candidate.split()
-    canonical_words = canonical.split()
-    if candidate == canonical or len(candidate_words) != len(canonical_words):
-        return False
-    return sum(
-        damerau_levenshtein(candidate_word, canonical_word)
-        for candidate_word, canonical_word in zip(candidate_words, canonical_words)
-    ) == 1 and all(
-        is_phrase_word_near_miss(candidate_word, canonical_word) or candidate_word == canonical_word
-        for candidate_word, canonical_word in zip(candidate_words, canonical_words)
-    )
+def markdown_without_fenced_code(content: str) -> str:
+    """Blank out fenced code blocks while preserving line numbering.
+
+    Exposed for scripts/validate_local.py, whose checks frequently need to read
+    Markdown prose without matching text inside code fences.
+    """
+    lines = []
+    fence = None
+    for raw_line in content.splitlines():
+        fence_match = FENCE_RE.match(raw_line)
+        if fence_match:
+            marker = fence_match.group(1)[0]
+            if fence is None:
+                fence = marker
+            elif fence == marker:
+                fence = None
+            lines.append("")
+            continue
+        lines.append("" if fence is not None else raw_line)
+    trailing = "\n" if content.endswith("\n") else ""
+    return "\n".join(lines) + trailing
 
 
-def is_phrase_word_near_miss(candidate: str, canonical: str) -> bool:
-    if is_single_near_miss(candidate, canonical):
-        return True
-    return (
-        canonical == "NOT"
-        and len(candidate) == len(canonical)
-        and candidate.startswith("N")
-        and any(character.isdigit() for character in candidate)
-        and damerau_levenshtein(candidate, canonical) == 1
-    )
+def parse_destination(raw_destination: str) -> str:
+    """Strip angle brackets and any trailing link title."""
+    destination = raw_destination.strip()
+    if destination.startswith("<") and destination.endswith(">"):
+        return destination[1:-1].strip()
+    for quote in ('"', "'"):
+        index = destination.find(f" {quote}")
+        if index != -1:
+            destination = destination[:index]
+            break
+    return destination.strip()
 
 
-def validate_repository(root: Path) -> list[Finding]:
-    return RepositoryValidator(root).validate()
+def is_external(destination: str) -> bool:
+    return destination.startswith("//") or bool(SCHEME_RE.match(destination))
+
+
+class RepositoryValidator:
+    """Run the enabled mechanical checks over one repository."""
+
+    def __init__(self, root: Path, config: dict) -> None:
+        self.root = root.resolve()
+        self.config = config
+        self.findings = []
+        self.files = ()
+        self.text = {}
+        self.markdown = {}
+
+    def _add(self, path: str, reason: str, check: str, line: int = 0) -> None:
+        self.findings.append(Finding(path, line, reason, check))
+
+    def _enabled(self, name: str) -> bool:
+        return bool(self.config[name].get("enabled"))
+
+    def validate(self):
+        self.files = enumerate_repository_files(self.root)
+        self._check_junk_artifacts()
+        self._check_symlinks()
+        self._read_text_files()
+        self._check_final_newline()
+        self._check_required_files()
+        self._check_credential_files()
+        self._check_path_names()
+        self._check_markdown_links()
+        self._check_heading_hierarchy()
+        self._check_structure_snapshot()
+        self._run_local_checks()
+        return sorted(set(self.findings))
+
+    def _check_junk_artifacts(self) -> None:
+        if not self._enabled("junk-artifacts"):
+            return
+        options = self.config["junk-artifacts"]
+        names = set(options.get("names", ()))
+        patterns = options.get("patterns", ())
+        directories = set(options.get("directories", ()))
+        for relative_path in self.files:
+            name = relative_path.rsplit("/", 1)[-1]
+            if name in names or matches_any(relative_path, patterns):
+                self._add(relative_path, "junk artifact is not allowed", "junk-artifacts")
+                continue
+            if directories.intersection(relative_path.split("/")[:-1]):
+                self._add(
+                    relative_path,
+                    "file lives in a junk artifact directory",
+                    "junk-artifacts",
+                )
+
+    def _check_symlinks(self) -> None:
+        """Reject committed symbolic links without reading their targets.
+
+        This check is unconditional. A symbolic link is mechanically distinct
+        from ordinary repository content and its target may resolve outside the
+        repository entirely, so allowing one by configuration would widen the
+        contract for little demonstrated value. The link is never read or
+        resolved, so nothing outside the repository is opened.
+        """
+        for relative_path in self.files:
+            try:
+                mode = (self.root / relative_path).lstat().st_mode
+            except OSError as error:
+                self._add(
+                    relative_path,
+                    f"repository path metadata could not be read ({error.strerror or error})",
+                    "symlinks",
+                )
+                continue
+            if stat.S_ISLNK(mode):
+                self._add(
+                    relative_path,
+                    "symbolic link must not be committed; the link target was not read",
+                    "symlinks",
+                )
+
+    def _read_text_files(self) -> None:
+        globs = list(self.config["text-encoding"].get("globs", ()))
+        globs.extend(self.config["markdown-links"].get("globs", ()))
+        globs.extend(self.config["markdown-headings"].get("globs", ()))
+        globs.append(self.config["structure-snapshot"].get("path", STRUCTURE_SNAPSHOT_PATH))
+        report = self._enabled("text-encoding")
+        for relative_path in self.files:
+            if not matches_any(relative_path, globs):
+                continue
+            path = self.root / relative_path
+            if path.is_symlink() or not path.is_file():
+                continue
+            try:
+                data = path.read_bytes()
+            except OSError as error:
+                if report:
+                    self._add(
+                        relative_path,
+                        f"file could not be read ({error.strerror or error})",
+                        "text-encoding",
+                    )
+                continue
+            try:
+                self.text[relative_path] = data.decode("utf-8")
+            except UnicodeDecodeError as error:
+                if report:
+                    self._add(relative_path, f"file is not valid UTF-8 ({error})", "text-encoding")
+
+    def _check_final_newline(self) -> None:
+        if not self._enabled("final-newline"):
+            return
+        globs = self.config["final-newline"].get("globs", ())
+        for relative_path, content in sorted(self.text.items()):
+            if not matches_any(relative_path, globs):
+                continue
+            if content and not content.endswith("\n"):
+                self._add(relative_path, "text file must end with a newline", "final-newline")
+
+    def _check_required_files(self) -> None:
+        if not self._enabled("required-files"):
+            return
+        present = set(self.files)
+        for required in self.config["required-files"].get("paths", ()):
+            if required not in present:
+                self._add(required, "required baseline file is missing", "required-files")
+
+    def _check_credential_files(self) -> None:
+        if not self._enabled("credential-files"):
+            return
+        options = self.config["credential-files"]
+        patterns = options.get("patterns", ())
+        allow = options.get("allow", ())
+        for relative_path in self.files:
+            if matches_any(relative_path, allow):
+                continue
+            if matches_any(relative_path, patterns):
+                self._add(
+                    relative_path,
+                    "credential-shaped file must not be committed",
+                    "credential-files",
+                )
+
+    def _path_name_rules(self):
+        """Return the configured path-name rules in evaluation order.
+
+        A repository with one naming convention states ``pattern``, ``scope``
+        and ``exempt`` directly. A repository whose convention differs by
+        directory states ``rules`` instead, which fully replaces the single
+        form rather than layering on top of it.
+        """
+        options = self.config["path-names"]
+        raw_rules = options.get("rules") or []
+        if raw_rules:
+            return raw_rules
+        return [
+            {
+                "pattern": options.get("pattern", ""),
+                "scope": options.get("scope", ()),
+                "exempt": options.get("exempt", ()),
+            }
+        ]
+
+    def _compile_path_name_rules(self):
+        """Validate and compile the rules, or report why they cannot be used."""
+        compiled = []
+        for index, raw in enumerate(self._path_name_rules()):
+            if not isinstance(raw, dict):
+                self._add(
+                    CONFIG_PATH,
+                    f"path-names rule {index} must be a JSON object",
+                    "path-names",
+                )
+                return None
+            # Keys beginning with "_" are comments, as they are at the top level.
+            declared = {key for key in raw if not key.startswith("_")}
+            unknown = sorted(declared - {"pattern", "scope", "exempt"})
+            if unknown:
+                self._add(
+                    CONFIG_PATH,
+                    f"path-names rule {index} declares unknown option {unknown[0]!r}; "
+                    "known options: exempt, pattern, scope",
+                    "path-names",
+                )
+                return None
+            try:
+                pattern = re.compile(raw.get("pattern", ""))
+            except re.error as error:
+                self._add(
+                    CONFIG_PATH,
+                    f"path-names rule {index} pattern is invalid ({error})",
+                    "path-names",
+                )
+                return None
+            compiled.append((pattern, raw.get("scope", ()), raw.get("exempt", ())))
+        return compiled
+
+    def _check_path_names(self) -> None:
+        if not self._enabled("path-names"):
+            return
+        rules = self._compile_path_name_rules()
+        if rules is None:
+            return
+
+        seen = set()
+        for relative_path in self.files:
+            candidates = list(parent_directories(relative_path)) + [relative_path]
+            for candidate in candidates:
+                if candidate in seen:
+                    continue
+                seen.add(candidate)
+                # The first rule whose scope matches decides this path, so one
+                # path yields at most one finding no matter how many rules could
+                # have matched. Order rules most specific first.
+                for pattern, scope, exempt in rules:
+                    if not matches_any(candidate, scope):
+                        continue
+                    if not matches_any(candidate, exempt):
+                        name = candidate.rsplit("/", 1)[-1]
+                        if not pattern.match(name):
+                            self._add(
+                                candidate,
+                                f"path component {name!r} does not match the configured pattern",
+                                "path-names",
+                            )
+                    break
+
+    def _check_markdown_links(self) -> None:
+        if not self._enabled("markdown-links"):
+            return
+        globs = self.config["markdown-links"].get("globs", ())
+        for relative_path, content in sorted(self.text.items()):
+            if matches_any(relative_path, globs):
+                self.markdown[relative_path] = parse_markdown(content)
+
+        self._check_reference_labels()
+
+        present = set(self.files)
+        for relative_path, (_, destinations, _, _, _, _) in sorted(self.markdown.items()):
+            directory = relative_path.rsplit("/", 1)[0] if "/" in relative_path else ""
+            for line, raw_destination in destinations:
+                destination = parse_destination(raw_destination)
+                if not destination or is_external(destination) or destination.startswith("#"):
+                    if destination.startswith("#"):
+                        self._verify_anchor(relative_path, relative_path, destination[1:], line)
+                    continue
+
+                target, _, fragment = destination.partition("#")
+                target = unquote(target)
+                if target.startswith("/"):
+                    self._add(
+                        relative_path,
+                        f"link destination {destination!r} is repository-absolute",
+                        "markdown-links",
+                        line,
+                    )
+                    continue
+                resolved = os.path.normpath(os.path.join(directory, target)).replace(os.sep, "/")
+                if resolved.startswith(".."):
+                    self._add(
+                        relative_path,
+                        f"link destination {destination!r} escapes the repository",
+                        "markdown-links",
+                        line,
+                    )
+                    continue
+                if resolved in present:
+                    if fragment:
+                        self._verify_anchor(relative_path, resolved, fragment, line)
+                    continue
+                if any(existing.startswith(f"{resolved}/") for existing in present):
+                    continue
+                self._add(
+                    relative_path,
+                    f"link destination {destination!r} does not exist",
+                    "markdown-links",
+                    line,
+                )
+
+    def _check_reference_labels(self) -> None:
+        """Report unresolved usages, and definitions that cannot be relied on."""
+        for relative_path, parsed in sorted(self.markdown.items()):
+            _, _, defined_labels, usages, _, definition_problems = parsed
+            for line, reason in definition_problems:
+                self._add(relative_path, reason, "markdown-links", line)
+            for line, label in usages:
+                if normalize_reference_label(label) not in defined_labels:
+                    self._add(
+                        relative_path,
+                        f"reference-style link label {label!r} has no matching definition",
+                        "markdown-links",
+                        line,
+                    )
+
+    def _verify_anchor(self, source: str, target: str, fragment: str, line: int) -> None:
+        parsed = self.markdown.get(target)
+        if parsed is None:
+            return
+        anchors = parsed[0]
+        if unquote(fragment).lower() not in anchors:
+            self._add(
+                source,
+                f"link anchor '#{fragment}' does not match a heading in {target}",
+                "markdown-links",
+                line,
+            )
+
+    def _check_heading_hierarchy(self) -> None:
+        """Report headings that skip a level, such as H1 followed by H4.
+
+        A skipped level breaks document outline and assistive-technology
+        navigation. The first heading in a document may be any level; only
+        increases of more than one level are reported.
+        """
+        if not self._enabled("markdown-headings"):
+            return
+        globs = self.config["markdown-headings"].get("globs", ())
+        for relative_path, content in sorted(self.text.items()):
+            if not matches_any(relative_path, globs):
+                continue
+            parsed = self.markdown.get(relative_path)
+            headings = (parsed or parse_markdown(content))[4]
+            if not headings:
+                continue
+
+            first_line, first_level = headings[0]
+            if first_level != 1:
+                self._add(
+                    relative_path,
+                    f"first heading must be H1, found H{first_level}",
+                    "markdown-headings",
+                    first_line,
+                )
+
+            top_level_headings = [line for line, level in headings if level == 1]
+            if len(top_level_headings) != 1:
+                self._add(
+                    relative_path,
+                    f"document must contain exactly one H1; found {len(top_level_headings)}",
+                    "markdown-headings",
+                    top_level_headings[1] if len(top_level_headings) > 1 else 0,
+                )
+
+            previous = None
+            for line, level in headings:
+                if previous is not None and level > previous + 1:
+                    self._add(
+                        relative_path,
+                        f"heading level skips from H{previous} to H{level}",
+                        "markdown-headings",
+                        line,
+                    )
+                previous = level
+
+    def _check_structure_snapshot(self) -> None:
+        if not self._enabled("structure-snapshot"):
+            return
+        options = self.config["structure-snapshot"]
+        snapshot_path = options.get("path", STRUCTURE_SNAPSHOT_PATH)
+        paths = set(self.files)
+        paths.add(snapshot_path)
+        expected = render_repository_structure(sorted(paths))
+        actual = self.text.get(snapshot_path)
+        if actual is None:
+            try:
+                actual = (self.root / snapshot_path).read_text(encoding="utf-8")
+            except (OSError, UnicodeError):
+                self._add(
+                    snapshot_path,
+                    f"structure snapshot is missing or unreadable; run {STRUCTURE_UPDATE_COMMAND}",
+                    "structure-snapshot",
+                )
+                return
+        if actual != expected:
+            self._add(
+                snapshot_path,
+                f"structure snapshot is out of date; run {STRUCTURE_UPDATE_COMMAND}",
+                "structure-snapshot",
+            )
+
+    def _run_local_checks(self) -> None:
+        module_path = self.root / LOCAL_CHECK_PATH
+        if not module_path.is_file():
+            return
+        spec = importlib.util.spec_from_file_location("validate_local", module_path)
+        if spec is None or spec.loader is None:
+            self._add(LOCAL_CHECK_PATH, "local check module could not be loaded", "local")
+            return
+        module = importlib.util.module_from_spec(spec)
+        context = CheckContext(self.root, self.files, dict(self.text))
+        scripts_directory = str(module_path.parent)
+        if scripts_directory not in sys.path:
+            sys.path.insert(0, scripts_directory)
+        # Register before executing: dataclasses and typing resolve string
+        # annotations by looking the defining module up in sys.modules, so a
+        # local module using postponed annotations fails without this.
+        sys.modules[spec.name] = module
+        try:
+            spec.loader.exec_module(module)
+            extra_checks = getattr(module, "extra_checks", None)
+            if extra_checks is None:
+                self._add(
+                    LOCAL_CHECK_PATH,
+                    "local check module must define extra_checks(context)",
+                    "local",
+                )
+                return
+            results = list(extra_checks(context))
+        except Exception as error:  # noqa: BLE001 - a local check must not abort the run
+            # A module that failed to execute must not stay importable.
+            sys.modules.pop(spec.name, None)
+            self._add(
+                LOCAL_CHECK_PATH, f"local checks raised {type(error).__name__}: {error}", "local"
+            )
+            return
+        for result in results:
+            try:
+                path, line, reason = result
+            except (TypeError, ValueError):
+                self._add(
+                    LOCAL_CHECK_PATH,
+                    "local checks must yield (path, line, reason) tuples",
+                    "local",
+                )
+                continue
+            self._add(str(path), str(reason), "local", int(line))
+
+
+def validate_repository(root: Path):
+    """Validate one repository and return sorted findings."""
+    try:
+        config = load_config(root)
+    except ConfigError as error:
+        return [Finding(CONFIG_PATH, 0, str(error), "config")]
+    return RepositoryValidator(root, config).validate()
 
 
 def main() -> int:
-    repository_root = Path(__file__).resolve().parents[1]
-    validator = RepositoryValidator(repository_root)
-    findings = validator.validate()
+    root = Path(__file__).resolve().parents[1]
+    findings = validate_repository(root)
+    for finding in findings:
+        print(finding)
     if findings:
-        for finding in findings:
-            print(finding, file=sys.stderr)
-        print(f"Validation failed: {len(findings)} error(s).", file=sys.stderr)
+        print(f"\n{len(findings)} finding(s)", file=sys.stderr)
         return 1
-
-    template_count = sum(1 for child in (repository_root / "templates").iterdir() if child.is_dir())
-    markdown_count = len(validator.markdown_documents)
-    print(f"Validation passed: {template_count} templates, {markdown_count} Markdown files.")
+    print("Repository validation passed.")
     return 0
 
 
