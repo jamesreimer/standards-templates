@@ -34,6 +34,7 @@ scripts/
 scripts/setup_git_hooks.py
 scripts/update_repository_structure.py
 scripts/validate.py
+scripts/validate_local.py
 templates/
 templates/architectural-reasoning/
 templates/architectural-reasoning/README.md
@@ -88,4 +89,6 @@ templates/web-styling-architecture/README.md
 templates/web-styling-architecture/standard.md
 tests/
 tests/test_validate.py
+tests/test_validate_local.py
+validate.json
 web-standards-assessment-guidance.md
