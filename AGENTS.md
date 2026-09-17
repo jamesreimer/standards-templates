@@ -67,6 +67,7 @@ Do not add a package manager, dependency, or runtime to this repository solely t
 ## Validation and completion
 
 - Run `python3 -m unittest discover -s tests` and `python3 scripts/validate.py`.
+- Do not edit `scripts/validate.py`, `scripts/update_repository_structure.py`, `scripts/setup_git_hooks.py`, or `tests/test_validate.py`. They are exact copies of the repository template recorded in [PROVENANCE.md](PROVENANCE.md). A standards-domain check belongs in `scripts/validate_local.py`; a generic repository-mechanics check belongs upstream, not here. Configuration changes belong in `validate.json`. [CONTRIBUTING.md](CONTRIBUTING.md) describes the boundary.
 - Run applicable supplemental checks from [CONTRIBUTING.md](CONTRIBUTING.md), including Markdown lint for Markdown changes, and `git diff --check`.
 - Manually reverify affected external claims when citations change.
 - Update `repository-structure.txt` only for an intentional structural change by running `python3 scripts/update_repository_structure.py`.
