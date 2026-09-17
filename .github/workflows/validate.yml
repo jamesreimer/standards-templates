@@ -15,6 +15,9 @@ concurrency:
 
 jobs:
   validate:
+    # This job name becomes the status check context. It is externally
+    # significant only if a repository adds a required-status-check rule
+    # referring to it; renaming the job would then block every pull request.
     name: Repository validation
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -22,6 +25,8 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Set up Python
+        # Pinned to the supported floor so a newer local interpreter cannot
+        # hide syntax that stock macOS python3 (3.9.6) would reject.
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.9"
