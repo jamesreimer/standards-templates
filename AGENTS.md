@@ -38,7 +38,7 @@ Consult [CATALOG.md](CATALOG.md) for other applicable subjects and their boundar
 - **Implementor:** performs repository mutations, branch and PR work, validation, and cleanup within authorized scope.
 - **Independent reviewer:** evaluates proposed or completed results for conceptual defects, omissions, duplication, misclassification, and boundary drift. Independent review does not itself grant implementation authority.
 
-These roles describe responsibilities rather than required tools or a fixed number of participants. Honor the planned review gates; the implementor's own checks do not substitute for a required independent review.
+These roles describe responsibilities rather than required tools or a fixed number of participants. Independent review is not universally required. It is required when an applicable governing standard, an explicit handoff, or a project-specific instruction imposes it, and where it is required the implementor's own checks do not substitute for it. Review should produce information about the work, not an additional confirmation that checks already report.
 
 When preparing or returning from an implementation handoff, reference settled authoritative results rather than replaying their reasoning, and carry forward only the context, constraints, and unresolved questions the next decision needs, keeping detail proportionate to remaining uncertainty and consequence; `architectural-reasoning` §2 governs that proportionality, and `operational-execution-contract` §5 and §12.1 govern what each direction carries. Bound the authorized problem, permitted consequences, and protected interests without unnecessarily prescribing the form of the solution, and let `architectural-reasoning` §8 determine whether the conforming result is additive, modifying, consolidating, replacing, or removing. Where exact-change discipline is materially required, state that restriction deliberately and name the consequence it protects rather than letting it arise implicitly from substantive scope limits or non-goals; `operational-execution-contract` §9 and §5 own that distinction.
 
@@ -50,11 +50,17 @@ Do not create or modify an adopted artifact until the proposed scope and adoptio
 
 Humans and agents use the same canonical adoption guidance; do not create a separate agent-only adoption policy.
 
+## Tooling
+
+Repository tooling is Python, using only the standard library, targeting the version floor stated in [README.md](README.md). Use shell only where the shell is itself the interface, such as a Git hook shim.
+
+Do not add a package manager, dependency, or runtime to this repository solely to support repository tooling.
+
 ## Implementation lifecycle
 
 1. Create or use a bounded implementation branch, following applicable contribution naming conventions. Keep unrelated work out of its commits and PR.
 2. Run the validation below and open a reviewable PR stating scope, applicable standards, validation evidence, and any unresolved review questions.
-3. When merge is within authorized scope, the PR is non-draft, the intended review gate is complete, and required checks are present and satisfied, enable auto-merge on that PR. Repository-level auto-merge availability does not enable it for an individual PR. Do not manually merge merely because checks are green when auto-merge is the intended path.
+3. Merge only when it is within authorized scope, the PR is non-draft, any required review gate is complete, and the applicable required checks and repository protections are satisfied. Auto-merge may be used where available, including before those prerequisites complete, but it is not required; merging manually once the same prerequisites are satisfied is equally permitted. Do not bypass a required protection, and do not treat either merge mechanism as authority to ignore an independently applicable publication or deployment rule.
 4. Confirm the merge before cleanup. Fetch and prune as appropriate, verify remote branch cleanup, and delete merged local implementation branches only after confirming their work is present on `main` and no unique or unmerged work would be lost. Preserve unrelated branches, worktrees, and uncommitted work.
 5. Return to `main`, update it safely from `origin/main` without overwriting local work, and verify final local/remote state. Report merge identity, branch cleanup, and any preserved changes or unresolved cleanup conditions.
 
