@@ -59,12 +59,13 @@ Before merging a material change:
 
 1. regenerate `repository-structure.txt` when repository paths changed intentionally;
 2. run the unit tests and repository validator documented in [README.md](README.md);
-3. review requirement strength using the A/B/C calibration test in `standards-authoring`;
-4. confirm that examples remain informative and do not silently change the rule;
-5. check documents for unintended domain-specific assumptions or universalized handoffs;
-6. update `README.md`, `ADOPTION.md`, `NAMING.md`, or `CATALOG.md` only when their repository-level responsibilities are affected;
-7. verify internal links and manually re-check affected external claims;
-8. inspect the complete diff for unintended scope, authority, naming, licensing, or lifecycle changes.
+3. when a change adds or alters validation behavior, confirm the check is owned by the appropriate layer: generic repository-mechanics checks belong upstream in `repo-template`, and repository-specific checks remain local. [CONTRIBUTING.md](CONTRIBUTING.md) states the ownership rule and [PROVENANCE.md](PROVENANCE.md) covers adoption verification;
+4. review requirement strength using the A/B/C calibration test in `standards-authoring`;
+5. confirm that examples remain informative and do not silently change the rule;
+6. check documents for unintended domain-specific assumptions or universalized handoffs;
+7. update `README.md`, `ADOPTION.md`, `NAMING.md`, or `CATALOG.md` only when their repository-level responsibilities are affected;
+8. verify internal links and manually re-check affected external claims;
+9. inspect the complete diff for unintended scope, authority, naming, licensing, or lifecycle changes.
 
 ## Contribution relationship
 
