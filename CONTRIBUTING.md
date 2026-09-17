@@ -93,3 +93,48 @@ python3 scripts/update_repository_structure.py
 ```
 
 Automated validation checks mechanical repository invariants. Human review remains responsible for normative calibration, applicability, conceptual boundaries, external evidence, and prose quality as described in [MAINTAINING.md](MAINTAINING.md).
+
+## Validator architecture
+
+Validation has two owners, and the boundary between them matters when adding a check.
+
+| File | Owner | Rule |
+| --- | --- | --- |
+| `scripts/validate.py` | [`jamesreimer/repo-template`](https://github.com/jamesreimer/repo-template) | Exact copy. Never edit it here. |
+| `scripts/update_repository_structure.py` | `repo-template` | Exact copy. Never edit it here. |
+| `tests/test_validate.py` | `repo-template` | Exact copy. Never edit it here. |
+| `validate.json` | this repository | Selects which generic checks run, and over which paths. |
+| `scripts/validate_local.py` | this repository | Standards-domain checks only. |
+| `tests/test_validate_local.py` | this repository | Covers `scripts/validate_local.py`. |
+
+The adopted revision is recorded in [PROVENANCE.md](PROVENANCE.md).
+
+### Adding a check
+
+Decide first whether the check is generic or standards-specific.
+
+A check is **standards-specific** when it would be meaningless in a repository that is not a library of standards templates: anything about template directories, stable template IDs, the catalog, human-facing titles, local requirement schemes, or BCP 14 keyword spelling. Add it to `scripts/validate_local.py` with tests in `tests/test_validate_local.py`.
+
+A check is **generic** when it would apply to any repository: encoding, newlines, path naming, Markdown structure, link resolution, junk artifacts, credential-shaped filenames, symlinks. It does not belong here even if this repository is the only one that currently wants it. Raise it as an issue in `repo-template`, and adopt the result.
+
+Do not fork `scripts/validate.py` to add either kind. If a check genuinely cannot be expressed through `validate.json` or `scripts/validate_local.py`, that is a defect in the template and belongs upstream. Every generic capability this repository once had was moved upstream rather than reimplemented locally, and `scripts/validate_local.py` is deliberately not a place for checks that could not find another home.
+
+### Configuring the generic checks
+
+`validate.json` selects which checks run. Every key is optional and omitted keys take the default; keys beginning with `_` are ignored and may be used as comments. An unknown check or option is an error rather than a silent no-op.
+
+This repository enables `required-files`, `structure-snapshot`, and `path-names`. The naming policy is expressed entirely as configuration, using ordered per-scope rules: the first rule whose `scope` matches a path decides it, so rules are listed most specific first.
+
+| Scope | Convention |
+| --- | --- |
+| `.github/`, `.githooks/`, `.vscode/` | whatever the owning tool requires |
+| `scripts/*.py`, `tests/*.py` | lowercase `snake_case`, per PEP 8 |
+| `templates/*/README.md`, `templates/*/standard.md` | the two fixed template documents |
+| root documents and tool configuration | as named |
+| everything else | lowercase kebab-case |
+
+Changing a naming convention is a `validate.json` edit, not a code change.
+
+### Writing a local check
+
+`scripts/validate_local.py` defines `extra_checks(context)` and returns `(path, line, reason)` tuples. `context` carries `root`, `files`, and `text`. It is imported as an ordinary module, so `dataclasses`, `typing`, and `from __future__ import annotations` all work. A local check that raises is reported as a finding rather than aborting the run.

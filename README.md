@@ -56,11 +56,17 @@ ruff format --check scripts tests
 actionlint .github/workflows/*.yml
 ```
 
-Validation checks repository filesystem and path naming; template structure and stable template-ID declaration consistency; catalog membership and titles; local requirement-ID scheme and definition integrity for standards that explicitly declare a local scheme; explicit inline-code local requirement-reference resolution in template `standard.md` files; local Markdown links and anchors; heading and fence structure; UTF-8 and final newlines; junk artifacts; repository symlinks; and obvious malformed uppercase BCP 14 keyword spellings. Repository symlinks are rejected rather than followed, whether their targets are internal or external.
+Validation runs in two parts with different owners.
 
-The validator does not check requirement references in template READMEs or root or general guidance, external URL availability, semantic correctness of cross-standard dependencies, or the normative meaning of a reference. It does not evaluate normative strength, applicability, conceptual boundaries, citation correctness, external evidence correctness, legal interpretation, editorial quality, or prose quality.
+`scripts/validate.py` is an exact copy of the reusable validator from [`jamesreimer/repo-template`](https://github.com/jamesreimer/repo-template) and is not modified here. It checks generic repository mechanics: UTF-8 encoding and final newlines; junk artifacts; credential-shaped filenames; committed repository symlinks, which are rejected rather than followed whether their targets are internal or external; local Markdown links, anchors, and reference-style labels and definitions; fenced code block balance; heading hierarchy, including a single leading H1; repository path naming; and agreement with the `repository-structure.txt` snapshot. Which of those run, and over which paths, is configured by [`validate.json`](validate.json).
 
-The validator also compares the current visible repository paths with `repository-structure.txt`. After an intentional structural change, regenerate that deterministic snapshot explicitly:
+`scripts/validate_local.py` holds this repository's own checks, which have no meaning outside a library of standards templates: template directory structure; stable template-ID declaration consistency; catalog membership and human-facing title agreement; local requirement-ID scheme and definition integrity for standards that explicitly declare a local scheme; explicit inline-code local requirement-reference resolution in template `standard.md` files; and obvious malformed uppercase BCP 14 keyword spellings.
+
+The split is deliberate. Generic repository mechanics are maintained once, upstream, and copied here unmodified; standards-specific behavior stays local. See [PROVENANCE.md](PROVENANCE.md) for the adopted revision and the relationship between the two repositories.
+
+Validation does not check requirement references in template READMEs or root or general guidance, external URL availability, semantic correctness of cross-standard dependencies, or the normative meaning of a reference. It does not evaluate normative strength, applicability, conceptual boundaries, citation correctness, external evidence correctness, legal interpretation, editorial quality, or prose quality.
+
+After an intentional structural change, regenerate the deterministic snapshot explicitly:
 
 ```bash
 python3 scripts/update_repository_structure.py

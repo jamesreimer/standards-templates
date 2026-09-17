@@ -26,6 +26,7 @@ CONTRIBUTING.md
 LICENSE
 MAINTAINING.md
 NAMING.md
+PROVENANCE.md
 README.md
 SECURITY.md
 repository-structure.txt
