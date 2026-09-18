@@ -40,6 +40,10 @@ Sources relied on in the decision MUST be distinguished as Normative Authority, 
 
 The most specific active authority MUST govern within its legitimately assigned scope, subject to the applicable authority hierarchy. Specificity alone MUST NOT be treated as permission to override a governing requirement or invent delegated authority.
 
+When reviewing an existing design, the reasoning MUST distinguish requirements established by Normative Authority from implementation choices established by Implementation Authority. When evidence shows that an implementation constraint obstructs satisfaction of identified requirements, the reasoning MUST evaluate whether that constraint remains justified under Section 8. A constraint's presence in an existing artifact MUST NOT by itself establish that the constraint is immutable.
+
+The reasoning MUST identify the responsibility-based owner and revision authority for the constraint separately from the scope of the current design review. A constraint owned by another Architectural Unit MUST be treated according to Section 5 rather than silently absorbed into the current unit. The reasoning MUST account for authorization already provided within its applicable scope. Evaluating a constraint does not itself authorize changing it; neither does its current applicability establish that an authorized redesign must preserve it.
+
 Material conflicts or uncertainty about authority MUST remain explicit until resolved through the applicable authority model; the architectural conclusion MUST NOT present an unresolved conflict as settled authority.
 
 The authority relationships MAY be expressed in prose or existing review records. A formal graph or a new registry is not required.
@@ -160,6 +164,8 @@ The review MUST distinguish a settled design from an implemented and verified fi
 Before architectural completion is claimed, material review findings MUST receive an explicit architectural disposition appropriate to their consequence. A finding is material here when its loss or silent dismissal could affect architectural truthfulness, completion, responsibility, boundaries, dependencies, or later reasoning.
 
 Classification as blocking or non-blocking describes whether a finding prevents architectural completion from proceeding; classification alone is not a disposition. A non-blocking finding MAY allow architectural completion to proceed, but MUST NOT be silently discarded merely because it is non-blocking. Dispositions MAY include correction within the current work, retention for bounded follow-up, explicit acceptance or deferral with rationale, or dismissal as not actionable or not applicable with rationale. A disposition does not replace the other completion conditions in this section.
+
+Non-blocking classification MUST NOT by itself justify deferral. Disposition SHOULD consider whether correction fits the authorized scope, the consequence and uncertainty of changing it now, and the total cost of immediate correction versus follow-up. These considerations do not require immediate correction of every finding or grant additional execution authority.
 
 Disposition evidence SHOULD be proportionate to the finding's consequence and MAY use existing review records. This requirement does not prescribe a universal severity taxonomy, ticketing system, separate issue for each finding, particular record format, or formal documentation for trivial stylistic observations that are not material to the architectural conclusion. Whether a finding requires execution to stop, changes authorized scope, or permits remediation remains governed by the applicable execution contract.
 
