@@ -40,6 +40,10 @@ Sources relied on in the decision MUST be distinguished as Normative Authority, 
 
 The most specific active authority MUST govern within its legitimately assigned scope, subject to the applicable authority hierarchy. Specificity alone MUST NOT be treated as permission to override a governing requirement or invent delegated authority.
 
+When reviewing an existing design, the reasoning MUST distinguish governing requirements from locally chosen implementation constraints. When evidence shows that such a constraint obstructs the required capability, the reasoning MUST evaluate the constraint itself as part of the design under review. A constraint's presence in an existing artifact MUST NOT by itself establish that the constraint is immutable.
+
+The reasoning MUST identify the authority needed to revise the constraint and account for authorization already provided within its applicable scope. Evaluating a constraint does not itself authorize changing it; neither does its current applicability establish that an authorized redesign must preserve it.
+
 Material conflicts or uncertainty about authority MUST remain explicit until resolved through the applicable authority model; the architectural conclusion MUST NOT present an unresolved conflict as settled authority.
 
 The authority relationships MAY be expressed in prose or existing review records. A formal graph or a new registry is not required.
