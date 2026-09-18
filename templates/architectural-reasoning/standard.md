@@ -30,7 +30,9 @@ Where `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, or `MAY` appear in uppercase, 
 
 **Transition Mechanism**: A means of reaching an intended durable state, such as migration tooling, temporary compatibility behavior, or bootstrap scaffolding, whose presence does not itself make it part of that durable state.
 
-**Justified Complexity**: Design or control complexity beyond the least complex design that satisfies identified requirements, supported by one or more of the tests in Section 8.
+**Retained Fork**: A derivative copy of an external component that is intentionally maintained beyond a one-time experimental or contribution branch because the authoritative upstream component does not currently satisfy an accepted requirement. A Retained Fork carries explicit ownership, synchronization, re-evaluation, and retirement obligations unless active authority establishes it as the permanent owning implementation.
+
+**Justified Complexity**: Design or control complexity beyond the least complex design that satisfies identified requirements, supported by one or more of the tests in Proportional Architecture.
 
 ## 4. Applicable Authority
 
@@ -40,7 +42,7 @@ Sources relied on in the decision MUST be distinguished as Normative Authority, 
 
 The most specific active authority MUST govern within its legitimately assigned scope, subject to the applicable authority hierarchy. Specificity alone MUST NOT be treated as permission to override a governing requirement or invent delegated authority.
 
-When reviewing an existing design, the reasoning MUST distinguish requirements established by Normative Authority from implementation choices established by Implementation Authority. When evidence shows that an implementation constraint obstructs satisfaction of identified requirements, the reasoning MUST evaluate whether that constraint remains justified under Section 8. A constraint's presence in an existing artifact MUST NOT by itself establish that the constraint is immutable.
+When reviewing an existing design, the reasoning MUST distinguish requirements established by Normative Authority from implementation choices established by Implementation Authority. When evidence shows that an implementation constraint obstructs satisfaction of identified requirements, the reasoning MUST evaluate whether that constraint remains justified under Proportional Architecture. A constraint's presence in an existing artifact MUST NOT by itself establish that the constraint is immutable.
 
 The reasoning MUST identify the responsibility-based owner and revision authority for the constraint separately from the scope of the current design review. A constraint owned by another Architectural Unit MUST be treated according to Section 5 rather than silently absorbed into the current unit. The reasoning MUST account for authorization already provided within its applicable scope. Evaluating a constraint does not itself authorize changing it; neither does its current applicability establish that an authorized redesign must preserve it.
 
@@ -145,7 +147,56 @@ When an architectural decision introduces, changes, or removes a required depend
 
 This analysis determines the required relationship and its consequences. Shared-source identity, immutable consumed state, content correspondence, and target propagation or resolution mechanics belong to shared-asset provenance where applicable. This standard does not define a general link checker or publication process.
 
-## 11. Architectural Completion Review
+## 11. Dependency Responsibility Boundary Reasoning
+
+When an existing component does not satisfy a complete requirement, architectural reasoning MUST first classify the shortfall according to responsibility and ownership before selecting a corrective mechanism.
+
+The classification MUST distinguish at least between:
+
+1. a capability the component does not own or claim to provide;
+2. a defect or inconsistency in a capability or contract the component already owns;
+3. an available capability whose configuration, extension point, or integration boundary is not being used correctly; and
+4. a requirement that genuinely spans independently owned responsibilities.
+
+Maintenance status MUST be established as a finding rather than assumed and MUST inform the available correction and lifecycle paths for any of these shortfall classes.
+
+A capability shortfall MUST be evaluated according to whether another maintained component already owns the missing responsibility and whether that responsibility can be composed with the existing component under the composition suitability criteria defined below.
+
+A defect or inconsistency in a contract already owned by a maintained component SHOULD be evaluated for correction at the owning source before a repository-owned workaround, Retained Fork, or replacement is made the final architecture. Correcting a component's existing responsibility MUST NOT be treated as expanding that component's responsibility.
+
+Where an available capability is not being used correctly through its supported configuration, extension point, or integration boundary, architectural reasoning SHOULD prefer correcting that use before introducing replacement behavior, retained modification, or new ownership.
+
+Where a requirement genuinely spans independently owned responsibilities, architectural reasoning MUST evaluate composition before assigning unrelated capability to an existing component. A single dependency SHOULD NOT be expected to own unrelated responsibilities merely because it already owns adjacent ones.
+
+Composition is suitable only where:
+
+1. the responsibilities can be separated without weakening the governing requirement;
+2. maintained components exist that clearly own the resulting responsibilities;
+3. their integration does not duplicate parsing, validation, resolution, policy, or other substantive semantics;
+4. the integration boundary is maintainable and proportionate to the alternatives; and
+5. the resulting architecture fully satisfies the governing requirement.
+
+Where composition has already been evaluated and rejected on recorded evidence, that evaluation MUST be treated as established under Failure Evidence and Historical Precedent and MUST NOT be reopened absent changed authority, changed component state, or materially new evidence.
+
+Forking, replacement, retained local modification, and upstream contribution MUST be classified separately because they create materially different ownership, maintenance, and lifecycle obligations.
+
+Where a component is actively maintained, correction at the owning upstream source SHOULD be evaluated before establishing a Retained Fork.
+
+Where upstream correction cannot satisfy required timing, authority, or delivery constraints, a Retained Fork or retained local modification MAY be used as a Transition Mechanism when its ownership, synchronization strategy, re-evaluation conditions, and retirement conditions are explicit.
+
+Where a component is not actively maintained, a fork or replacement MAY be appropriate according to the governing requirement and Proportional Architecture.
+
+A Retained Fork MUST be treated as a Transition Mechanism unless an active authority explicitly establishes it as the permanent owning implementation.
+
+A retained local modification that persists beyond the immediate correction MUST likewise be treated as a Transition Mechanism unless an active authority explicitly establishes it as part of the permanent owning implementation. A retained local modification remains a locally maintained deviation rather than a derivative copy of the external component, and persistence alone MUST NOT reclassify it as a Retained Fork.
+
+Architectural complexity for these alternatives is governed by Proportional Architecture. Component count alone MUST NOT determine the result.
+
+A dependency MUST NOT be treated as the architectural center by default such that unrelated responsibilities are added to it. Composition MUST NOT be applied mechanically where the shortfall is a defect in a responsibility the component already owns.
+
+This section classifies architectural responsibility and corrective mechanisms. It grants no execution authority; execution-path selection and escalation remain governed by the applicable execution contract, and shared-source identity, correspondence, and propagation mechanics belong to shared-asset provenance where applicable.
+
+## 12. Architectural Completion Review
 
 Before an implementation model is treated as settled, and before architectural completion is claimed, the review MUST establish that:
 
@@ -154,10 +205,11 @@ Before an implementation model is treated as settled, and before architectural c
 3. existing-system or new-system identity is justified where that decision arises;
 4. changed boundaries and the assumptions dependent on them have been reconsidered;
 5. capability conclusions distinguish context-specific failure from system failure and account for relevant precedent;
-6. the architecture, including controls, has been evaluated at the appropriate system scope under Section 8;
+6. the architecture, including controls, has been evaluated at the appropriate system scope under Proportional Architecture;
 7. durable state is distinguished from transitions and superseded assumptions or patterns;
 8. affected systems and required dependencies have been evaluated;
-9. evidence supports the state claimed, including any retained transition or unresolved limitation.
+9. the shortfall has been classified and the selected corrective mechanism justified under Dependency Responsibility Boundary Reasoning where an existing component does not satisfy a complete requirement;
+10. evidence supports the state claimed, including any retained transition or unresolved limitation.
 
 The review MUST distinguish a settled design from an implemented and verified final state. Unresolved material assumptions MUST NOT be hidden by a completion claim.
 
@@ -173,7 +225,7 @@ Evidence SHOULD be retained where losing it would materially impair later review
 
 Architectural completion does not grant approval to execute, publish, deploy, or broaden work.
 
-## 12. Boundaries with Related Standards
+## 13. Boundaries with Related Standards
 
 - [`operational-execution-contract`](../operational-execution-contract/standard.md) owns consequential execution authority, protected boundaries, authorized scope, and completion or stop conditions. Execution-path selection, escalation, and the execution disposition of newly discovered defects belong to that subject.
 - [`shared-asset-provenance`](../shared-asset-provenance/standard.md) owns shared-material source identity, consumed state, relationship meaning, and correspondence; shared-target integrity mechanics belong there where applicable.
@@ -183,11 +235,11 @@ Architectural completion does not grant approval to execute, publish, deploy, or
 
 These references clarify ownership. They do not require adoption of the siblings or make an external source authoritative.
 
-## 13. Basis
+## 14. Basis
 
 The architectural rules are synthesized organization-neutral standards decisions. BCP 14 supplies the normative-keyword interpretation, not the architectural model or an organizational authority hierarchy.
 
-## 14. Default Standard
+## 15. Default Standard
 
 Unless concrete organizational requirements demonstrate otherwise:
 
