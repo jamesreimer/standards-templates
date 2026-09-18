@@ -86,6 +86,8 @@ ruff format --check scripts tests
 actionlint .github/workflows/*.yml
 ```
 
+`markdownlint-cli2` may be run through `npx markdownlint-cli2` without a separate local install. Ruff (Python) and actionlint (Go) must be installed separately; npm packages named `ruff` or `actionlint` are unrelated projects and MUST NOT be used as substitutes. CI pins the supplemental tool versions in `.github/workflows/validate.yml`; match those pins locally when installing Ruff or actionlint so local results do not diverge from CI.
+
 When an intentional change adds, removes, or moves repository paths, regenerate the reviewed structure snapshot before validation:
 
 ```bash
