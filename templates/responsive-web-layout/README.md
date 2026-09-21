@@ -37,16 +37,6 @@ In addition to the universal review, determine:
 11. Which performance, compatibility, browser-support, or layout-shift requirements must remain outside this Standard?
 12. Would adopting new breakpoints, grids, container-query rules, or responsive utilities preserve existing protections, or would they introduce an unnecessary implementation mandate?
 
-## Workflow integration
-
-Route implementation and review work to the adopted local artifact when materially changing or evaluating layout adaptation, container fitness, spatial relationships, overflow, or media fitting across available space and content variation. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
-
-Adapt this optional snippet for the contributor guidance used by planners, implementors, and reviewers. Replace `<local-standard-path>` with the adopted artifact's location. No particular tool or instruction filename is required; this snippet is informative routing guidance, not independent authority.
-
-```text
-For material responsive-layout changes or evaluation, read and apply the organization's adopted Responsive Web Layout Standard at <local-standard-path>. Keep spatial-outcome findings distinct from content meaning, visual-foundation calibration, interaction behavior, accessibility, quality, and Web Experience Baseline conclusions.
-```
-
 ## Likely adaptation choices
 
 An adopter may need to define:

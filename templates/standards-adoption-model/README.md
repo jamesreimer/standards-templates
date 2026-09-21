@@ -40,16 +40,6 @@ Use the universal review in [ADOPTION.md](../../ADOPTION.md) first. For this pol
 
 Do not reclassify an existing canonical artifact as independently adopted, source-managed, superseded, or subordinate without an explicit authority and migration decision.
 
-## Workflow integration
-
-Route implementation and review work to the adopted local artifact when assisting adoption, adaptation, replacement, provenance, authority-conflict resolution, or lifecycle decisions involving reusable or external normative material. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
-
-Adapt this optional snippet for the contributor guidance used by planners, implementors, and reviewers. Replace `<local-standard-path>` with the adopted artifact's location. No particular tool or instruction filename is required; this snippet is informative routing guidance, not independent authority.
-
-```text
-Read and apply the organization's adopted Organizational Standards Adoption and Ownership Policy at <local-standard-path> before making adoption, provenance, authority, or lifecycle decisions about reusable or external normative material. Treat upstream material as a review candidate, not automatically authoritative organizational policy.
-```
-
 ## Likely organization-specific review points
 
 Before adoption, an organization should consider whether it needs to adapt:

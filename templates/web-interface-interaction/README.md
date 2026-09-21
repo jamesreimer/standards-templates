@@ -37,16 +37,6 @@ In addition to the universal review, determine:
 11. Which visual and responsive-layout authorities govern state styling, hierarchy, clipping, overlay fitting, and spatial continuity?
 12. Which security, backend transaction, authorization, performance, compatibility, and legal responsibilities must remain outside this Standard?
 
-## Workflow integration
-
-Route implementation and review work to the adopted local artifact when materially changing or evaluating web task behavior, action outcomes, interface states, continuity, user-work preservation, or recovery. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
-
-Adapt this optional snippet for the contributor guidance used by planners, implementors, and reviewers. Replace `<local-standard-path>` with the adopted artifact's location. No particular tool or instruction filename is required; this snippet is informative routing guidance, not independent authority.
-
-```text
-For material interface or interaction changes or evaluation, read and apply the organization's adopted Web Interface and Interaction Standard at <local-standard-path>. Task-behavior findings do not establish accessibility, content, visual, layout, quality, backend-correctness, execution-authority, or Web Experience Baseline conclusions.
-```
-
 ## Likely adaptation choices
 
 An adopter may need to define:

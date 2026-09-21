@@ -35,16 +35,6 @@ In addition to the universal review, determine:
 
 These are pre-adoption safety questions, not a prescribed approval ceremony.
 
-## Workflow integration
-
-Route implementation and review work to the adopted local artifact when materially changing or evaluating web-accessibility outcomes, the accessibility target, or accessibility evidence and claims. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
-
-Adapt this optional snippet for the contributor guidance used by planners, implementors, and reviewers. Replace `<local-standard-path>` with the adopted artifact's location. No particular tool or instruction filename is required; this snippet is informative routing guidance, not independent authority.
-
-```text
-For material web-accessibility changes or evaluation, read and apply the organization's adopted Web Accessibility Standard at <local-standard-path>. Use its target, evidence, and claim distinctions. Accessibility results do not establish broader content, design, layout, interaction, quality, legal, or Web Experience Baseline conclusions.
-```
-
 ## Likely organization-specific adaptation choices
 
 Review whether there is a justified need to adapt:
@@ -76,7 +66,7 @@ Inclusive-use research and participation by people with disabilities can inform 
 
 Accessibility consequences remain in scope even when they arise in design, layout, interaction, content, semantics, or media. This template does not own those subjects' broader conventions. It retains accessibility-specific verification without prescribing a general quality-management system. It neither determines legal obligations nor creates organizational approval competence.
 
-No other proposed web standard is made a dependency by this template. Its adjacent guidance does not create a separate contributor policy or authorize downstream mutation.
+No other proposed web standard is made a dependency by this template. Its adjacent guidance does not authorize downstream mutation.
 
 ## Primary sources
 

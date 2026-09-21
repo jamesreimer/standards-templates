@@ -36,16 +36,6 @@ Use the universal review in [ADOPTION.md](../../ADOPTION.md) first. For this sta
 - how any changed ownership or durable-state interpretation would be reviewed and validated without silently authorizing migration, control bypass, or operational changes;
 - whether existing review evidence can demonstrate the required reasoning without duplicating an adequate design-review process.
 
-## Workflow integration
-
-Route implementation and review work to the adopted local artifact when substantive work will commit to an implementation model involving system identity, responsibility, authority, ownership, boundaries, proportionality, durable state, controls, or dependent-system effects. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
-
-Adapt this optional snippet for the contributor guidance used by planners, implementors, and reviewers. Replace `<local-standard-path>` with the adopted artifact's location. No particular tool or instruction filename is required; this snippet is informative routing guidance, not independent authority.
-
-```text
-Before committing to an implementation model, read and apply the organization's adopted Architectural Reasoning Standard at <local-standard-path> to determine the applicable Architectural Unit and model. Keep reasoning proportionate; trivial mechanical edits do not require heavyweight analysis. Execution authorization remains a separate question.
-```
-
 ## Likely organization-specific review points
 
 An adopting organization may need to adapt:

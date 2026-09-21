@@ -47,16 +47,6 @@ These informative questions help authors and reviewers apply the [candidate/publ
 - Has finalization changed already approved content, requiring renewed review and the approval required by the existing process?
 - Are historical descriptions, quotations, and informative counterexamples clearly identified so that they are not mistaken for current-state claims?
 
-## Workflow integration
-
-Route implementation and review work to the adopted local artifact when creating or revising normative standards or policies. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
-
-Adapt this optional snippet for the contributor guidance used by planners, implementors, and reviewers. Replace `<local-standard-path>` with the adopted artifact's location. No particular tool or instruction filename is required; this snippet is informative routing guidance, not independent authority.
-
-```text
-Before drafting or materially revising normative requirements, read and apply the organization's adopted Standards and Policy Authoring Standard at <local-standard-path>. Use it for authoring discipline; adoption authority remains with the organization's governing adoption process.
-```
-
 ## Likely organization-specific review points
 
 Before adoption, an organization should consider whether it needs to adapt:

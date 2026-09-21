@@ -39,16 +39,6 @@ Use the universal review in [ADOPTION.md](../../ADOPTION.md) first. For this sta
 
 Adopting this naming standard does not authorize any file or directory rename. Each proposed rename requires its own authority, migration, consumer-impact, and validation decision.
 
-## Workflow integration
-
-Route implementation and review work to the adopted local artifact when creating or materially renaming human-managed files, directories, or path components. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
-
-Adapt this optional snippet for the contributor guidance used by planners, implementors, and reviewers. Replace `<local-standard-path>` with the adopted artifact's location. No particular tool or instruction filename is required; this snippet is informative routing guidance, not independent authority.
-
-```text
-Before creating or materially renaming human-managed paths, read and apply the organization's adopted File and Directory Naming Standard at <local-standard-path>, including its legitimate ecosystem, generated, tool-required, and external naming exceptions. This route does not govern repository names or authorize unrelated renames.
-```
-
 ## Likely organization-specific review points
 
 Before adoption, an organization should consider:

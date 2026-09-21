@@ -35,16 +35,6 @@ In addition to the universal review, determine:
 
 These are pre-adoption safety questions, not a prescribed approval ceremony.
 
-## Workflow integration
-
-Route implementation and review work to the adopted local artifact when materially changing or evaluating web content meaning, semantic structure, audience understanding, or representation integrity. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
-
-Adapt this optional snippet for the contributor guidance used by planners, implementors, and reviewers. Replace `<local-standard-path>` with the adopted artifact's location. No particular tool or instruction filename is required; this snippet is informative routing guidance, not independent authority.
-
-```text
-For material web-content or semantic changes or evaluation, read and apply the organization's adopted Web Content and Semantics Standard at <local-standard-path>. Keep content-semantic conclusions distinct from accessibility, presentation, interaction, quality, editorial approval, and Web Experience Baseline conclusions.
-```
-
 ## Likely organization-specific adaptation choices
 
 Review whether there is a justified need to adapt:
