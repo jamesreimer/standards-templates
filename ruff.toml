@@ -2,7 +2,7 @@
 #
 # A repository that is itself a Python project owns this file: seed it from the
 # template, then widen it to cover the project's own source directories.
-target-version = "py39"
+target-version = "py310"
 line-length = 100
 
 [lint]

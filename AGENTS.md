@@ -52,9 +52,11 @@ Humans and agents use the same canonical adoption guidance; do not create a sepa
 
 ## Tooling
 
-Repository tooling is Python, using only the standard library, targeting the version floor stated in [README.md](README.md). Use shell only where the shell is itself the interface, such as a Git hook shim.
+Locally authored standards-specific repository tooling is Python using only the standard library, targeting the version floor stated in [README.md](README.md). Use shell only where the shell is itself the interface, such as a Git hook shim.
 
-Do not add a package manager, dependency, or runtime to this repository solely to support repository tooling.
+Generic repository mechanics inherited from an approved `repo-template` baseline may use the runtimes, package managers, and maintained dependencies owned by that baseline. Their use does not transfer ownership of those mechanics to this repository.
+
+Do not add a package manager, dependency, or runtime solely to implement local standards-specific repository tooling unless a separately justified need requires it.
 
 ## Implementation lifecycle
 
@@ -66,9 +68,11 @@ Do not add a package manager, dependency, or runtime to this repository solely t
 
 ## Validation and completion
 
-- Run `python3 -m unittest discover -s tests` and `python3 scripts/validate.py`.
-- Do not edit `scripts/validate.py`, `scripts/update_repository_structure.py`, `scripts/setup_git_hooks.py`, or `tests/test_validate.py`. They are exact copies of the repository template recorded in [PROVENANCE.md](PROVENANCE.md). A standards-domain check belongs in `scripts/validate_local.py`; a generic repository-mechanics check belongs upstream, not here. Configuration changes belong in `validate.json`. [CONTRIBUTING.md](CONTRIBUTING.md) describes the boundary.
-- Run applicable supplemental checks from [CONTRIBUTING.md](CONTRIBUTING.md), including Markdown lint for Markdown changes, and `git diff --check`.
+- Follow setup in [README.md](README.md), stage intended new files, then run `.venv/bin/pre-commit run --all-files --show-diff-on-failure` and `git diff --check`. This is the authoritative local/CI composition.
+- Standards-domain validation remains independently executable: `python3 scripts/validate_local.py` and `python3 -m unittest discover -s tests`.
+- Preserve exact-copy correspondence with the immutable upstream revision recorded in [PROVENANCE.md](PROVENANCE.md). Standards-domain checks belong in the Python validator; generic defects belong at their owning upstream source. The bounded temporary generic policy/selection controls have explicit preservation and retirement obligations in PROVENANCE.
+- Do not retain or recreate the retired generic Python validator, dynamic loader, hook installer, or arbitrary configuration schema as hidden glue.
+- Run representative positive and injected-defect cases when changing validation. Fail-closed behavior, source preservation, whole-repository coverage, and protected policies remain required outcomes.
 - Manually reverify affected external claims when citations change.
-- Update `repository-structure.txt` only for an intentional structural change by running `python3 scripts/update_repository_structure.py`.
+- Update `repository-structure.txt` only for an intentional structural change with `node tools/check-repository-policy.mjs --write-snapshot`; ordinary validation must not rewrite it.
 - Do not create templates, metadata, taxonomies, automation, or tooling merely because they are conventional.

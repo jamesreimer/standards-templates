@@ -40,50 +40,66 @@ See [ADOPTION.md](ADOPTION.md) for the adoption and relationship model.
 
 ## Repository validation
 
-Repository integrity is checked by a dependency-free Python validator and its behavioral unit-test suite. Run both, which require Python 3.9 or later and Git, before submitting or merging changes:
+Repository validation composes the maintained generic tools from
+`repo-template v1.0.1` with independently executable standards-specific checks.
+Install Python 3.10 or later, Git, and Node.js 24.18.1 (including npm), then run:
 
-```bash
+```sh
+npm ci --ignore-scripts
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-dev.txt
+.venv/bin/pre-commit run --all-files --show-diff-on-failure
+git diff --check
+```
+
+On Windows, use `.venv\Scripts\python.exe` and
+`.venv\Scripts\pre-commit.exe` instead. CI runs the same pre-commit composition,
+using Python 3.12 and Node 24.18.1. Initial dependency and hook installation needs
+network access; required link checking is offline. Stage intended new files
+before the all-files run so native hooks see them.
+
+The aggregate first rejects unsafe file metadata and checks repository policy
+and the reviewed structure snapshot. It stops on failure before later hooks read
+repository content. Native hooks check syntax, hygiene, Markdown authoring,
+local links and fragments, Python, and workflows. Additional whole-repository
+checks include tracked and new unignored inputs, so an unchanged document is
+rechecked when its target is changed or removed.
+
+Standards-specific validation remains standard-library Python and can run alone:
+
+```sh
+python3 scripts/validate_local.py
 python3 -m unittest discover -s tests
-python3 scripts/validate.py
 ```
 
-CI also runs these supplemental checks. Contributors changing the affected files can run them locally after installing the corresponding tools:
+It checks template structure and stable IDs, catalog membership and title
+agreement, declared local requirement schemes and references in template
+`standard.md` files, and obvious uppercase BCP 14 keyword near misses. Input and
+runtime failures prevent success. No old generic Python engine is involved.
 
-```bash
-markdownlint-cli2
-ruff check scripts tests
-ruff format --check scripts tests
-actionlint .github/workflows/*.yml
+Linkinator owns local destinations and fragments; Markdownlint owns authoring
+rules, with MD051 disabled. Directory links need no `index.html`; missing
+locations fail. Real `index.html` fragments are checked, but generated directory
+listings provide no fragment-validation contract. Use an explicit file link
+when a fragment must be checked. External HTTP/HTTPS links are excluded.
+
+These checks do not establish normative strength, applicability, conceptual
+boundaries, citation correctness, external evidence, legal interpretation,
+editorial quality, or prose quality. Requirement references outside template
+`standard.md` files and semantic cross-standard dependency correctness remain
+outside automated domain validation.
+
+After an intentional structural change, explicitly regenerate the snapshot:
+
+```sh
+node tools/check-repository-policy.mjs --write-snapshot
 ```
 
-Validation runs in two parts with different owners.
-
-`scripts/validate.py` is an exact copy of the reusable validator from [`jamesreimer/repo-template`](https://github.com/jamesreimer/repo-template) and is not modified here. It checks generic repository mechanics: UTF-8 encoding and final newlines; junk artifacts; credential-shaped filenames; committed repository symlinks, which are rejected rather than followed whether their targets are internal or external; local Markdown links, anchors, and reference-style labels and definitions; fenced code block balance; heading hierarchy, including a single leading H1; repository path naming; and agreement with the `repository-structure.txt` snapshot. Which of those run, and over which paths, is configured by [`validate.json`](validate.json).
-
-`scripts/validate_local.py` holds this repository's own checks, which have no meaning outside a library of standards templates: template directory structure; stable template-ID declaration consistency; catalog membership and human-facing title agreement; local requirement-ID scheme and definition integrity for standards that explicitly declare a local scheme; explicit inline-code local requirement-reference resolution in template `standard.md` files; and obvious malformed uppercase BCP 14 keyword spellings.
-
-The split is deliberate. Generic repository mechanics are maintained once, upstream, and copied here unmodified; standards-specific behavior stays local. See [PROVENANCE.md](PROVENANCE.md) for the adopted revision and the relationship between the two repositories.
-
-Validation does not check requirement references in template READMEs or root or general guidance, external URL availability, semantic correctness of cross-standard dependencies, or the normative meaning of a reference. It does not evaluate normative strength, applicability, conceptual boundaries, citation correctness, external evidence correctness, legal interpretation, editorial quality, or prose quality.
-
-After an intentional structural change, regenerate the deterministic snapshot explicitly:
-
-```bash
-python3 scripts/update_repository_structure.py
-```
-
-Git hooks are optional and are not installed by validation or CI. To run the same tests and validator before local commits, opt in once per checkout:
-
-```bash
-python3 scripts/setup_git_hooks.py
-```
-
-Setup is idempotent when the effective `core.hooksPath` is already `.githooks`
-and pins that setting in repository-local configuration. It refuses to write a
-local override for a different effective hooks path unless you explicitly run
-`python3 scripts/setup_git_hooks.py --force`. The override writes only the local
-`.githooks` setting; higher-precedence Git configuration may still control the
-effective hooks path, in which case setup reports that it did not become effective.
+Validation compares the snapshot and never silently rewrites it. Optional commit
+hooks use `.venv/bin/pre-commit install`; they are not installed by validation or
+CI. See [CONTRIBUTING.md](CONTRIBUTING.md) for hook migration, selection, and
+maintenance details, and [PROVENANCE.md](PROVENANCE.md) for current and historical
+source relationships and temporary preservation controls.
 
 ## Template catalog
 
@@ -123,7 +139,7 @@ Automated coding agents should also follow [AGENTS.md](AGENTS.md), which routes 
 
 ## License
 
-Unless otherwise noted, all repository-authored material in this repository is dedicated to the public domain under [CC0 1.0 Universal](LICENSE). This includes the standards templates and documentation; maintenance tooling under `scripts/`, `tests/`, and `.githooks/`; repository automation and contribution configuration under `.github/`; editor and Git configuration in `.editorconfig`, `.gitattributes`, `.gitignore`, and `.vscode/`; and the generated `repository-structure.txt` snapshot.
+Unless otherwise noted, all repository-authored material in this repository is dedicated to the public domain under [CC0 1.0 Universal](LICENSE). This includes the standards templates and documentation; maintenance tooling under `scripts/`, `tools/`, `markdownlint-rules/`, and `tests/`; repository automation and contribution configuration under `.github/`; editor and Git configuration in `.editorconfig`, `.gitattributes`, `.gitignore`, and `.vscode/`; and the generated `repository-structure.txt` snapshot.
 
 The existing [`LICENSE`](LICENSE) file provides the CC0 legal code for this scope. No separate software license applies to the current repository material.
 

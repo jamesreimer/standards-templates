@@ -24,4 +24,4 @@ If yes or unclear, briefly explain what organizations that adopted an earlier re
 
 ## Validation
 
-Confirm that unit tests and repository validation passed and that any required manual evidence review was completed.
+Confirm that the full pre-commit composition and `git diff --check` passed, that changed validation includes positive and injected-defect evidence, and that any required manual evidence review was completed. For adoption changes, identify the immutable upstream baseline and verify each claimed exact-copy relationship.

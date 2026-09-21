@@ -1,12 +1,10 @@
 """Unit tests for the standards-domain checks in scripts/validate_local.py.
 
-The generic mechanical checks are covered by tests/test_validate.py, which is
-an exact copy of the repository template's suite. This module covers only what
-is specific to a library of standards templates.
+The released generic suites run separately. This module covers domain semantics
+and their independent command boundary.
 """
 
-import json
-import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -15,12 +13,13 @@ from pathlib import Path
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 
-from validate import validate_repository  # noqa: E402
 from validate_local import (  # noqa: E402
     damerau_levenshtein,
     is_single_near_miss,
+    markdown_without_fenced_code,
     scan_headings,
     scan_inline_code_spans,
+    validate_repository,
 )
 
 TEMPLATE_README = """# {title}
@@ -47,7 +46,7 @@ CATALOG = """# Template Catalog
 class StandardsTestCase(unittest.TestCase):
     """Build a throwaway standards repository and run the validator over it."""
 
-    def build(self, templates, catalog=None, extra=None, config=None):
+    def build(self, templates, catalog=None, extra=None):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
         root = Path(directory.name)
@@ -66,21 +65,11 @@ class StandardsTestCase(unittest.TestCase):
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content, encoding="utf-8")
 
-        (root / "validate.json").write_text(
-            json.dumps(config or {"markdown-headings": {"enabled": False}}, indent=2) + "\n",
-            encoding="utf-8",
-        )
-
-        # The validator loads scripts/validate_local.py relative to the
-        # repository root, so the fixture needs the real module in place. This
-        # exercises the same loading path production uses.
-        fixture_scripts = root / "scripts"
-        fixture_scripts.mkdir(exist_ok=True)
-        shutil.copy(SCRIPTS / "validate_local.py", fixture_scripts / "validate_local.py")
+        subprocess.run(["git", "init", "-q", str(root)], check=True)
         return root
 
     def local_reasons(self, root):
-        return [finding.reason for finding in validate_repository(root) if finding.check == "local"]
+        return [reason for _, _, reason in validate_repository(root)]
 
     def simple(self, template_id="example-template", title="Example Standard", standard=None):
         return {
@@ -429,6 +418,68 @@ class HelperTests(unittest.TestCase):
     def test_scan_headings_ignores_fenced_headings(self):
         headings = scan_headings("# Real\n\n```\n## Fenced\n```\n\n## Also Real\n")
         self.assertEqual([(1, "Real"), (2, "Also Real")], [(h.level, h.text) for h in headings])
+
+
+class IndependentCommandTests(StandardsTestCase):
+    def valid_root(self):
+        return self.build(
+            self.simple(),
+            catalog=CATALOG.format(template_id="example-template", title="Example Standard"),
+        )
+
+    def command(self, root):
+        return subprocess.run(
+            [sys.executable, str(SCRIPTS / "validate_local.py"), "--root", str(root)],
+            capture_output=True,
+            text=True,
+        )
+
+    def test_direct_cli_success_and_domain_failure(self):
+        root = self.valid_root()
+        self.assertEqual(0, self.command(root).returncode)
+        (root / "templates/example-template/standard.md").unlink()
+        result = self.command(root)
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn("required template file is missing", result.stderr)
+
+    def test_invalid_utf8_fails_closed(self):
+        root = self.valid_root()
+        (root / "notes.md").write_bytes(b"\xff")
+        self.assertNotEqual(0, self.command(root).returncode)
+
+    def test_missing_tracked_input_fails_closed(self):
+        root = self.valid_root()
+        subprocess.run(["git", "add", "."], cwd=root, check=True)
+        (root / "CATALOG.md").unlink()
+        result = self.command(root)
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn("could not complete", result.stderr)
+
+    def test_missing_git_repository_fails_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            self.assertNotEqual(0, self.command(Path(directory)).returncode)
+
+    def test_symlink_and_symlink_ancestor_fail_closed(self):
+        root = self.valid_root()
+        (root / "notes.md").symlink_to("CATALOG.md")
+        self.assertIn("symbolic link", self.command(root).stderr)
+        (root / "notes.md").unlink()
+        subprocess.run(["git", "add", "."], cwd=root, check=True)
+        template = root / "templates/example-template"
+        template.rename(root / "moved-template")
+        template.symlink_to(root / "moved-template", target_is_directory=True)
+        self.assertIn("symbolic link", self.command(root).stderr)
+
+    def test_ignored_markdown_is_not_domain_input(self):
+        root = self.valid_root()
+        (root / ".gitignore").write_text("ignored.md\n", encoding="utf-8")
+        (root / "ignored.md").write_bytes(b"\xff")
+        self.assertEqual(0, self.command(root).returncode)
+
+    def test_fence_mask_preserves_lines_and_nested_delimiters(self):
+        content = "before\n````md\n```\nMUSTT\n```\n````\nafter\n"
+        self.assertEqual("before\n\n\n\n\n\nafter\n", markdown_without_fenced_code(content))
+        self.assertEqual("before\n\n\n", markdown_without_fenced_code("before\n~~~\nMUSTT\n"))
 
 
 if __name__ == "__main__":

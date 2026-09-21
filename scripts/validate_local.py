@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Standards-domain checks for this repository.
 
-The generic mechanical checks live in ``scripts/validate.py``, which is an
-exact copy of the repository template and must not be forked. This module holds
-only what is specific to a library of standards templates: template directory
-structure, stable template identity, local requirement schemes and their
+Generic mechanical checks are composed separately through pre-commit.
+This independently executable module holds only what is specific to a library
+of standards templates: template directory structure, stable template identity,
+local requirement schemes and their
 references, catalog membership, human-facing title agreement, and BCP 14
 keyword spelling.
 
@@ -14,11 +14,14 @@ apply to any repository, it belongs upstream in the template instead.
 
 from __future__ import annotations
 
+import argparse
 import re
+import stat
+import subprocess
+import sys
 from collections import Counter
 from dataclasses import dataclass
-
-from validate import markdown_without_fenced_code
+from pathlib import Path
 
 TEMPLATES_DIRECTORY = "templates"
 CATALOG_PATH = "CATALOG.md"
@@ -136,6 +139,15 @@ def scan_markdown_lines(content: str) -> list:
             continue
         lines.append(MarkdownLine(line_number, line, strip_inline_code(line)))
     return lines
+
+
+def markdown_without_fenced_code(content: str) -> str:
+    """Mask fenced lines using the domain scanner, preserving source line numbers."""
+    lines = ["\n" if line.endswith("\n") else "" for line in content.splitlines(keepends=True)]
+    for line in scan_markdown_lines(content):
+        ending = "\n" if lines[line.number - 1].endswith("\n") else ""
+        lines[line.number - 1] = line.text + ending
+    return "".join(lines)
 
 
 def scan_headings(content: str) -> list:
@@ -570,6 +582,57 @@ class StandardsChecks:
                 )
 
 
-def extra_checks(context):
-    """Entry point called by scripts/validate.py."""
-    return StandardsChecks(context).run()
+@dataclass(frozen=True)
+class DomainInput:
+    files: tuple[str, ...]
+    text: dict[str, str]
+
+
+def validate_repository(root: Path):
+    """Validate domain semantics; input/runtime failures propagate to the CLI."""
+    root = root.resolve()
+    result = subprocess.run(
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+        cwd=root,
+        check=True,
+        capture_output=True,
+    )
+    files = tuple(sorted(set(filter(None, result.stdout.decode("utf-8").split("\0")))))
+    # Direct invocation must also fail closed. Finish metadata inspection before
+    # opening domain content, including any ancestor replaced by a symlink.
+    inspected = set()
+    for relative in files:
+        path = root / relative
+        for component in [*reversed(path.parents), path]:
+            if component == root or root not in component.parents or component in inspected:
+                continue
+            inspected.add(component)
+            mode = component.lstat().st_mode
+            if stat.S_ISLNK(mode):
+                raise OSError(f"{component.relative_to(root)}: symbolic link is not allowed")
+            if not (stat.S_ISREG(mode) or stat.S_ISDIR(mode)):
+                raise OSError(f"{component.relative_to(root)}: unsupported input type")
+    text = {
+        relative: (root / relative).read_text(encoding="utf-8")
+        for relative in files
+        if relative.endswith(".md")
+    }
+    return StandardsChecks(DomainInput(files, text)).run()
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    args = parser.parse_args()
+    try:
+        findings = validate_repository(args.root)
+    except (OSError, UnicodeError, subprocess.SubprocessError) as error:
+        print(f"Standards validation could not complete: {error}", file=sys.stderr)
+        return 1
+    for path, line, reason in findings:
+        print(f"{path}:{line}: {reason}", file=sys.stderr)
+    return 1 if findings else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
