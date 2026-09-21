@@ -46,16 +46,6 @@ Before adoption, determine:
 
 Do not adopt this template merely to make ordinary low-risk work more formal.
 
-## Agent integration
-
-Route human or automated implementation work to the adopted local artifact when consequential execution implicates authority, scope, Protected Boundaries, completion or stop conditions, established paths, escalation, validation, rollback, recovery, or separately discovered defects. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
-
-Adapt this optional snippet for `AGENTS.md` or an equivalent contributor/automation entry point. Replace `<local-standard-path>` with the adopted artifact's location. Neither `AGENTS.md` nor a particular agent product is required; this snippet is informative routing guidance, not independent authority.
-
-```text
-Before consequential execution, read and apply the organization's adopted Operational Execution Contract Standard at <local-standard-path>. Inability to use one actor, tool, or path does not itself authorize bypass or exceptional execution. Use this standard for execution boundaries; architectural modeling remains a separate responsibility.
-```
-
 ## Likely organization-specific review points
 
 An adopting organization may need to adapt:

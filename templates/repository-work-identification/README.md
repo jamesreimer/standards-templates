@@ -31,16 +31,6 @@ Use the universal review in [ADOPTION.md](../../ADOPTION.md) first. For this sta
 - whether adoption would add meaningful clarity or merely duplicate adequate conventions;
 - what migration, compatibility checks, and validation any proposed identification changes would require, including how historical names and classifications can remain intelligible without mass renaming.
 
-## Agent integration
-
-Route human or automated implementation work to the adopted local artifact when creating or materially renaming an implementation branch, proposing or materially retitling a pull request, or creating, applying, changing, or rationalizing issue labels or classification. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
-
-Adapt this optional snippet for `AGENTS.md` or an equivalent contributor/automation entry point. Replace `<local-standard-path>` with the adopted artifact's location. This section is informative routing guidance and requires neither a particular agent product nor an `AGENTS.md` file.
-
-```text
-Before identifying or classifying repository work through branch names, pull request titles, or issue labels, read and apply the organization's adopted Repository Work Identification Standard at <local-standard-path>. Use the applicable local conventions; this route does not prescribe a host, prefix vocabulary, title syntax, or label taxonomy, or confer execution authority.
-```
-
 ## Applicability
 
 The template applies across repository subjects, including software, research, publishing, standards, and operational artifacts. “Pull request” includes an equivalent reviewable change proposal, and “issue” includes an equivalent work item. Label rules apply to equivalent named category mechanisms when used for classification, not to every field in a tracking system.

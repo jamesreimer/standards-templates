@@ -35,16 +35,6 @@ Use the universal review in [ADOPTION.md](../../ADOPTION.md) first. For this sta
 
 Adopting this naming standard does not authorize any repository rename. Each proposed rename requires its own authority, migration, consumer-impact, and validation decision.
 
-## Agent integration
-
-Route human or automated implementation work to the adopted local artifact when selecting or materially changing a repository name after its responsibility has been established. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
-
-Adapt this optional snippet for `AGENTS.md` or an equivalent contributor/automation entry point. Replace `<local-standard-path>` with the adopted artifact's location. Neither `AGENTS.md` nor a particular agent product is required; this snippet is informative routing guidance, not independent authority.
-
-```text
-Once repository responsibility is established, read and apply the organization's adopted Repository Naming Standard at <local-standard-path> before selecting or materially changing its name. This naming route does not decide whether an additional repository is justified or authorize a rename.
-```
-
 ## Applicability
 
 This template is not limited to software-development repositories.

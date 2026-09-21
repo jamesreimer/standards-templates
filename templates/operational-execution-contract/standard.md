@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-This standard defines how consequential operational work is bounded by an explicit execution contract before a person, agent, automation, process, or tool exercises authority that could materially affect systems, data, services, published state, shared infrastructure, or other protected operational interests.
+This standard defines how consequential operational work is bounded by an explicit execution contract before a person, delegate, automation, process, or tool exercises authority that could materially affect systems, data, services, published state, shared infrastructure, or other protected operational interests.
 
 Its purpose is to prevent execution authority from expanding through momentum, convenience, nearby work, prior discussion, implementation progress, or successful intermediate validation.
 
@@ -67,7 +67,7 @@ Examples may include planning, repository implementation, publication, deploymen
 
 **Executor**
 
-A person, agent, automation, tool, process, or service performing work under an Execution Contract.
+A person, delegate, automation, tool, process, or service performing work under an Execution Contract.
 
 **Material Scope Expansion**
 
@@ -161,7 +161,7 @@ The same person MAY define, approve, and execute work where the adopting organiz
 
 This standard requires clarity of authority, not ceremonial separation of people or roles.
 
-Delegated agents, automation, tools, or services MAY perform authorized work.
+Delegated executors, automation, tools, or services MAY perform authorized work.
 
 Delegation does not expand the authority granted by the Execution Contract.
 
@@ -310,9 +310,9 @@ A Completion Boundary MAY be, for example:
 
 This standard does not prescribe which boundary is appropriate for a particular workflow.
 
-### 12.1 Return-of-Control Information
+### 12.1 Completion and Interruption Reporting
 
-When execution returns control through completion, stop, pause, or request for review, and later action or review materially depends on understanding the execution result, the Executor SHOULD convey, and the organization SHOULD retain, enough information to determine:
+When execution completes, stops, pauses, or requires review, and later action or review materially depends on understanding the execution result, the Executor SHOULD convey, and the organization SHOULD retain, enough information to determine:
 
 - the material resulting state;
 - validation or recovery performed;
@@ -321,7 +321,7 @@ When execution returns control through completion, stop, pause, or request for r
 
 The amount and form of the information SHOULD be proportionate to the consequence and the need for later action or review. This standard does not require a universal completion, handoff, or status-report format.
 
-Returning control, recording resulting state, or identifying follow-up does not itself authorize additional execution, Material Scope Expansion, or continuation beyond the existing Execution Contract. Section 16 states additional retention expectations after emergency action.
+Completing or interrupting execution, recording resulting state, or identifying follow-up does not itself authorize additional execution, Material Scope Expansion, or continuation beyond the existing Execution Contract. Section 16 states additional retention expectations after emergency action.
 
 ## 13. Rollback and Recovery
 
@@ -349,16 +349,7 @@ It defines the authority required to perform the operational action.
 
 Delegated or automated execution MUST remain bounded by the same Execution Contract that governs equivalent human execution.
 
-Automation MUST NOT infer expanded authority from:
-
-- successful prior runs;
-- available credentials;
-- nearby accessible systems;
-- tool capability;
-- repository state;
-- publication state;
-- previous conversations;
-- implied workflow momentum.
+Successful prior runs, available credentials, accessible systems, tool capabilities, repository or publication state, prior discussion, and work already in progress MUST NOT be treated as authorization to expand delegated or automated execution beyond the Execution Contract.
 
 Where an automated Executor cannot determine whether an action remains within scope, it SHOULD stop or request review rather than assume broader authority.
 
@@ -444,7 +435,7 @@ Avoid:
 - requiring fictional rollback where recovery is the real control;
 - stopping for harmless Mechanical Corrections that remain inside already authorized implementation scope;
 - disguising substantive changes as Mechanical Corrections;
-- making an agent or automation-specific execution model when the same boundary applies to human execution.
+- making a tool-specific or automation-specific execution model when the same boundary applies to human execution.
 
 ## 20. Default Standard
 

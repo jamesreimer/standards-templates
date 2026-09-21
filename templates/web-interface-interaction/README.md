@@ -37,16 +37,6 @@ In addition to the universal review, determine:
 11. Which visual and responsive-layout authorities govern state styling, hierarchy, clipping, overlay fitting, and spatial continuity?
 12. Which security, backend transaction, authorization, performance, compatibility, and legal responsibilities must remain outside this Standard?
 
-## Agent integration
-
-Route human or automated implementation work to the adopted local artifact when materially changing or evaluating web task behavior, action outcomes, interface states, continuity, user-work preservation, or recovery. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
-
-Adapt this optional snippet for `AGENTS.md` or an equivalent contributor/automation entry point. Replace `<local-standard-path>` with the adopted artifact's location. Neither `AGENTS.md` nor a particular agent product is required; this snippet is informative routing guidance, not independent authority.
-
-```text
-For material interface or interaction changes or evaluation, read and apply the organization's adopted Web Interface and Interaction Standard at <local-standard-path>. Task-behavior findings do not establish accessibility, content, visual, layout, quality, backend-correctness, execution-authority, or Web Experience Baseline conclusions.
-```
-
 ## Likely adaptation choices
 
 An adopter may need to define:

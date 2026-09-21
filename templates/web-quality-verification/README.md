@@ -37,16 +37,6 @@ In addition to the universal review, determine:
 11. Which sibling standards own the substantive accessibility, content, design, layout, or interaction results that may share this evidence?
 12. Which infrastructure SLOs, deployment controls, security/privacy obligations, backend durability requirements, and incident practices must remain outside this Standard?
 
-## Agent integration
-
-Route human or automated implementation work to the adopted local artifact when materially changing or evaluating web performance, compatibility, resilience, or the evidence and claims used to verify them. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
-
-Adapt this optional snippet for `AGENTS.md` or an equivalent contributor/automation entry point. Replace `<local-standard-path>` with the adopted artifact's location. Neither `AGENTS.md` nor a particular agent product is required; this snippet is informative routing guidance, not independent authority.
-
-```text
-For material web-quality changes or evaluation, read and apply the organization's adopted Web Quality and Verification Standard at <local-standard-path>. Use its profile and evidence rules; shared evidence does not transfer ownership of sibling-standard conclusions or establish Web Experience Baseline conformance.
-```
-
 ## Likely adaptation choices
 
 An adopter may need to define:

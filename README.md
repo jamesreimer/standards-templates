@@ -135,8 +135,6 @@ See [Web Standards Suite Assessment Guidance](web-standards-assessment-guidance.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the contributor path and [MAINTAINING.md](MAINTAINING.md) for the repository's maintenance and review path.
 
-Automated coding agents should also follow [AGENTS.md](AGENTS.md), which routes agent work through the repository's maintainer, contribution, and applicable naming and authoring guidance.
-
 ## License
 
 Unless otherwise noted, all repository-authored material in this repository is dedicated to the public domain under [CC0 1.0 Universal](LICENSE). This includes the standards templates and documentation; maintenance tooling under `scripts/`, `tools/`, `markdownlint-rules/`, and `tests/`; repository automation and contribution configuration under `.github/`; editor and Git configuration in `.editorconfig`, `.gitattributes`, `.gitignore`, and `.vscode/`; and the generated `repository-structure.txt` snapshot.

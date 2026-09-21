@@ -41,16 +41,6 @@ Use the universal review in [ADOPTION.md](../../ADOPTION.md) first. For this sta
 
 Do not reclassify an existing canonical artifact or system of record without an explicit authority and migration decision.
 
-## Agent integration
-
-Route human or automated implementation work to the adopted local artifact when deciding repository responsibility, durable project artifact placement, separation of canonical artifacts from work items, planning state or exploratory reasoning, or whether another repository is justified. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
-
-Adapt this optional snippet for `AGENTS.md` or an equivalent contributor/automation entry point. Replace `<local-standard-path>` with the adopted artifact's location. Neither `AGENTS.md` nor a particular agent product is required; this snippet is informative routing guidance, not independent authority.
-
-```text
-Before deciding repository responsibility, information placement, or repository separation, read and apply the organization's adopted Project Repository Responsibility Standard at <local-standard-path>. Establish responsibility before choosing names; naming does not determine what a repository owns or whether it should exist.
-```
-
 ## Likely organization-specific review points
 
 Before adoption, an organization should consider whether it needs to adapt:

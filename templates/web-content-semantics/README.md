@@ -12,7 +12,7 @@ The reusable template is [standard.md](standard.md). It defines content-meaning,
 
 It is independently adoptable; no umbrella or other companion is required. Images, audio, video, downloads, and embedded resources remain in scope when they communicate content, but “Media” is not a separate subject in the title because accessibility alternatives, responsive presentation, and control behavior retain their own normative owners.
 
-This README is informative adoption guidance for humans and AI agents, not a second normative layer. Adopting the template does not establish content conformance, accessibility conformance, legal compliance, editorial approval, or factual certification.
+This README is informative adoption guidance, not a second normative layer. Adopting the template does not establish content conformance, accessibility conformance, legal compliance, editorial approval, or factual certification.
 
 ## Adoption
 
@@ -34,16 +34,6 @@ In addition to the universal review, determine:
 - Does candidate wording remain truthful before and after publication, with historical or provisional statements clearly contextualized?
 
 These are pre-adoption safety questions, not a prescribed approval ceremony.
-
-## Agent integration
-
-Route human or automated implementation work to the adopted local artifact when materially changing or evaluating web content meaning, semantic structure, audience understanding, or representation integrity. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
-
-Adapt this optional snippet for `AGENTS.md` or an equivalent contributor/automation entry point. Replace `<local-standard-path>` with the adopted artifact's location. Neither `AGENTS.md` nor a particular agent product is required; this snippet is informative routing guidance, not independent authority.
-
-```text
-For material web-content or semantic changes or evaluation, read and apply the organization's adopted Web Content and Semantics Standard at <local-standard-path>. Keep content-semantic conclusions distinct from accessibility, presentation, interaction, quality, editorial approval, and Web Experience Baseline conclusions.
-```
 
 ## Likely organization-specific adaptation choices
 
@@ -67,7 +57,7 @@ Automated tools can detect some syntax, markup, link, language, metadata, and st
 
 Human review should compare intended meaning with rendered content, source or document structure, links and destinations, content variants, referenced resources, language and direction behavior, and machine-readable representations. Representative-reader or specialist review may be appropriate when audience understanding, domain meaning, translation, or consequence cannot otherwise be established.
 
-An AI-generated review is not an observed reader response or domain verification. A passing validator does not prove semantic correspondence. A numerical readability score does not prove understanding. Missing access or competence leaves the affected result undetermined rather than passing.
+An automated review is not an observed reader response or domain verification. A passing validator does not prove semantic correspondence. A numerical readability score does not prove understanding. Missing access or competence leaves the affected result undetermined rather than passing.
 
 ## Boundaries
 
