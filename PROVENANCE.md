@@ -18,54 +18,10 @@ organizational authority or permission to publish.
 
 The commit is the binding identity; the tag is its human-facing label. A moving
 branch, sibling checkout, or local path does not prove immutable consumption.
-The reconciliation is based on downstream revision
-`ec6df67afd53387b132cd29d6b64bbe1fe0e715f`.
 
-## Historical consumed states
-
-The earlier completed adoption consumed
-`4318faa00cd6d02c78247ed799fbcae61210a43c` on 2026-09-16. At that revision,
-`scripts/validate.py`, `scripts/update_repository_structure.py`,
-`scripts/setup_git_hooks.py`, `tests/test_validate.py`, `.githooks/pre-commit`,
-`.editorconfig`, `.vscode/settings.json`, and `.github/dependabot.yml` were
-recorded as exact copies. Those relationships remain historical evidence.
-
-This reconciliation first staged generic assets from the first stable release,
-`v1.0.0 @ f677c176b5573c1a51f4bfb91650c0bde09d6a48`, without completing or publishing
-that adoption. Real downstream integration exposed a generic directory-link
-correctness defect. It was corrected at the owning upstream source, reviewed,
-and published as v1.0.1. The deliberate rebinding consumes that correction and
-the already-merged setup-node v7 maintenance update. It does not rewrite the
-v1.0.0 baseline or the preceding adoption history.
-
-The old generic Python engine, generator, installer, hook shim, test harness,
-and `validate.json` have been retired. They are not hidden dependencies of the
-new aggregate. Their absence upstream is not represented as an exact-copy claim.
-
-## History of ownership
-
-The mechanics in this repository did not originate upstream.
-
-They were written here first. `repo-template` was created afterwards, by
-generalizing them out of this repository into a reusable foundation, and this
-repository was its first consumer. Adoption therefore transferred ownership
-upstream rather than recording a dependency that always existed.
-
-That transfer is legitimate and deliberate: ownership follows system
-responsibility rather than file history, and a repository whose purpose is
-publishing standards templates was never the right long-term owner of generic
-repository mechanics. But §4.1 forbids silently redefining a source or
-reversing a declared maintenance relationship, and §12 requires distinguishing
-historical provenance from continuing ownership. Both directions are recorded
-here so neither is mistaken for the other.
-
-Adoption also pushed capability upstream rather than only pulling it down. Nine
-generic checks that existed only here were contributed to `repo-template`
-across two reconciliation rounds, so that they would be owned once rather than
-duplicated: committed symlinks, reference-label resolution, heading-level
-skips, per-scope path naming, a single leading H1, fenced code block balance,
-reference-definition validity and uniqueness, and correct loading of a local
-check module.
+Generic mechanics were extracted from this repository into `repo-template`,
+which now owns their maintenance. The adoption record is
+[PR #129](https://github.com/jamesreimer/standards-templates/pull/129).
 
 ## Current relationship classes
 
