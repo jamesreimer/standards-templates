@@ -31,7 +31,7 @@ The earlier completed adoption consumed
 recorded as exact copies. Those relationships remain historical evidence.
 
 This reconciliation first staged generic assets from the first stable release,
-`v1.0.0 @ f677c176b5573c1a51f4b91650c0bde09d6a48`, without completing or publishing
+`v1.0.0 @ f677c176b5573c1a51f4bfb91650c0bde09d6a48`, without completing or publishing
 that adoption. Real downstream integration exposed a generic directory-link
 correctness defect. It was corrected at the owning upstream source, reviewed,
 and published as v1.0.1. The deliberate rebinding consumes that correction and
