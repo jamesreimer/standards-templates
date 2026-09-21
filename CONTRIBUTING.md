@@ -16,8 +16,6 @@ Use a conventional type prefix that describes the work for new contribution bran
 
 Format branch names as `<type>/<short-kebab-case-description>` and pull request titles as `<type>: <concise description>`. Choose the type from the substance of the change; a normative requirement change is not merely documentation work because it is written in Markdown.
 
-Use the work type as the branch prefix, rather than a contributor or tool name. This convention applies to every contributor role.
-
 ## Addition decisions
 
 Apply the repository-wide [addition-decision model](README.md#design-principle) before adding templates, repository structure, metadata, validation, automation, taxonomy, or related machinery.

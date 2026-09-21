@@ -12,7 +12,7 @@ The reusable template is [standard.md](standard.md). It defines content-meaning,
 
 It is independently adoptable; no umbrella or other companion is required. Images, audio, video, downloads, and embedded resources remain in scope when they communicate content, but “Media” is not a separate subject in the title because accessibility alternatives, responsive presentation, and control behavior retain their own normative owners.
 
-This README is informative adoption guidance for adopters, implementors, and reviewers, not a second normative layer. Adopting the template does not establish content conformance, accessibility conformance, legal compliance, editorial approval, or factual certification.
+This README is informative adoption guidance, not a second normative layer. Adopting the template does not establish content conformance, accessibility conformance, legal compliance, editorial approval, or factual certification.
 
 ## Adoption
 

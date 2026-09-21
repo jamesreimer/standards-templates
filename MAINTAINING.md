@@ -60,7 +60,7 @@ Before merging a material change:
 3. when a change adds or alters validation behavior, confirm the check is owned by the appropriate layer: generic repository mechanics belong upstream in `repo-template`, standards-domain checks remain local, and explicitly temporary generic preservation controls retain the ownership and retirement obligations recorded in PROVENANCE. [CONTRIBUTING.md](CONTRIBUTING.md) states the ownership rule and [PROVENANCE.md](PROVENANCE.md) covers adoption verification;
 4. review requirement strength using the A/B/C calibration test in `standards-authoring`;
 5. confirm that examples remain informative and do not silently change the rule;
-6. check documents for unintended domain-specific assumptions or universalized handoffs;
+6. check documents for unintended domain-specific assumptions or unnecessary workflow prescriptions;
 7. update `README.md`, `ADOPTION.md`, `NAMING.md`, or `CATALOG.md` only when their repository-level responsibilities are affected;
 8. verify internal links and manually re-check affected external claims;
 9. inspect the complete diff for unintended scope, authority, naming, licensing, or lifecycle changes.

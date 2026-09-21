@@ -10,7 +10,7 @@ Human-facing title:
 
 The reusable template is [`standard.md`](standard.md). It defines a web-accessibility target and the assessment, evidence, and claim discipline needed to evaluate it. It is independently adoptable; no umbrella or other companion is required.
 
-This README is informative adoption guidance for adopters, implementors, and reviewers, not a second normative layer. Adopting the template does not establish that a web experience conforms to WCAG or applicable law.
+This README is informative adoption guidance, not a second normative layer. Adopting the template does not establish that a web experience conforms to WCAG or applicable law.
 
 ## Adoption
 
