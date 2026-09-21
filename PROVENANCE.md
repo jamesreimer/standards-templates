@@ -13,12 +13,10 @@ organizational authority or permission to publish.
 | Identity | Value |
 | --- | --- |
 | Source | `jamesreimer/repo-template` |
-| Release basis | `v1.0.1` plus unreleased cleanup |
-| Immutable repository revision | `5d59902e900f593c5535839371b2e4bba884afce` |
+| Release | [`v1.0.2`](https://github.com/jamesreimer/repo-template/releases/tag/v1.0.2) |
+| Immutable repository revision | `b79d8d0f14b26a2c6414a016b9501853e68f4670` |
 
-The commit is the binding identity. This untagged revision includes the
-post-v1.0.1 link-test documentation and metadata cleanup in
-[upstream PR #36](https://github.com/jamesreimer/repo-template/pull/36). A moving
+The commit is the binding identity; the tag is its human-facing label. A moving
 branch, sibling checkout, or local path does not prove immutable consumption.
 
 Generic mechanics were extracted from this repository into `repo-template`,
@@ -116,7 +114,7 @@ checkout bytes. For example, from this repository with an independently verified
 upstream clone:
 
 ```sh
-git -C /path/to/repo-template show 5d59902e900f593c5535839371b2e4bba884afce:tools/check-links.mjs | cmp - tools/check-links.mjs
+git -C /path/to/repo-template show b79d8d0f14b26a2c6414a016b9501853e68f4670:tools/check-links.mjs | cmp - tools/check-links.mjs
 ```
 
 Verify every declared exact path before accepting a candidate. Resolve the source
