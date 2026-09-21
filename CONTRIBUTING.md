@@ -165,8 +165,7 @@ formatting/hygiene fixes, which must be reviewed.
 
 The README exception does not exempt its ancestors, siblings, or unrelated
 uppercase basenames such as nested `NOTES.md`, `CHANGELOG.md`, or `SECURITY.md`.
-The fixed policy lives in the temporary policy guard; no arbitrary configuration
-schema replaces the retired `validate.json`.
+The fixed policy lives in the temporary policy guard.
 
 ### Optional commit hooks
 

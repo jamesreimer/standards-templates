@@ -41,7 +41,8 @@ See [ADOPTION.md](ADOPTION.md) for the adoption and relationship model.
 ## Repository validation
 
 Repository validation composes the maintained generic tools from
-`repo-template v1.0.1` with independently executable standards-specific checks.
+the `repo-template` revision recorded in [PROVENANCE.md](PROVENANCE.md) with
+independently executable standards-specific checks.
 Install Python 3.10 or later, Git, and Node.js 24.18.1 (including npm), then run:
 
 ```sh
@@ -75,7 +76,7 @@ python3 -m unittest discover -s tests
 It checks template structure and stable IDs, catalog membership and title
 agreement, declared local requirement schemes and references in template
 `standard.md` files, and obvious uppercase BCP 14 keyword near misses. Input and
-runtime failures prevent success. No old generic Python engine is involved.
+runtime failures prevent success.
 
 Linkinator owns local destinations and fragments; Markdownlint owns authoring
 rules, with MD051 disabled. Directory links need no `index.html`; missing

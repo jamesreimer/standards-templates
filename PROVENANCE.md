@@ -13,10 +13,12 @@ organizational authority or permission to publish.
 | Identity | Value |
 | --- | --- |
 | Source | `jamesreimer/repo-template` |
-| Release | `v1.0.1` |
-| Immutable repository revision | `4877171f3a45ed98645e8be7af8fa5e32e5b6a90` |
+| Release basis | `v1.0.1` plus unreleased cleanup |
+| Immutable repository revision | `5d59902e900f593c5535839371b2e4bba884afce` |
 
-The commit is the binding identity; the tag is its human-facing label. A moving
+The commit is the binding identity. This untagged revision includes the
+post-v1.0.1 link-test documentation and metadata cleanup in
+[upstream PR #36](https://github.com/jamesreimer/repo-template/pull/36). A moving
 branch, sibling checkout, or local path does not prove immutable consumption.
 
 Generic mechanics were extracted from this repository into `repo-template`,
@@ -25,7 +27,7 @@ which now owns their maintenance. The adoption record is
 
 ## Current relationship classes
 
-### Exact copies at v1.0.1
+### Exact copies at the recorded revision
 
 Each file below has the same path upstream and must be byte-identical to the
 current immutable revision:
@@ -47,7 +49,7 @@ current immutable revision:
 - `tests/link-validation/import-control.mjs`
 - `tests/link-validation/native-control.mjs`
 
-### Adapted copies reviewed against v1.0.1
+### Adapted copies reviewed against the recorded revision
 
 - `.pre-commit-config.yaml`: preserve every baseline hook and add a first,
   fail-fast metadata/policy guard plus independent domain, whole-repository,
@@ -114,7 +116,7 @@ checkout bytes. For example, from this repository with an independently verified
 upstream clone:
 
 ```sh
-git -C /path/to/repo-template show 4877171f3a45ed98645e8be7af8fa5e32e5b6a90:tools/check-links.mjs | cmp - tools/check-links.mjs
+git -C /path/to/repo-template show 5d59902e900f593c5535839371b2e4bba884afce:tools/check-links.mjs | cmp - tools/check-links.mjs
 ```
 
 Verify every declared exact path before accepting a candidate. Resolve the source
