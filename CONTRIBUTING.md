@@ -70,73 +70,126 @@ Keep the change within the template's established responsibility unless the prop
 
 ## Validation
 
-Run both checks before submitting a change:
+Follow the runtime and setup instructions in [README.md](README.md), stage new
+files, and run the authoritative local/CI composition:
 
-```bash
+```sh
+.venv/bin/pre-commit run --all-files --show-diff-on-failure
+git diff --check
+```
+
+The independent standards-domain command and tests remain available:
+
+```sh
+python3 scripts/validate_local.py
 python3 -m unittest discover -s tests
-python3 scripts/validate.py
 ```
 
-CI also checks Markdown hygiene, Python lint and formatting, and GitHub Actions workflows. When a contribution affects those files, run the applicable supplemental checks locally:
+The pre-commit runner is pinned in `requirements-dev.txt`. npm installs the exact
+validation dependencies from `package-lock.json` using `npm ci --ignore-scripts`.
+Pre-commit owns pinned Markdownlint, Ruff, actionlint, syntax and hygiene hooks;
+there is no separate CI-only validation path. Review hook autofixes and rerun.
+Neither green checks nor provenance confer permission to merge or publish.
 
-```bash
-markdownlint-cli2
-ruff check scripts tests
-ruff format --check scripts tests
-actionlint .github/workflows/*.yml
+After intentionally adding, removing, or moving paths, regenerate the reviewed
+snapshot before validation:
+
+```sh
+node tools/check-repository-policy.mjs --write-snapshot
 ```
 
-`markdownlint-cli2` may be run through `npx markdownlint-cli2` without a separate local install. Ruff (Python) and actionlint (Go) must be installed separately; npm packages named `ruff` or `actionlint` are unrelated projects; do not use them as substitutes. CI pins the supplemental tool versions in `.github/workflows/validate.yml`; match those pins locally when installing Ruff or actionlint so local results do not diverge from CI.
-
-When an intentional change adds, removes, or moves repository paths, regenerate the reviewed structure snapshot before validation:
-
-```bash
-python3 scripts/update_repository_structure.py
-```
-
-Automated validation checks mechanical repository invariants. Human review remains responsible for normative calibration, applicability, conceptual boundaries, external evidence, and prose quality as described in [MAINTAINING.md](MAINTAINING.md).
+Ordinary validation never writes the snapshot. The inventory contains tracked
+and unignored files, including untracked additions, with deterministic ordering.
+Missing tracked files fail closed; stage intended removals before regeneration.
 
 ## Validator architecture
 
-Validation has two owners, and the boundary between them matters when adding a check.
+The current immutable upstream baseline and exact/adapted relationships are in
+[PROVENANCE.md](PROVENANCE.md). `repo-template` owns generic mechanics;
+standards-specific semantics remain local.
 
-| File | Owner | Rule |
-| --- | --- | --- |
-| `scripts/validate.py` | [`jamesreimer/repo-template`](https://github.com/jamesreimer/repo-template) | Exact copy. Never edit it here. |
-| `scripts/update_repository_structure.py` | `repo-template` | Exact copy. Never edit it here. |
-| `tests/test_validate.py` | `repo-template` | Exact copy. Never edit it here. |
-| `validate.json` | this repository | Selects which generic checks run, and over which paths. |
-| `scripts/validate_local.py` | this repository | Standards-domain checks only. |
-| `tests/test_validate_local.py` | this repository | Covers `scripts/validate_local.py`. |
+| Responsibility | Mechanism |
+| --- | --- |
+| Aggregate local/CI composition | Adapted upstream `.pre-commit-config.yaml` |
+| Syntax, hygiene, authoring, links/fragments, Python, workflows | Maintained upstream-selected tools and exact-copy regression assets |
+| Standards-domain structure, IDs, catalog/title agreement, requirements, BCP 14 spelling | Standard-library Python `scripts/validate_local.py` and `tests/test_validate_local.py` |
+| Missing upstream repository policies | Temporary `tools/check-repository-policy.mjs` and tests |
+| Whole-repository Markdown selection, heading and destination policy | Temporary `tools/check-repository-markdown.mjs` and tests using the maintained AST |
 
-The adopted revision is recorded in [PROVENANCE.md](PROVENANCE.md).
+The temporary generic controls preserve requirements not supplied by the current
+baseline; they are not standards-domain tooling. Their protected outcomes and
+retirement conditions are recorded in PROVENANCE. Do not rebuild a generic
+validator, custom Markdown parser, fragment resolver, or extension framework.
+Evaluate generic defects at their owning source; consume qualified corrections
+through an explicit baseline update. A standards-domain check belongs in the
+independent Python validator and must remain testable without Node or pre-commit.
 
-### Adding a check
+### Selection and safety
 
-Decide first whether the check is generic or standards-specific.
+The first hook performs a metadata-only pass over inventory paths and ancestors,
+rejecting every symlink before any validation input is read. `fail_fast: true`
+prevents later content hooks after that failure. This protects validation input
+reads, not pre-commit's bootstrap read of its own configuration. Independent
+policy, Markdown, and domain entry points also inspect metadata before content.
 
-A check is **standards-specific** when it would be meaningless in a repository that is not a library of standards templates: anything about template directories, stable template IDs, the catalog, human-facing titles, local requirement schemes, or BCP 14 keyword spelling. Add it to `scripts/validate_local.py` with tests in `tests/test_validate_local.py`.
+Native hooks retain tracked/staged selection. Additional always-run checks read
+the full tracked plus unignored inventory, preserving new-document and cross-file
+or deletion effects even when a referring document is unchanged. Ignored-only
+link targets are not repository destinations. Required root files, scoped names,
+UTF-8 and final-newline selection, junk and credential-shaped filenames, and the
+snapshot are enforced separately from native syntax and private-key checks.
 
-A check is **generic** when it would apply to any repository: encoding, newlines, path naming, Markdown structure, link resolution, junk artifacts, credential-shaped filenames, symlinks. It does not belong here even if this repository is the only one that currently wants it. Raise it as an issue in `repo-template`, and adopt the result.
+Repository Markdown requires its first heading to be H1 and exactly one H1 when
+headings exist; no-heading documents remain allowed. Local repository-absolute
+and escaping destinations are rejected. The maintained AST supplies links,
+images and definitions; Linkinator alone checks fragments. Baseline synthetic
+fixtures run their own upstream contract, without repository heading policy.
 
-Do not fork `scripts/validate.py` to add either kind. If a check genuinely cannot be expressed through `validate.json` or `scripts/validate_local.py`, that is a defect in the template and belongs upstream. Every generic capability this repository once had was moved upstream rather than reimplemented locally, and `scripts/validate_local.py` is deliberately not a place for checks that could not find another home.
+Directory destinations use the exact v1.0.1 wrapper, with native listings enabled.
+Existing inventoried directories need no index document; missing ones fail.
+Real `index.html` fragments are checked. Generated listings have no native
+fragment-validation contract; link explicitly to a Markdown or HTML file when
+that validation is required. External HTTP/HTTPS is skipped, including redirects
+leaving Linkinator's serving origin. YAML streams use the native multi-document
+syntax option. Validation preserves source bytes except explicit native hook
+formatting/hygiene fixes, which must be reviewed.
 
-### Configuring the generic checks
-
-`validate.json` selects which checks run. Every key is optional and omitted keys take the default; keys beginning with `_` are ignored and may be used as comments. An unknown check or option is an error rather than a silent no-op.
-
-This repository enables `required-files`, `structure-snapshot`, and `path-names`. The naming policy is expressed entirely as configuration, using ordered per-scope rules: the first rule whose `scope` matches a path decides it, so rules are listed most specific first.
+### Scoped naming
 
 | Scope | Convention |
 | --- | --- |
-| `.github/`, `.githooks/`, `.vscode/` | whatever the owning tool requires |
-| `scripts/*.py`, `tests/*.py` | lowercase `snake_case`, per PEP 8 |
-| `templates/*/README.md`, `templates/*/standard.md` | the two fixed template documents |
-| root documents and tool configuration | as named |
-| everything else | lowercase kebab-case |
+| `.github/`, `.githooks/`, `.vscode/` | Owning tool conventions |
+| `scripts/*.py`, `tests/*.py` | Lowercase snake_case |
+| File basename `README.md` at any depth | Conventional documentation basename |
+| `templates/*/standard.md` | Fixed template-owned document |
+| Established root documents and explicit tool configuration | Existing named exceptions |
+| Other files and directory components | Lowercase kebab-case |
 
-Changing a naming convention is a `validate.json` edit, not a code change.
+The README exception does not exempt its ancestors, siblings, or unrelated
+uppercase basenames such as nested `NOTES.md`, `CHANGELOG.md`, or `SECURITY.md`.
+The fixed policy lives in the temporary policy guard; no arbitrary configuration
+schema replaces the retired `validate.json`.
 
-### Writing a local check
+### Optional commit hooks
 
-`scripts/validate_local.py` defines `extra_checks(context)` and returns `(path, line, reason)` tuples. `context` carries `root`, `files`, and `text`. It is imported as an ordinary module, so `dataclasses`, `typing`, and `from __future__ import annotations` all work. A local check that raises is reported as a finding rather than aborting the run.
+Run `.venv/bin/pre-commit install` to opt in. If an older checkout has a
+repository-local `core.hooksPath=.githooks`, inspect
+`git config --show-origin --get-all core.hooksPath` and remove only that obsolete
+local setting before installation. Preserve unrelated hook owners and
+higher-precedence settings. Validation and CI do not change Git configuration.
+Commit hooks do not replace the full all-files command before a PR.
+
+### Maintenance and evidence
+
+Dependabot covers Actions, pip, and npm monthly. Update hook revisions with
+`.venv/bin/pre-commit autoupdate --freeze`, reviewing revisions and compatibility.
+Keep the Markdownlint hook and npm test version aligned. Update dependency pins
+and lock together; retain the effective-renderer startup probe rather than
+assuming a hoisted Marked identity. Run `npm audit` and the complete suite.
+
+When validation changes, exercise valid and injected-invalid cases in isolated
+Git repositories. Preserve the domain tests, released link/authoring tests,
+repository-policy/selection tests, and composition tests. The composition suite
+verifies actual pre-commit fail-fast behavior and native YAML stream handling.
+Manually review affected external claims and governing semantics as described in
+[MAINTAINING.md](MAINTAINING.md); automated checks do not establish those facts.

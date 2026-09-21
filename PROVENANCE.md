@@ -1,30 +1,46 @@
 # Provenance
 
-This repository consumes reusable repository mechanics from another repository.
-This record identifies that source, the exact state consumed, and what each
-copied file's relationship actually is.
+This repository consumes generic repository mechanics from
+[`jamesreimer/repo-template`](https://github.com/jamesreimer/repo-template).
+The source relationship is governed by
+[`shared-asset-provenance`](templates/shared-asset-provenance/standard.md).
+Validation is Authoritative Consumption: source identity, immutable state, and
+actual content correspondence must all be established. Provenance does not confer
+organizational authority or permission to publish.
 
-It exists because [`shared-asset-provenance`](templates/shared-asset-provenance/)
-requires it. Using an externally sourced validator as the mechanism that decides
-whether this repository passes validation is Authoritative Consumption under
-§3, so §5 requires binding that input to an explicit Source Identity, an
-appropriate Immutable Consumed Identity, and verification that the content used
-corresponds to both.
+## Current consumed baseline
 
-## Source
-
-| | |
+| Identity | Value |
 | --- | --- |
-| Source Identity | [`jamesreimer/repo-template`](https://github.com/jamesreimer/repo-template) |
-| Immutable Consumed Identity | `4318faa00cd6d02c78247ed799fbcae61210a43c` |
-| Consumed | 2026-09-16 |
+| Source | `jamesreimer/repo-template` |
+| Release | `v1.0.1` |
+| Immutable repository revision | `4877171f3a45ed98645e8be7af8fa5e32e5b6a90` |
 
-§6 requires an exact repository revision for direct repository-source
-consumption, so the commit hash above is the binding identity. A branch name, a
-tag, a sibling checkout, or a local path is a Moving Reference under §7 and is
-not sufficient. A nearby working copy of `repo-template` may be used to discover
-a candidate revision, but the content adopted must be verified against the hash
-above before it is relied upon.
+The commit is the binding identity; the tag is its human-facing label. A moving
+branch, sibling checkout, or local path does not prove immutable consumption.
+The reconciliation is based on downstream revision
+`ec6df67afd53387b132cd29d6b64bbe1fe0e715f`.
+
+## Historical consumed states
+
+The earlier completed adoption consumed
+`4318faa00cd6d02c78247ed799fbcae61210a43c` on 2026-09-16. At that revision,
+`scripts/validate.py`, `scripts/update_repository_structure.py`,
+`scripts/setup_git_hooks.py`, `tests/test_validate.py`, `.githooks/pre-commit`,
+`.editorconfig`, `.vscode/settings.json`, and `.github/dependabot.yml` were
+recorded as exact copies. Those relationships remain historical evidence.
+
+This reconciliation first staged generic assets from the first stable release,
+`v1.0.0 @ f677c176b5573c1a51f4bfb91650c0bde09d6a48`, without completing or publishing
+that adoption. Real downstream integration exposed a generic directory-link
+correctness defect. It was corrected at the owning upstream source, reviewed,
+and published as v1.0.1. The deliberate rebinding consumes that correction and
+the already-merged setup-node v7 maintenance update. It does not rewrite the
+v1.0.0 baseline or the preceding adoption history.
+
+The old generic Python engine, generator, installer, hook shim, test harness,
+and `validate.json` have been retired. They are not hidden dependencies of the
+new aggregate. Their absence upstream is not represented as an exact-copy claim.
 
 ## History of ownership
 
@@ -51,44 +67,109 @@ skips, per-scope path naming, a single leading H1, fenced code block balance,
 reference-definition validity and uniqueness, and correct loading of a local
 check module.
 
-## Relationship classes
+## Current relationship classes
 
-| Class | Files | Expectation |
-| --- | --- | --- |
-| **Exact Copy** | `scripts/validate.py`, `scripts/update_repository_structure.py`, `scripts/setup_git_hooks.py`, `tests/test_validate.py`, `.editorconfig`, `.githooks/pre-commit`, `.vscode/settings.json`, `.github/dependabot.yml` | Byte-identical to the consumed revision. Never edited here. |
-| **Adapted Copy** | `AGENTS.md`, `CONTRIBUTING.md`, `README.md`, `SECURITY.md`, `ruff.toml`, `.gitignore`, `.gitattributes`, `.markdownlint-cli2.jsonc`, `.github/workflows/validate.yml`, `.github/pull_request_template.md` | Seeded upstream, then intentionally diverged. Not overwritten wholesale. |
-| **Local** | `validate.json`, `scripts/validate_local.py`, `tests/test_validate_local.py`, `LICENSE`, all standards content | Authored here. No upstream equivalent. |
-| **Generated** | `repository-structure.txt` | Produced by the generator. Never copied from upstream. |
+### Exact copies at v1.0.1
 
-§10 requires that an Exact Copy not be silently modified while still being
-represented as exact. Verify correspondence with:
+Each file below has the same path upstream and must be byte-identical to the
+current immutable revision:
 
-```bash
-diff -r --brief <path-to-repo-template>/scripts/validate.py scripts/validate.py
+- `.editorconfig`
+- `.github/dependabot.yml`
+- `.markdownlint-cli2.jsonc`
+- `requirements-dev.txt`
+- `package.json`
+- `package-lock.json`
+- `markdownlint-rules/fenced-code-closed.cjs`
+- `tools/check-links.mjs`
+- `tools/link-frontmatter.mjs`
+- `tests/fixtures/yaml-stream.yaml`
+- `tests/markdown-rules.test.cjs`
+- `tests/link-validation.test.mjs`
+- `tests/link-validation/README.md`
+- `tests/link-validation/contract.json`
+- `tests/link-validation/import-control.mjs`
+- `tests/link-validation/native-control.mjs`
+
+### Adapted copies reviewed against v1.0.1
+
+- `.pre-commit-config.yaml`: preserve every baseline hook and add a first,
+  fail-fast metadata/policy guard plus independent domain, whole-repository,
+  and preservation-test hooks.
+- `.github/workflows/validate.yml`: inherit the released runtime, action pins,
+  permissions, concurrency, timeout and aggregate command; add `git diff --check`.
+- `AGENTS.md`, `CONTRIBUTING.md`, `README.md`: retain standards-library governance
+  and responsibility while adopting the current tooling and maintenance model.
+- `.github/pull_request_template.md`: retain scope, evidence and adoption review
+  questions and update validation expectations.
+- `ruff.toml`: retain local style and import checks; use the Python 3.10 floor.
+
+Adapted copies are intentionally different and must not be overwritten as exact.
+
+### Historical copies retained independently
+
+`SECURITY.md`, `.gitignore`, and `.gitattributes` retain their historical adapted
+relationship to `4318faa00cd6d02c78247ed799fbcae61210a43c`; no v1.0.1 byte-copy
+claim is made. `.vscode/settings.json` retains its earlier exact-copy bytes but
+is now maintained as a historical adapted copy: the continuing exact-copy
+obligation is deliberately retired because the current baseline no longer
+supplies it. Explicit Git attributes and editor behavior remain preserved.
+
+### Local and generated material
+
+Standards templates, catalog/adoption/naming guidance, LICENSE, other governance
+content, `scripts/validate_local.py`, and `tests/test_validate_local.py` remain
+local. Their standards semantics are not transferred upstream.
+
+The generic preservation controls and their tests are local **transitional**
+material, not permanently standards-specific responsibilities:
+
+| Files | Protected outcomes |
+| --- | --- |
+| `tools/check-repository-policy.mjs`, `tests/repository-policy.test.mjs` | Required roots, scoped names and README basename convention, snapshot integrity, selected UTF-8/newlines, junk/credential filenames, metadata-first rejection of all symlinks |
+| `tools/check-repository-markdown.mjs`, `tests/repository-markdown-selection.test.mjs` | Tracked plus unignored Markdown, cross-file effects, repository headings, destination containment and inventory membership through maintained AST parsing |
+| `tests/validation-composition.test.mjs` | Aggregate fail-fast ordering and native YAML multi-document behavior |
+
+Generic responsibility remains with repo-template. This repository maintains
+these narrowly bounded controls until an upstream/native replacement satisfies
+the same protected outcomes, or legitimate authority explicitly retires a policy.
+Re-evaluate them whenever adopting a new baseline; compare behavior and injected
+defect evidence before retiring a control. Do not synchronize them automatically,
+turn them into a generic framework, or move standards semantics into them.
+They add no runtime or dependency beyond the inherited tooling stack.
+
+`repository-structure.txt` is generated from the tracked plus unignored inventory
+by `node tools/check-repository-policy.mjs --write-snapshot`. Both generator and
+input inventory are downstream-owned working state until committed together;
+ordinary validation only compares the reviewed snapshot.
+
+### Installed material
+
+npm dependencies are bound by the exact package manifest and lockfile. The
+pre-commit runner is pinned in `requirements-dev.txt`; hook source revisions and
+isolated environments are selected by `.pre-commit-config.yaml`. Installation
+paths alone are not identity evidence. Use locked installation and retain the
+front-matter effective-renderer startup probe.
+
+## Verification and updates
+
+Compare exact copies against Git objects at the full upstream SHA, not mutable
+checkout bytes. For example, from this repository with an independently verified
+upstream clone:
+
+```sh
+git -C /path/to/repo-template show 4877171f3a45ed98645e8be7af8fa5e32e5b6a90:tools/check-links.mjs | cmp - tools/check-links.mjs
 ```
 
-If an Exact Copy needs to change, the change belongs upstream. If local
-divergence ever becomes legitimate and durable, reclassify the file here rather
-than leaving the claim of exactness false.
+Verify every declared exact path before accepting a candidate. Resolve the source
+repository and immutable commit separately from content comparison; a matching
+filename is not evidence. Inspect adapted copies against that same commit and
+retain their deliberate local responsibilities. Record correspondence and test
+results in the implementation/review record.
 
-## Updating
-
-There is no synchronization mechanism, and none is wanted. Upstream changes are
-review candidates, never automatic downstream updates, which is also upstream's
-own stated position.
-
-To adopt a newer revision:
-
-1. Review what changed upstream since the revision recorded above.
-2. Copy the Exact Copy files from the new revision.
-3. Run the full validation set and confirm no defect class this repository
-   detects has stopped being detected.
-4. Update the Immutable Consumed Identity in this file in the same change.
-
-Step 3 is the one that matters. Adoption can narrow coverage without any
-failure signal: validation still passes, continuous integration still reports
-green, and the loss is visible only by testing the defect classes directly.
-Both reconciliation rounds during the initial adoption were found that way.
-
-Resolution of any future divergence belongs to this repository. Recording
-provenance does not give `repo-template` continuing authority here.
+For future adoption, review upstream changes, verify the new exact copies,
+reconcile adaptations and temporary controls, exercise preserved defect classes,
+run the full validation composition, and update this record in the same candidate.
+A newer upstream release does not authorize automatic propagation or replace
+this repository's authority. A successful mechanical check does not alone prove
+architecture, prose quality, or publication readiness.
