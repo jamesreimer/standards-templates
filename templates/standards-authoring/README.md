@@ -39,7 +39,7 @@ Adopting this authoring standard does not itself reclassify or rewrite existing 
 
 ### Candidate/publication truthfulness review
 
-These informative questions help human reviewers and AI agents apply the [candidate/publication truthfulness requirements](standard.md#candidate-and-canonical-publication-truthfulness) within the organization's existing process; they do not create additional requirements or approval authority:
+These informative questions help authors and reviewers apply the [candidate/publication truthfulness requirements](standard.md#candidate-and-canonical-publication-truthfulness) within the organization's existing process; they do not create additional requirements or approval authority:
 
 - Does the candidate claim approval, authority, effectiveness, a date-dependent state, or another completed act before it has occurred?
 - Will the intended publication text remain accurate after publication, or does it retain unqualified claims such as "remains an unapproved draft" that will then be false?
@@ -47,11 +47,11 @@ These informative questions help human reviewers and AI agents apply the [candid
 - Has finalization changed already approved content, requiring renewed review and the approval required by the existing process?
 - Are historical descriptions, quotations, and informative counterexamples clearly identified so that they are not mistaken for current-state claims?
 
-## Agent integration
+## Workflow integration
 
-Route human or automated implementation work to the adopted local artifact when creating or revising normative standards or policies. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
+Route implementation and review work to the adopted local artifact when creating or revising normative standards or policies. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
 
-Adapt this optional snippet for `AGENTS.md` or an equivalent contributor/automation entry point. Replace `<local-standard-path>` with the adopted artifact's location. Neither `AGENTS.md` nor a particular agent product is required; this snippet is informative routing guidance, not independent authority.
+Adapt this optional snippet for the contributor guidance used by planners, implementors, and reviewers. Replace `<local-standard-path>` with the adopted artifact's location. No particular tool or instruction filename is required; this snippet is informative routing guidance, not independent authority.
 
 ```text
 Before drafting or materially revising normative requirements, read and apply the organization's adopted Standards and Policy Authoring Standard at <local-standard-path>. Use it for authoring discipline; adoption authority remains with the organization's governing adoption process.

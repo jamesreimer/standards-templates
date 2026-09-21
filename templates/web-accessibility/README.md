@@ -10,7 +10,7 @@ Human-facing title:
 
 The reusable template is [`standard.md`](standard.md). It defines a web-accessibility target and the assessment, evidence, and claim discipline needed to evaluate it. It is independently adoptable; no umbrella or other companion is required.
 
-This README is informative adoption guidance for humans and AI agents, not a second normative layer. Adopting the template does not establish that a web experience conforms to WCAG or applicable law.
+This README is informative adoption guidance for adopters, implementors, and reviewers, not a second normative layer. Adopting the template does not establish that a web experience conforms to WCAG or applicable law.
 
 ## Adoption
 
@@ -35,11 +35,11 @@ In addition to the universal review, determine:
 
 These are pre-adoption safety questions, not a prescribed approval ceremony.
 
-## Agent integration
+## Workflow integration
 
-Route human or automated implementation work to the adopted local artifact when materially changing or evaluating web-accessibility outcomes, the accessibility target, or accessibility evidence and claims. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
+Route implementation and review work to the adopted local artifact when materially changing or evaluating web-accessibility outcomes, the accessibility target, or accessibility evidence and claims. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
 
-Adapt this optional snippet for `AGENTS.md` or an equivalent contributor/automation entry point. Replace `<local-standard-path>` with the adopted artifact's location. Neither `AGENTS.md` nor a particular agent product is required; this snippet is informative routing guidance, not independent authority.
+Adapt this optional snippet for the contributor guidance used by planners, implementors, and reviewers. Replace `<local-standard-path>` with the adopted artifact's location. No particular tool or instruction filename is required; this snippet is informative routing guidance, not independent authority.
 
 ```text
 For material web-accessibility changes or evaluation, read and apply the organization's adopted Web Accessibility Standard at <local-standard-path>. Use its target, evidence, and claim distinctions. Accessibility results do not establish broader content, design, layout, interaction, quality, legal, or Web Experience Baseline conclusions.
@@ -66,7 +66,7 @@ Customization is not required when the defaults fit. Local waivers cannot rewrit
 
 ## Verification considerations
 
-Automation is useful but does not replace knowledgeable human judgment. Manual evaluation, actual assistive-technology behavior, and specialist input address different evidence needs. An AI-generated test plan is not an executed test; a clean scan is not full conformance; a sample does not automatically establish unexamined scope. Evidence needs to remain tied to the actual assessed revision and context.
+Automation is useful but does not replace knowledgeable human judgment. Manual evaluation, actual assistive-technology behavior, and specialist input address different evidence needs. A test plan is not an executed test; a clean scan is not full conformance; a sample does not automatically establish unexamined scope. Evidence needs to remain tied to the actual assessed revision and context.
 
 The template does not mandate a vendor, fixed browser matrix, audit service, badge, file format, or retention system. Its evidence requirements support reviewable conclusions rather than administrative machinery.
 
@@ -76,7 +76,7 @@ Inclusive-use research and participation by people with disabilities can inform 
 
 Accessibility consequences remain in scope even when they arise in design, layout, interaction, content, semantics, or media. This template does not own those subjects' broader conventions. It retains accessibility-specific verification without prescribing a general quality-management system. It neither determines legal obligations nor creates organizational approval competence.
 
-No other proposed web standard is made a dependency by this template. Its adjacent guidance does not create a separate AI policy or authorize downstream mutation.
+No other proposed web standard is made a dependency by this template. Its adjacent guidance does not create a separate contributor policy or authorize downstream mutation.
 
 ## Primary sources
 

@@ -135,7 +135,7 @@ See [Web Standards Suite Assessment Guidance](web-standards-assessment-guidance.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the contributor path and [MAINTAINING.md](MAINTAINING.md) for the repository's maintenance and review path.
 
-Automated coding agents should also follow [AGENTS.md](AGENTS.md), which routes agent work through the repository's maintainer, contribution, and applicable naming and authoring guidance.
+Planners, implementors, and reviewers should also follow the [contributor guidance](AGENTS.md), which routes their work through the repository's maintainer, contribution, and applicable naming and authoring guidance.
 
 ## License
 

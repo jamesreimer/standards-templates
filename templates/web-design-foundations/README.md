@@ -35,11 +35,11 @@ In addition to the universal review, determine:
 9. Which brand approvals, legal constraints, font licenses, performance budgets, and publication controls must remain outside this Standard?
 10. Would adopting a formal token, type, color, or spacing system preserve current protections, or would it introduce an unnecessary implementation mandate?
 
-## Agent integration
+## Workflow integration
 
-Route human or automated implementation work to the adopted local artifact when materially changing or evaluating delivered typography, visual hierarchy, spacing relationships, or functional visual roles. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
+Route implementation and review work to the adopted local artifact when materially changing or evaluating delivered typography, visual hierarchy, spacing relationships, or functional visual roles. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
 
-Adapt this optional snippet for `AGENTS.md` or an equivalent contributor/automation entry point. Replace `<local-standard-path>` with the adopted artifact's location. Neither `AGENTS.md` nor a particular agent product is required; this snippet is informative routing guidance, not independent authority.
+Adapt this optional snippet for the contributor guidance used by planners, implementors, and reviewers. Replace `<local-standard-path>` with the adopted artifact's location. No particular tool or instruction filename is required; this snippet is informative routing guidance, not independent authority.
 
 ```text
 For material visual-foundation changes or evaluation, read and apply the organization's adopted Web Design Foundations Standard at <local-standard-path>. This route addresses visual foundations, not stylesheet architecture, responsive layout, or interaction behavior; its results do not establish sibling-standard or Web Experience Baseline conformance.

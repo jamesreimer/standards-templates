@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-This standard defines how consequential operational work is bounded by an explicit execution contract before a person, agent, automation, process, or tool exercises authority that could materially affect systems, data, services, published state, shared infrastructure, or other protected operational interests.
+This standard defines how consequential operational work is bounded by an explicit execution contract before a person, delegate, automation, process, or tool exercises authority that could materially affect systems, data, services, published state, shared infrastructure, or other protected operational interests.
 
 Its purpose is to prevent execution authority from expanding through momentum, convenience, nearby work, prior discussion, implementation progress, or successful intermediate validation.
 
@@ -67,7 +67,7 @@ Examples may include planning, repository implementation, publication, deploymen
 
 **Executor**
 
-A person, agent, automation, tool, process, or service performing work under an Execution Contract.
+A person, delegate, automation, tool, process, or service performing work under an Execution Contract.
 
 **Material Scope Expansion**
 
@@ -161,7 +161,7 @@ The same person MAY define, approve, and execute work where the adopting organiz
 
 This standard requires clarity of authority, not ceremonial separation of people or roles.
 
-Delegated agents, automation, tools, or services MAY perform authorized work.
+Delegated executors, automation, tools, or services MAY perform authorized work.
 
 Delegation does not expand the authority granted by the Execution Contract.
 
@@ -444,7 +444,7 @@ Avoid:
 - requiring fictional rollback where recovery is the real control;
 - stopping for harmless Mechanical Corrections that remain inside already authorized implementation scope;
 - disguising substantive changes as Mechanical Corrections;
-- making an agent or automation-specific execution model when the same boundary applies to human execution.
+- making a tool-specific or automation-specific execution model when the same boundary applies to human execution.
 
 ## 20. Default Standard
 

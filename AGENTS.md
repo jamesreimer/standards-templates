@@ -1,4 +1,4 @@
-# Agent Guidance
+# Contributor Guidance
 
 ## Before planning or editing
 
@@ -10,7 +10,7 @@
 
 ## Governing standards
 
-For work in this repository, agents MUST apply the relevant standards as governing constraints, not merely contextual documentation. Do not invent a parallel rule, workflow, taxonomy, repository responsibility, or authority model where an existing standard governs. Preserve each standard's documented conceptual boundary when several apply. Surface substantive governance questions without a clear existing owner for planning rather than silently creating policy.
+For work in this repository, contributors MUST apply the relevant standards as governing constraints, not merely contextual documentation. Do not invent a parallel rule, workflow, taxonomy, repository responsibility, or authority model where an existing standard governs. Preserve each standard's documented conceptual boundary when several apply. Surface substantive governance questions without a clear existing owner for planning rather than silently creating policy.
 
 ### Default architectural reasoning
 
@@ -48,7 +48,7 @@ Before assisting an adoption, read root [ADOPTION.md](ADOPTION.md), the candidat
 
 Do not create or modify an adopted artifact until the proposed scope and adoption authority, existing authority and conflicts, canonical destination, provenance, protected effects, and proposed `adopt`, `adapt`, `reject`, or `defer` disposition have been reviewed.
 
-Humans and agents use the same canonical adoption guidance; do not create a separate agent-only adoption policy.
+All contributor roles use the same canonical adoption guidance; do not create a separate adoption policy for a particular role or tool.
 
 ## Tooling
 

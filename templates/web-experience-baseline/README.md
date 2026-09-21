@@ -52,11 +52,11 @@ In addition to the universal review, determine:
 11. Are any organizational exceptions being proposed, and do they prevent an unchanged Baseline conformance claim?
 12. Are optional standards such as Styling Architecture being adopted separately without accidentally becoming hidden Baseline dependencies?
 
-## Agent integration
+## Workflow integration
 
-Route human or automated implementation work to the adopted local artifact when assessing, reporting, or claiming conformance to the adopted Web Experience Baseline. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
+Route implementation and review work to the adopted local artifact when assessing, reporting, or claiming conformance to the adopted Web Experience Baseline. After adoption, that artifact governs within its assigned scope; the upstream `standards-templates` copy remains source material.
 
-Adapt this optional snippet for `AGENTS.md` or an equivalent contributor/automation entry point. Replace `<local-standard-path>` with the adopted artifact's location. Neither `AGENTS.md` nor a particular agent product is required; this snippet is informative routing guidance, not independent authority.
+Adapt this optional snippet for the contributor guidance used by planners, implementors, and reviewers. Replace `<local-standard-path>` with the adopted artifact's location. No particular tool or instruction filename is required; this snippet is informative routing guidance, not independent authority.
 
 ```text
 For a Web Experience Baseline assessment or claim, read and apply the organization's adopted Web Experience Baseline Standard at <local-standard-path> and use the companion results it requires. Do not infer whole-Baseline conformance from partial evidence. This route does not require a Baseline assessment for every web task.

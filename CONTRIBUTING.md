@@ -16,7 +16,7 @@ Use a conventional type prefix that describes the work for new contribution bran
 
 Format branch names as `<type>/<short-kebab-case-description>` and pull request titles as `<type>: <concise description>`. Choose the type from the substance of the change; a normative requirement change is not merely documentation work because it is written in Markdown.
 
-Do not use actor or tool names such as `codex/` as branch prefixes. This convention applies to human and automated contributions alike.
+Use the work type as the branch prefix, rather than a contributor or tool name. This convention applies to every contributor role.
 
 ## Addition decisions
 
