@@ -65,8 +65,8 @@ Adapted copies are intentionally different and must not be overwritten as exact.
 ### Historical copies retained independently
 
 `SECURITY.md`, `.gitignore`, and `.gitattributes` retain their historical adapted
-relationship to `4318faa00cd6d02c78247ed799fbcae61210a43c`; no v1.0.1 byte-copy
-claim is made. `.vscode/settings.json` retains its earlier exact-copy bytes but
+relationship to `4318faa00cd6d02c78247ed799fbcae61210a43c`; no exact-copy claim against
+the current baseline is made. `.vscode/settings.json` retains its earlier exact-copy bytes but
 is now maintained as a historical adapted copy: the continuing exact-copy
 obligation is deliberately retired because the current baseline no longer
 supplies it. Explicit Git attributes and editor behavior remain preserved.
@@ -104,8 +104,8 @@ ordinary validation only compares the reviewed snapshot.
 npm dependencies are bound by the exact package manifest and lockfile. The
 pre-commit runner is pinned in `requirements-dev.txt`; hook source revisions and
 isolated environments are selected by `.pre-commit-config.yaml`. Installation
-paths alone are not identity evidence. Use locked installation and retain the
-front-matter effective-renderer startup probe.
+paths alone are not identity evidence. Follow the
+[validation and maintenance instructions](CONTRIBUTING.md#validation).
 
 ## Verification and updates
 

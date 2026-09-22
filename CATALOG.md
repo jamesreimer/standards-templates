@@ -12,8 +12,6 @@ This file is a current-state catalog, not a roadmap. Planned, deferred, or merel
 
 ## Templates
 
-Repository validation machine-reads this single section. Its subject and suite hierarchy structures discovery, and its backticked stable-ID headings identify template entries. Grouping does not itself create authority, adoption dependency, or shared lifecycle.
-
 ### Standards Governance and Authoring
 
 These related subjects are grouped for discovery; they do not form a suite or adoption bundle.

@@ -56,7 +56,7 @@ Do not add citations merely for appearance or copy external text when a precise 
 Before merging a material change:
 
 1. regenerate `repository-structure.txt` when repository paths changed intentionally;
-2. run the authoritative pre-commit composition, including the independent standards-domain tests and validator, documented in [README.md](README.md);
+2. run the authoritative pre-commit composition, including the independent standards-domain tests and validator, documented in [CONTRIBUTING.md](CONTRIBUTING.md#validation);
 3. when a change adds or alters validation behavior, confirm the check is owned by the appropriate layer: generic repository mechanics belong upstream in `repo-template`, standards-domain checks remain local, and explicitly temporary generic preservation controls retain the ownership and retirement obligations recorded in PROVENANCE. [CONTRIBUTING.md](CONTRIBUTING.md) states the ownership rule and [PROVENANCE.md](PROVENANCE.md) covers adoption verification;
 4. review requirement strength using the A/B/C calibration test in `standards-authoring`;
 5. confirm that examples remain informative and do not silently change the rule;

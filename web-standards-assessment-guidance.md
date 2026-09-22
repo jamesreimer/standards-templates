@@ -74,11 +74,3 @@ The profile should state what it covers and what it does not cover. A narrow dec
 The absence of field-performance data, a universal browser matrix, or every imaginable resilience scenario does not by itself establish nonconformance when those claims were not made and the applicable requirement permits a bounded declared profile. Conversely, an assessor must not describe a narrow profile as evidence for broader compatibility, performance, resilience, or quality claims than were actually evaluated.
 
 Proportionality changes assessment scope, not the truthfulness requirement. Every claim still needs evidence adequate for the claim actually made.
-
-## 4. Integration recommendation
-
-Use one organization-neutral assessment-guidance document or guidance section that is explicitly non-normative and referenced from the Web Standards Suite documentation.
-
-Avoid scattering duplicate guidance into each normative standard unless a genuinely standard-specific clarification is later identified.
-
-The guidance should make clear that it assists assessment and evidence recording; it does not create new conformance requirements or override normative text.
