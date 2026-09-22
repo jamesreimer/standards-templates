@@ -66,7 +66,7 @@ Inclusive-use research and participation by people with disabilities can inform 
 
 Accessibility consequences remain in scope even when they arise in design, layout, interaction, content, semantics, or media. This template does not own those subjects' broader conventions. It retains accessibility-specific verification without prescribing a general quality-management system. It neither determines legal obligations nor creates organizational approval competence.
 
-No other proposed web standard is made a dependency by this template. Its adjacent guidance does not authorize downstream mutation.
+No other web standard is made a dependency by this template. Its adjacent guidance does not authorize downstream mutation.
 
 ## Primary sources
 

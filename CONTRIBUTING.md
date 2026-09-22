@@ -46,6 +46,14 @@ A subject does not earn a template merely because an external standards body cov
 
 Author normative documents against the [`standards-authoring`](templates/standards-authoring/) template and follow the repository structure in [README.md](README.md).
 
+### Catalog entries
+
+Repository validation reads entries from the single `Templates` section in
+[CATALOG.md](CATALOG.md). Preserve its subject and suite hierarchy and the
+backticked stable-ID headings that identify template entries. Catalog grouping
+supports discovery; it does not establish authority, adoption dependencies,
+or shared lifecycle.
+
 ## Existing template revision
 
 ```text
@@ -68,20 +76,45 @@ Keep the change within the template's established responsibility unless the prop
 
 ## Validation
 
-Follow the runtime and setup instructions in [README.md](README.md), stage new
-files, and run the authoritative local/CI composition:
+Install Python 3.10 or later, Git, and Node.js 24.18.1 (including npm), then set
+up the validation tools:
+
+```sh
+npm ci --ignore-scripts
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-dev.txt
+```
+
+On Windows, use `.venv\Scripts\python.exe` and
+`.venv\Scripts\pre-commit.exe` instead. Initial dependency and hook installation
+needs network access; required link checking is offline. CI runs the same
+pre-commit composition, using Python 3.12 and Node 24.18.1.
+
+Stage intended new files so native hooks include them, then run:
 
 ```sh
 .venv/bin/pre-commit run --all-files --show-diff-on-failure
 git diff --check
 ```
 
-The independent standards-domain command and tests remain available:
+The standards-specific validator and tests use standard-library Python and can
+run independently:
 
 ```sh
 python3 scripts/validate_local.py
 python3 -m unittest discover -s tests
 ```
+
+The domain validator checks template structure and stable IDs, catalog membership
+and title agreement, declared local requirement schemes and references in
+`standard.md` files, and obvious uppercase BCP 14 keyword near misses. Input and
+runtime failures prevent success.
+
+Automated checks do not establish normative strength, applicability, conceptual
+boundaries, citation correctness, external evidence, legal interpretation, or
+prose quality. Requirement references outside template `standard.md` files and
+semantic cross-standard dependency correctness remain outside automated domain
+validation.
 
 The pre-commit runner is pinned in `requirements-dev.txt`. npm installs the exact
 validation dependencies from `package-lock.json` using `npm ci --ignore-scripts`.
@@ -140,10 +173,12 @@ snapshot are enforced separately from native syntax and private-key checks.
 Repository Markdown requires its first heading to be H1 and exactly one H1 when
 headings exist; no-heading documents remain allowed. Local repository-absolute
 and escaping destinations are rejected. The maintained AST supplies links,
-images and definitions; Linkinator alone checks fragments. Baseline synthetic
+images and definitions; Linkinator alone checks fragments, with Markdownlint
+rule MD051 disabled. Baseline synthetic
 fixtures run their own upstream contract, without repository heading policy.
 
-Directory destinations use the exact v1.0.1 wrapper, with native listings enabled.
+Directory destinations use the wrapper from the recorded upstream baseline,
+with native listings enabled.
 Existing inventoried directories need no index document; missing ones fail.
 Real `index.html` fragments are checked. Generated listings have no native
 fragment-validation contract; link explicitly to a Markdown or HTML file when

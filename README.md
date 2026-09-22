@@ -38,70 +38,6 @@ Adoption creates a new organizational artifact governed by the adopter. The upst
 
 See [ADOPTION.md](ADOPTION.md) for the adoption and relationship model.
 
-## Repository validation
-
-Repository validation composes the maintained generic tools from
-the `repo-template` revision recorded in [PROVENANCE.md](PROVENANCE.md) with
-independently executable standards-specific checks.
-Install Python 3.10 or later, Git, and Node.js 24.18.1 (including npm), then run:
-
-```sh
-npm ci --ignore-scripts
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements-dev.txt
-.venv/bin/pre-commit run --all-files --show-diff-on-failure
-git diff --check
-```
-
-On Windows, use `.venv\Scripts\python.exe` and
-`.venv\Scripts\pre-commit.exe` instead. CI runs the same pre-commit composition,
-using Python 3.12 and Node 24.18.1. Initial dependency and hook installation needs
-network access; required link checking is offline. Stage intended new files
-before the all-files run so native hooks see them.
-
-The aggregate first rejects unsafe file metadata and checks repository policy
-and the reviewed structure snapshot. It stops on failure before later hooks read
-repository content. Native hooks check syntax, hygiene, Markdown authoring,
-local links and fragments, Python, and workflows. Additional whole-repository
-checks include tracked and new unignored inputs, so an unchanged document is
-rechecked when its target is changed or removed.
-
-Standards-specific validation remains standard-library Python and can run alone:
-
-```sh
-python3 scripts/validate_local.py
-python3 -m unittest discover -s tests
-```
-
-It checks template structure and stable IDs, catalog membership and title
-agreement, declared local requirement schemes and references in template
-`standard.md` files, and obvious uppercase BCP 14 keyword near misses. Input and
-runtime failures prevent success.
-
-Linkinator owns local destinations and fragments; Markdownlint owns authoring
-rules, with MD051 disabled. Directory links need no `index.html`; missing
-locations fail. Real `index.html` fragments are checked, but generated directory
-listings provide no fragment-validation contract. Use an explicit file link
-when a fragment must be checked. External HTTP/HTTPS links are excluded.
-
-These checks do not establish normative strength, applicability, conceptual
-boundaries, citation correctness, external evidence, legal interpretation,
-editorial quality, or prose quality. Requirement references outside template
-`standard.md` files and semantic cross-standard dependency correctness remain
-outside automated domain validation.
-
-After an intentional structural change, explicitly regenerate the snapshot:
-
-```sh
-node tools/check-repository-policy.mjs --write-snapshot
-```
-
-Validation compares the snapshot and never silently rewrites it. Optional commit
-hooks use `.venv/bin/pre-commit install`; they are not installed by validation or
-CI. See [CONTRIBUTING.md](CONTRIBUTING.md) for hook migration, selection, and
-maintenance details, and [PROVENANCE.md](PROVENANCE.md) for current and historical
-source relationships and temporary preservation controls.
-
 ## Template catalog
 
 See [CATALOG.md](CATALOG.md) for the current reusable template inventory, each template's durable subject, and important boundaries between existing templates.
@@ -135,6 +71,13 @@ See [Web Standards Suite Assessment Guidance](web-standards-assessment-guidance.
 ## Contributing and maintenance
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the contributor path and [MAINTAINING.md](MAINTAINING.md) for the repository's maintenance and review path.
+
+## Repository validation
+
+Repository checks cover file hygiene, local links, and template structure.
+They do not establish the correctness or applicability of the standards.
+See [CONTRIBUTING.md](CONTRIBUTING.md#validation) for setup, commands, coverage,
+and limitations. Source relationships are recorded in [PROVENANCE.md](PROVENANCE.md).
 
 ## License
 
