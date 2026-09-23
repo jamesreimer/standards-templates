@@ -76,16 +76,16 @@ Use `vMAJOR.MINOR.PATCH` release tags with these repository-level meanings:
 | Increment | Meaning |
 | --- | --- |
 | **MAJOR** | An incompatible change to the published library contract, such as removing or renaming a published template or materially changing the adoption/source-path contract. |
-| **MINOR** | A backward-compatible library expansion or normative template change, including adding a template or changing normative meaning within an existing `standard.md`. |
+| **MINOR** | A library expansion or any normative template change, including adding a template or changing normative meaning within an existing `standard.md`, whether it tightens, loosens, or otherwise alters requirements. |
 | **PATCH** | Editorial, documentary, tooling, maintenance, or other changes that alter neither normative template meaning nor the published library contract. |
 
-Use the highest applicable increment across the release's changes.
+The published library contract means template identity, template paths, and the adoption/source-path contract. Normative content changes are MINOR even when they can change downstream conformance or adoption conclusions. The release-note `normative` classification signals the need for downstream review; the repository version increment does not substitute for that classification. Use the highest applicable increment across the release's changes.
 
 ### Tag preparation and publication
 
 For each future release:
 
-1. identify the full commit SHA of the exact reviewed and merged revision being released, and verify it against current canonical `main` and the merge/review evidence;
+1. identify the full commit SHA of the exact merged revision intended for release, and verify it against current canonical `main` and the merge/review evidence; when the merge method produces a different commit from the reviewed candidate, verify that the merged commit and reviewed candidate have identical tree object IDs before release;
 2. confirm that applicable repository validation in [CONTRIBUTING.md](CONTRIBUTING.md#validation) passed for that revision; validation of a different revision or altered working tree is insufficient;
 3. select an unused release version and prepare the release notes described below;
 4. create an annotated Git tag targeting that exact commit;
@@ -120,6 +120,8 @@ Provide release notes for every future release, whether or not GitHub Release me
 | `README-only` | A change to the adjacent template guidance with no `standard.md` change. |
 
 Classify a template as `normative` if any of its changes are normative; use `editorial` only when all `standard.md` changes leave normative meaning unchanged. Unchanged templates need not be listed. Classification is a maintainer review judgment, not an inference delegated to validation. When uncertain, treat the change as normative.
+
+Also identify templates added, removed, or renamed/moved since the previous release. For each rename or move, include the previous and current template paths so later-source-change review can trace the source relationship.
 
 Notes support later-source-change review under [ADOPTION.md](ADOPTION.md); they do not authorize downstream updates. They may include the exact release SHA or other useful provenance, without duplicating identity already supplied by the release revision and template path. Do not require per-template tags, changelogs, or digest tables solely for release classification.
 
