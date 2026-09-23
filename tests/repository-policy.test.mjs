@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
-import { assertSafeInputs, checkRepository, isCredential, isJunk, isSelectedText, repositoryFiles, requiredFiles, validName } from '../tools/check-repository-policy.mjs';
+import { assertSafeInputs, checkRepository, isCredential, isJunk, isSelectedText, renderSnapshot, repositoryFiles, requiredFiles, validName } from '../tools/check-repository-policy.mjs';
 
 const source = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 function fixture(t) {
@@ -19,6 +19,31 @@ function fixture(t) {
 function put(root, path, content = '\n') {
   mkdirSync(dirname(join(root, path)), { recursive: true });
   writeFileSync(join(root, path), content);
+}
+
+test('established root documents and ordinary new Markdown names pass repository policy', t => {
+  const root = fixture(t);
+  for (const path of ['ADOPTION.md', 'AGENTS.md', 'CATALOG.md', 'CODE_OF_CONDUCT.md', 'CONTRIBUTING.md', 'MAINTAINING.md', 'NAMING.md', 'PROVENANCE.md', 'README.md', 'SECURITY.md', 'new-guidance.md', 'docs/new-guidance.md', 'docs/README.md']) put(root, path);
+  assert.deepEqual(checkRepository(root, { writeSnapshot: true }), []);
+  assert.deepEqual(checkRepository(root), []);
+});
+for (const path of ['Bad Name.md', 'NEW_GUIDANCE.md', 'docs/Bad Name.md', 'docs/MAINTAINING.md', 'MAINTAINING.md/notes.md']) {
+  test(`snapshot cannot conceal invalid naming: ${path}`, t => {
+    const root = fixture(t);
+    put(root, path);
+    const invalid = path === 'MAINTAINING.md/notes.md' ? 'MAINTAINING.md' : path;
+    const finding = `${invalid}: invalid path name`;
+    const snapshot = join(root, 'repository-structure.txt');
+    const original = readFileSync(snapshot);
+    assert.ok(checkRepository(root, { writeSnapshot: true }).includes(finding));
+    assert.deepEqual(readFileSync(snapshot), original, 'invalid names must prevent snapshot writes');
+    // Even a manually updated, matching inventory cannot authorize a bad name.
+    writeFileSync(snapshot, renderSnapshot(repositoryFiles(root)));
+    assert.deepEqual(checkRepository(root), [finding]);
+    const result = spawnSync(process.execPath, [join(source, 'tools/check-repository-policy.mjs')], { cwd: root, encoding: 'utf8', timeout: 5000 });
+    assert.equal(result.status, 1, result.stdout + result.stderr);
+    assert.ok(result.stderr.includes(finding));
+  });
 }
 
 for (const path of ['tests/link-validation/README.md', 'tests/other/README.md', 'tests/link-validation/notes.md', 'README.md', '.pre-commit-config.yaml', 'templates/example/standard.md', 'scripts/validate_local.py', 'tests/__init__.py', '.github/ISSUE_TEMPLATE/task.yml']) {

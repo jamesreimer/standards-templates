@@ -6,6 +6,12 @@ import { pathToFileURL } from 'node:url';
 
 const decoder = new TextDecoder('utf-8', { fatal: true });
 export const requiredFiles = ['AGENTS.md', 'CONTRIBUTING.md', 'README.md', 'LICENSE', 'SECURITY.md', 'CATALOG.md'];
+// Established root Markdown documents under CONTRIBUTING.md's scoped naming policy.
+// The structure snapshot records inventory; it must not grant naming exceptions.
+const rootMarkdownExceptions = new Set([
+  ...requiredFiles.filter(file => file.endsWith('.md')),
+  'ADOPTION.md', 'CODE_OF_CONDUCT.md', 'MAINTAINING.md', 'NAMING.md', 'PROVENANCE.md',
+]);
 const snapshotPath = 'repository-structure.txt';
 
 export function repositoryFiles(root) {
@@ -46,7 +52,8 @@ export function validName(path, isFile = true) {
     return /^(?:[a-z][a-z0-9]*(?:_[a-z0-9]+)*|__init__)\.py$/u.test(name);
   }
   if (/^templates\/[^/]+\/(?:README\.md|standard\.md)$/u.test(path)) return true;
-  if (!path.includes('/') && (path.endsWith('.md') || ['LICENSE', '.editorconfig', '.gitattributes', '.gitignore', '.markdownlint-cli2.jsonc', '.pre-commit-config.yaml', 'scripts', 'tests'].includes(path))) return true;
+  if (isFile && rootMarkdownExceptions.has(path)) return true;
+  if (!path.includes('/') && ['LICENSE', '.editorconfig', '.gitattributes', '.gitignore', '.markdownlint-cli2.jsonc', '.pre-commit-config.yaml', 'scripts', 'tests'].includes(path)) return true;
   return /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+)*$/u.test(name);
 }
 
