@@ -23,11 +23,11 @@ function put(root, path, content = '\n') {
 
 test('established root documents and ordinary new Markdown names pass repository policy', t => {
   const root = fixture(t);
-  for (const path of ['ADOPTION.md', 'AGENTS.md', 'CATALOG.md', 'CODE_OF_CONDUCT.md', 'CONTRIBUTING.md', 'MAINTAINING.md', 'NAMING.md', 'PROVENANCE.md', 'README.md', 'SECURITY.md', 'new-guidance.md', 'docs/new-guidance.md', 'docs/README.md']) put(root, path);
+  for (const path of ['ADOPTION.md', 'AGENTS.md', 'CATALOG.md', 'CODE_OF_CONDUCT.md', 'CONTRIBUTING.md', 'MAINTAINING.md', 'NAMING.md', 'README.md', 'SECURITY.md', 'new-guidance.md', 'docs/new-guidance.md', 'docs/README.md']) put(root, path);
   assert.deepEqual(checkRepository(root, { writeSnapshot: true }), []);
   assert.deepEqual(checkRepository(root), []);
 });
-for (const path of ['Bad Name.md', 'NEW_GUIDANCE.md', 'docs/Bad Name.md', 'docs/MAINTAINING.md', 'MAINTAINING.md/notes.md']) {
+for (const path of ['Bad Name.md', 'NEW_GUIDANCE.md', 'PROVENANCE.md', 'docs/Bad Name.md', 'docs/MAINTAINING.md', 'MAINTAINING.md/notes.md']) {
   test(`snapshot cannot conceal invalid naming: ${path}`, t => {
     const root = fixture(t);
     put(root, path);

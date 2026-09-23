@@ -131,10 +131,12 @@ in the same scoped change. Preserve `Repository validation` from GitHub Actions
 (app `15368` on github.com), its coverage of every PR without path filters, and
 the repository's squash-only publication protection. Verify both successful check
 production and the persisted/effective host rules; repository files alone do not
-establish enforcement. Follow the immutable upstream
-[host-protection verification procedure](https://github.com/jamesreimer/repo-template/blob/de0fd9206cf0448d50e0dd0f58f858eea46697ad/rulesets/README.md)
-for authorized host changes, preserving additional local protections and stopping
-on concurrent changes or verification failure. This guidance does not authorize
+establish enforcement. Use the upstream
+[host-protection guidance](https://github.com/jamesreimer/repo-template/blob/main/rulesets/README.md)
+for discovery, then verify the procedure at the exact target commit recorded in
+the change under [reconciliation evidence](MAINTAINING.md#repo-template-reconciliation).
+For authorized host changes, preserve additional local protections and stop on
+concurrent changes or verification failure. This guidance does not authorize
 settings changes or waive separately required review or publication authority.
 
 After intentionally adding, removing, or moving paths, regenerate the reviewed
@@ -166,26 +168,48 @@ Before committing, local validation accepts the same declaration in the `TEMPLAT
 
 ## Validator architecture
 
-The current immutable upstream baseline and exact/adapted relationships are in
-[PROVENANCE.md](PROVENANCE.md). `repo-template` owns generic mechanics;
-standards-specific semantics remain local.
+[`repo-template`](https://github.com/jamesreimer/repo-template) owns generic
+repository mechanics; Standards Templates owns repository-specific policy and
+standards-domain semantics. Local adaptations are legitimate and do not transfer
+generic ownership. Use [the maintenance procedure](MAINTAINING.md#repo-template-reconciliation)
+for deliberate upstream reconciliation and its PR evidence.
 
-| Responsibility | Mechanism |
+| Responsibility | Ownership and current surfaces |
 | --- | --- |
-| Aggregate local/CI composition | Adapted upstream `.pre-commit-config.yaml` |
-| Syntax, hygiene, authoring, links/fragments, Python, workflows | Maintained upstream-selected tools and exact-copy regression assets |
-| Standards-domain structure, IDs, catalog/title agreement, requirements, BCP 14 spelling | Standard-library Python `scripts/validate_local.py` and `tests/test_validate_local.py` |
-| Template edition transitions and comparison-base evidence | Standard-library Python `scripts/check_template_editions.py` and its tests |
-| Missing upstream repository policies | Temporary `tools/check-repository-policy.mjs` and tests |
-| Whole-repository Markdown selection, heading and destination policy | Temporary `tools/check-repository-markdown.mjs` and tests using the maintained AST |
+| Aggregate local/CI composition | Generic mechanics from repo-template with local integration in `.pre-commit-config.yaml` and `.github/workflows/validate.yml` |
+| Syntax, hygiene, authoring, links/fragments, Python, workflows | Generic repo-template mechanics using maintained tools; `tools/check-links.mjs`, `tools/link-frontmatter.mjs`, `markdownlint-rules/`, link/authoring regression suites, and native tool configuration |
+| Standards-domain structure, IDs, catalog/title agreement, requirements, BCP 14 spelling | Local standard-library Python `scripts/validate_local.py` and `tests/test_validate_local.py` |
+| Template edition transitions and comparison-base evidence | Local standard-library Python `scripts/check_template_editions.py` and its tests |
+| Repository policies lacking an adequate upstream implementation | Temporary local `tools/check-repository-policy.mjs` and `tests/repository-policy.test.mjs` |
+| Whole-repository Markdown selection, heading and destination policy | Temporary local `tools/check-repository-markdown.mjs` and `tests/repository-markdown-selection.test.mjs`, using the maintained AST |
+| Preservation across the aggregate validation composition | Temporary local `tests/validation-composition.test.mjs` |
 
-The temporary generic controls preserve requirements not supplied by the current
-baseline; they are not standards-domain tooling. Their protected outcomes and
-retirement conditions are recorded in PROVENANCE. Do not rebuild a generic
-validator, custom Markdown parser, fragment resolver, or extension framework.
-Evaluate generic defects at their owning source; consume qualified corrections
-through an explicit baseline update. A standards-domain check belongs in the
-independent Python validator and must remain testable without Node or pre-commit.
+### Temporary controls and retirement
+
+The temporary controls maintain these protected outcomes:
+
+- The policy guard preserves required roots, scoped naming and the README basename
+  convention, snapshot integrity, selected UTF-8/final-newline checks, rejection of
+  junk and credential-shaped filenames, and metadata-first rejection of all symlinks.
+- The Markdown guard preserves tracked plus unignored selection, cross-file
+  effects, repository headings, destination containment and inventory membership
+  through maintained AST parsing.
+- The composition tests preserve aggregate fail-fast ordering and native YAML
+  multi-document behavior.
+
+Standards Templates maintains these bounded controls until an upstream/native
+replacement satisfies the same protected outcomes, or legitimate authority
+explicitly retires a policy. Re-evaluate them during repo-template reconciliation;
+compare behavior and positive/injected-defect evidence before retiring a control.
+Do not synchronize them automatically, turn them into a generic framework, or
+move standards semantics into them. They use the existing tooling stack without
+adding a separate runtime or dependency.
+
+Evaluate generic defects at their owning upstream source and deliberately
+reconcile qualified corrections. Do not rebuild a generic validator, custom
+Markdown parser, fragment resolver, or extension framework. A standards-domain
+check belongs in the independent Python validator and must remain testable
+without Node or pre-commit.
 
 ### Selection and safety
 
@@ -206,11 +230,10 @@ Repository Markdown requires its first heading to be H1 and exactly one H1 when
 headings exist; no-heading documents remain allowed. Local repository-absolute
 and escaping destinations are rejected. The maintained AST supplies links,
 images and definitions; Linkinator alone checks fragments, with Markdownlint
-rule MD051 disabled. Baseline synthetic
-fixtures run their own upstream contract, without repository heading policy.
+rule MD051 disabled. Synthetic link-regression
+fixtures exercise the generic contract without repository heading policy.
 
-Directory destinations use the wrapper from the recorded upstream baseline,
-with native listings enabled.
+Directory destinations use `tools/check-links.mjs` with native listings enabled.
 Existing inventoried directories need no index document; missing ones fail.
 Real `index.html` fragments are checked. Generated listings have no native
 fragment-validation contract; link explicitly to a Markdown or HTML file when

@@ -60,7 +60,7 @@ Before merging a material change:
 
 1. regenerate `repository-structure.txt` when repository paths changed intentionally;
 2. run the authoritative pre-commit composition, including the independent standards-domain tests and validator, documented in [CONTRIBUTING.md](CONTRIBUTING.md#validation);
-3. when a change adds or alters validation behavior, confirm the check is owned by the appropriate layer: generic repository mechanics belong upstream in `repo-template`, standards-domain checks remain local, and explicitly temporary generic preservation controls retain the ownership and retirement obligations recorded in PROVENANCE. [CONTRIBUTING.md](CONTRIBUTING.md) states the ownership rule and [PROVENANCE.md](PROVENANCE.md) covers adoption verification;
+3. when a change adds or alters validation behavior, confirm ownership using [CONTRIBUTING.md](CONTRIBUTING.md#validator-architecture): generic repository mechanics belong upstream in `repo-template`, standards-domain checks remain local, and temporary controls retain their protected outcomes and retirement conditions. For source reconciliation, retain the evidence required by [the maintenance procedure below](#repo-template-reconciliation);
 4. review requirement strength using the A/B/C calibration test in `standards-authoring`;
 5. confirm that examples remain informative and do not silently change the rule;
 6. check documents for unintended domain-specific assumptions or unnecessary workflow prescriptions;
@@ -69,6 +69,43 @@ Before merging a material change:
 9. review each proposed template edition transition against the content diff, including correction evidence and rename lineage;
 10. confirm squash-only repository merge settings and the default-branch ruleset remain in force;
 11. inspect the complete diff for unintended scope, authority, naming, licensing, or lifecycle changes.
+
+## Repo-template reconciliation
+
+Generic repository mechanics remain owned by
+[`repo-template`](https://github.com/jamesreimer/repo-template). Normally correct
+generic defects at that owner rather than silently forking them here. Deliberately
+review applicable upstream improvements against actual current downstream state,
+preserving legitimate local adaptations and this repository's independent authority.
+
+For each reconciliation, retain reviewable evidence in its PR of:
+
+1. the verified source repository and exact upstream target commit SHA;
+2. the disposition of each applicable upstream change reviewed, including the
+   rationale for adaptations, rejection, or deferral;
+3. correspondence evidence for inherited files and surfaces that remain identical
+   or otherwise correspond after reconciliation: compare against Git objects at
+   the target SHA, identify intentional differences, and record the downstream
+   candidate and verification results;
+4. verification of applicable installed host configuration, including effective
+   default-branch rules and required-check production where relevant. Read back
+   installed settings independently; copied files do not establish enforcement.
+   Record justified non-applicability when no installed surface is affected.
+
+Reassess the [temporary controls](CONTRIBUTING.md#temporary-controls-and-retirement)
+and run the complete validation composition, with positive and injected-defect
+cases for changed validation. Unresolved source identity, correspondence, or
+applicable host-verification gaps prevent a successful reconciliation claim.
+This implements [shared-asset-provenance](templates/shared-asset-provenance/standard.md)
+through evidence retained at reconciliation time.
+
+The reviewed reconciliation PR is the durable event record; Git, PRs, and releases
+retain history. Current repository files define current behavior. Do not maintain
+a last-reconciled basis, permanent correspondence inventories, or a reconciliation
+ledger in repository files. Future review uses actual upstream changes and current
+downstream state. Discovery links do not prove immutable consumption. This
+procedure neither prescribes automatic propagation nor grants upstream continuing
+authority or permission to publish or change host settings.
 
 ## Repository releases
 

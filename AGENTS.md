@@ -60,7 +60,7 @@ Humans and agents use the same canonical adoption guidance; do not create a sepa
 
 Locally authored standards-specific repository tooling is Python using only the standard library, targeting the version floor stated in [CONTRIBUTING.md](CONTRIBUTING.md#validation). Use shell only where the shell is itself the interface, such as a Git hook shim.
 
-Generic repository mechanics inherited from an approved `repo-template` baseline may use the runtimes, package managers, and maintained dependencies owned by that baseline. Their use does not transfer ownership of those mechanics to this repository.
+Generic repository mechanics from `repo-template` may use its maintained runtimes, package managers, and dependencies through deliberate reconciliation. Their use does not transfer ownership of those mechanics to this repository.
 
 Do not add a package manager, dependency, or runtime solely to implement local standards-specific repository tooling unless a separately justified need requires it.
 
@@ -76,7 +76,7 @@ Do not add a package manager, dependency, or runtime solely to implement local s
 
 - Follow setup in [CONTRIBUTING.md](CONTRIBUTING.md#validation), stage intended new files, then run `.venv/bin/pre-commit run --all-files --show-diff-on-failure` and `git diff --check`. This is the authoritative local/CI composition.
 - Standards-domain validation remains independently executable: `python3 scripts/validate_local.py` and `python3 -m unittest discover -s tests`.
-- Preserve exact-copy correspondence with the immutable upstream revision recorded in [PROVENANCE.md](PROVENANCE.md). Standards-domain checks belong in the Python validator; generic defects belong at their owning upstream source. The bounded temporary generic policy/selection controls have explicit preservation and retirement obligations in PROVENANCE.
+- Standards-domain checks belong in the local Python validator; generic defects belong at their owning upstream source. Follow [MAINTAINING.md](MAINTAINING.md#repo-template-reconciliation) for deliberate repo-template reconciliation and its evidence requirements. [CONTRIBUTING.md](CONTRIBUTING.md#validator-architecture) owns validation responsibility routing and the temporary controls' protected outcomes and retirement conditions.
 - Do not retain or recreate the retired generic Python validator, dynamic loader, hook installer, or arbitrary configuration schema as hidden glue.
 - Run representative positive and injected-defect cases when changing validation. Fail-closed behavior, source preservation, whole-repository coverage, and protected policies remain required outcomes.
 - Manually reverify affected external claims when citations change.
