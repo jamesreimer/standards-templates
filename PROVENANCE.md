@@ -13,8 +13,8 @@ organizational authority or permission to publish.
 | Identity | Value |
 | --- | --- |
 | Source | `jamesreimer/repo-template` |
-| Release | [`v1.2.0`](https://github.com/jamesreimer/repo-template/releases/tag/v1.2.0) |
-| Immutable repository revision | `90d3b5a6324bfcff6e9bb1b24de02d3677b73f93` |
+| Release | [`v1.2.1`](https://github.com/jamesreimer/repo-template/releases/tag/v1.2.1) |
+| Immutable repository revision | `de0fd9206cf0448d50e0dd0f58f858eea46697ad` |
 
 The commit is the binding identity; the tag is its human-facing label. A moving
 branch, sibling checkout, or local path does not prove immutable consumption.
@@ -79,6 +79,12 @@ copied into this established standards library. Generic baseline version semanti
 mandatory GitHub Release publication, and upstream-specific historical tag facts
 are replaced by the library's explicit release adaptations above. These exclusions
 do not exclude the applicable release verification safeguards.
+
+The v1.2.1 update adds the complete-tag release-title convention to the adapted
+release procedure, command example, and publication verification. Its only source
+change is release-maintenance documentation; exact copies, other adaptations, and
+the installed host configuration remain aligned. The temporary controls were
+reassessed and retain the same absent-upstream-capability justification below.
 
 ### Historical copies retained independently
 
@@ -148,7 +154,7 @@ checkout bytes. For example, from this repository with an independently verified
 upstream clone:
 
 ```sh
-git -C /path/to/repo-template show 90d3b5a6324bfcff6e9bb1b24de02d3677b73f93:tools/check-links.mjs | cmp - tools/check-links.mjs
+git -C /path/to/repo-template show de0fd9206cf0448d50e0dd0f58f858eea46697ad:tools/check-links.mjs | cmp - tools/check-links.mjs
 ```
 
 Verify every declared exact path before accepting a candidate. Resolve the source
