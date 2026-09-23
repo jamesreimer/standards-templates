@@ -132,7 +132,7 @@ in the same scoped change. Preserve `Repository validation` from GitHub Actions
 the repository's squash-only publication protection. Verify both successful check
 production and the persisted/effective host rules; repository files alone do not
 establish enforcement. Follow the immutable upstream
-[host-protection verification procedure](https://github.com/jamesreimer/repo-template/blob/90d3b5a6324bfcff6e9bb1b24de02d3677b73f93/rulesets/README.md)
+[host-protection verification procedure](https://github.com/jamesreimer/repo-template/blob/de0fd9206cf0448d50e0dd0f58f858eea46697ad/rulesets/README.md)
 for authorized host changes, preserving additional local protections and stopping
 on concurrent changes or verification failure. This guidance does not authorize
 settings changes or waive separately required review or publication authority.
