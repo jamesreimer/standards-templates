@@ -2,6 +2,8 @@
 
 Stable template ID: `web-design-foundations`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Web Design Foundations Standard**

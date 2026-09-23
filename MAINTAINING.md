@@ -37,7 +37,8 @@ For a justified template:
 5. keep the adjacent template `README.md` focused on purpose, adoption considerations, and boundaries;
 6. retain a bounded subject-specific adoption review in the adjacent `README.md` that defers to root [ADOPTION.md](ADOPTION.md) for the universal review and adds only authority, conflict, migration, and validation questions peculiar to the subject;
 7. keep that subject-specific review distinct from likely organization-specific review points, which identify legitimate adaptation choices rather than pre-adoption safety checks;
-8. add the completed template to [CATALOG.md](CATALOG.md) only when it exists.
+8. initialize its README template edition at `1.0`, following the edition rules below;
+9. add the completed template to [CATALOG.md](CATALOG.md) only when it exists.
 
 ## External claims
 
@@ -63,11 +64,13 @@ Before merging a material change:
 6. check documents for unintended domain-specific assumptions or unnecessary workflow prescriptions;
 7. update `README.md`, `ADOPTION.md`, `NAMING.md`, or `CATALOG.md` only when their repository-level responsibilities are affected;
 8. verify internal links and manually re-check affected external claims;
-9. inspect the complete diff for unintended scope, authority, naming, licensing, or lifecycle changes.
+9. review each proposed template edition transition against the content diff, including correction evidence and rename lineage;
+10. confirm squash-only repository merge settings and the default-branch ruleset remain in force;
+11. inspect the complete diff for unintended scope, authority, naming, licensing, or lifecycle changes.
 
 ## Repository releases
 
-A repository release labels a coherent published library state. Stable template IDs identify subjects; the exact source commit and template path remain the binding adoption provenance described in [ADOPTION.md](ADOPTION.md). A release label does not replace that provenance, assign individual template versions, or govern the authority, versions, or lifecycle of independently adopted downstream standards.
+A repository release labels a coherent published library state. Stable template IDs identify subjects; the exact source commit and template path remain the binding adoption provenance described in [ADOPTION.md](ADOPTION.md). A release label does not replace that provenance, imply a template edition, or govern the authority, versions, or lifecycle of independently adopted downstream standards.
 
 ### Version meaning
 
@@ -76,8 +79,8 @@ Use `vMAJOR.MINOR.PATCH` release tags with these repository-level meanings:
 | Increment | Meaning |
 | --- | --- |
 | **MAJOR** | An incompatible change to the published library contract, such as removing or renaming a published template or materially changing the adoption/source-path contract. |
-| **MINOR** | A library expansion or any normative template change, including adding a template or changing normative meaning within an existing `standard.md`, whether it tightens, loosens, or otherwise alters requirements. |
-| **PATCH** | Editorial, documentary, tooling, maintenance, or other changes that alter neither normative template meaning nor the published library contract. |
+| **MINOR** | A library expansion or any template edition-number increase, including an edition correction or citable-identity change; adding a template also requires at least MINOR. |
+| **PATCH** | Editorial-update-only template changes, README-only, tooling, maintenance, or other changes that alter neither normative meaning nor the published library contract. |
 
 The published library contract means template identity, template paths, and the adoption/source-path contract. Normative content changes are MINOR even when they can change downstream conformance or adoption conclusions. The release-note `normative` classification signals the need for downstream review; the repository version increment does not substitute for that classification. Use the highest applicable increment across the release's changes.
 
@@ -111,25 +114,82 @@ The existing published `v1.0.0` and `v1.0.1` tags are lightweight tags and must 
 
 ### Release notes
 
-Provide release notes for every future release, whether or not GitHub Release metadata is used. For every template changed since the previous release, identify its stable template ID and classify its change:
+Provide release notes for every future release, whether or not GitHub Release metadata is used. For every changed template, identify its stable ID and compare the README editions at the previous release and the release candidate. The reviewed edition transition is the source of truth for semantic classification; do not independently reclassify the content at release time.
 
-| Class | Meaning |
+| Transition or change | Release-note entry |
 | --- | --- |
-| `normative` | A `standard.md` change that can alter requirement meaning, scope, strength, dependency, interpretation, or a conformance/adoption conclusion. |
-| `editorial` | A `standard.md` change with unchanged normative meaning, such as a typo, link, citation, or wording correction with unchanged effect. |
-| `README-only` | A change to the adjacent template guidance with no `standard.md` change. |
+| Edition number increased | Start → end editions, `normative`, for example `1.0 → 3.0`. |
+| Only editorial update number increased | Start → end editions, `editorial`, for example `2.0 → 2.2`. |
+| README-only | `README-only (edition unchanged)`. |
+| Added template | `added at 1.0`. |
+| Removed template | Last edition and last path. |
+| Renamed/moved template | Previous/current ID and path, with the carried edition. |
+| Edition-only correction | Start → end editions, `edition correction, content unchanged`, identifying the earlier misclassified transition. |
 
-Classify a template as `normative` if any of its changes are normative; use `editorial` only when all `standard.md` changes leave normative meaning unchanged. Unchanged templates need not be listed. Classification is a maintainer review judgment, not an inference delegated to validation. When uncertain, treat the change as normative.
+When multiple transitions occur between releases, report the start and end editions. Consult intermediate history for corrections and structural changes; a correction must not be presented as new normative content in its correction PR. Combine rename/move information with any content transitions in the same release. Unchanged templates need not be listed. Initializing the existing library at `1.0` labels unchanged baseline content; it does not introduce normative changes.
 
-Also identify templates added, removed, or renamed/moved since the previous release. For each rename or move, include the previous and current template paths so later-source-change review can trace the source relationship.
+Use the highest applicable repository release class: an edition-number increase (including a correction) or added template requires at least MINOR; an identity/path-contract removal, rename, or move requires MAJOR; editorial-update-only, README-only, and other non-normative/non-library-contract changes require PATCH. Repository release numbering remains separate and never implies a template edition.
 
-Notes support later-source-change review under [ADOPTION.md](ADOPTION.md); they do not authorize downstream updates. They may include the exact release SHA or other useful provenance, without duplicating identity already supplied by the release revision and template path. Do not require per-template tags, changelogs, or digest tables solely for release classification.
+Notes support later-source-change review under [ADOPTION.md](ADOPTION.md); they do not authorize downstream updates. Exact SHA/path remains binding provenance. Do not create per-template tags, changelogs, or digest tables for this purpose.
 
-### Per-template versioning
+## Template editions
 
-Do not maintain per-template versions or add version metadata to template READMEs, `standard.md`, or [CATALOG.md](CATALOG.md). Stable IDs, exact source revisions/paths, and repository releases serve the current identity and provenance needs, consistent with [PROVENANCE.md](PROVENANCE.md)'s distinction between a binding commit identity and a human-facing release label.
+Every template README contains exactly one declaration as the next metadata paragraph after its stable template ID, separated by blank lines:
 
-Reconsider per-template versioning only through separate architectural review of a concrete forcing function, such as independent distribution without repository revision provenance, demonstrated failure of downstream later-source-change review without a human-readable template revision label, or a cross-template dependency requiring independent revision identity that a coherent repository revision cannot express. Do not infer a template version from the repository release version.
+```text
+Stable template ID: `example-template`
+
+Template edition: `1.0`
+```
+
+The whole `N.M` is the **template edition**; `N` is the **edition number** and `M` is the **editorial update number**, not a revision. Use decimal integers with `N >= 1`, `M >= 0`, and no leading zeros. The edition covers only the adjacent `standard.md`. Do not add it to `standard.md` or [CATALOG.md](CATALOG.md), or treat it as a repository release version or downstream standard version.
+
+### Content transitions
+
+Increment the edition number when a `standard.md` change could cause a reasonable reader to reach a different requirement, applicability determination, conformance conclusion, adoption comparison, or citable identity. When uncertain, increment the edition number. This includes:
+
+- tightening, loosening, adding, or removing requirements;
+- changing BCP 14 strength, including correcting lowercase or misspelled keywords when normative force changes;
+- changing scope, definitions, or dependencies;
+- materially changing the external authority or source relied on;
+- changing examples in a way that affects interpretation;
+- adding, removing, renumbering, or changing requirement IDs;
+- changing section numbers where sections are the citable anchors.
+
+Increment only the editorial update number for content changes that preserve meaning, applicability, conformance/adoption conclusions, and citable identity. Examples include citation URL/title corrections with unchanged fact and authority, true typo/wording corrections with unchanged defined terms and normative strength, and restructuring that preserves meaning and every citable ID or section number.
+
+Only exact next steps are allowed:
+
+```text
+N.M → N.(M+1)
+N.M → (N+1).0
+```
+
+A mixed change uses only the edition-number increase, resetting the editorial update number to zero. README-only, catalog, tooling, test, and other non-`standard.md` changes do not change the edition, except for the bounded correction below. Semantic classification remains a human review judgment; validation checks the transition, not its meaning.
+
+### Cadence and initialization
+
+Every authoritative `standard.md` state merged to `main` receives its edition in the same PR. Authoritative states are on `main`'s first-parent history. Do not batch edition changes at release time: adoptions can occur between releases.
+
+An edition label never identifies more than one `standard.md` content state within its template lineage.
+
+The 17 templates existing at migration initialize at `1.0`, corresponding to their byte-identical `v1.0.0` content at `76382fb84cb9d43340c508145b83c2c1dbdff8c4`. Bootstrap validation requires base and candidate content to equal that immutable baseline. Earlier history stays unassigned. New templates start at `1.0`.
+
+Standards Templates permits squash merging only, both in repository settings and the protected default-branch ruleset. Each reviewed PR therefore produces one authoritative state and at most one transition per affected template. Rebase merging can introduce intermediate unlabeled states; merge commits expose branch states adopters might mistake for authoritative revisions. The loss of individual PR commits on `main` is accepted. This repository-specific edition requirement is not a universal merge-method preference.
+
+### Renames and moves
+
+The edition follows the template lineage. Automatic carry-over requires the moved template's own `standard.md` to remain byte-identical. Pair removed and added paths by exact content identity, never Git similarity scoring. Ambiguous pairings require review rather than arbitrary selection. Other templates referencing the moved template may change in the same PR, with their own appropriate transitions.
+
+A move requiring changes inside the moved `standard.md` is outside automatic carry-over and requires ordinary edition treatment and appropriate review. The validator fails closed for unmatched simultaneous removals/additions rather than silently treating a changed move as a new lineage. Such a restructure needs reviewed lineage handling before proceeding.
+
+Never reuse a removed template ID for a new lineage. A legitimate return must continue its existing lineage or receive separate architectural review; the validator rejects historical ID reuse for that review. Historical `source_path` remains correct at its recorded SHA. Identity/path-contract changes still require a repository MAJOR release.
+
+### Edition corrections
+
+An edition-only upward correction is allowed only when `standard.md` is unchanged, the current editorial update number is at least `1`, and the target is exactly `(N+1).0`. The PR must explicitly identify the earlier transition that was misclassified. No other edition-only mutation is permitted.
+
+Use the correction declaration described in [CONTRIBUTING.md](CONTRIBUTING.md#edition-validation). Reviewers assess the claimed misclassification; automation verifies its historical editorial transition and the numerical/content bounds. Retain the declaration in the squash commit message so push validation has the same evidence. Release notes identify unchanged-content corrections explicitly.
 
 ## Contribution relationship
 

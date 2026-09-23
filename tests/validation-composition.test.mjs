@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -67,4 +67,52 @@ test('native pinned YAML hook accepts streams and rejects malformed streams', t 
   writeFileSync(path, 'first: valid\n---\nsecond: [broken\n');
   const result = run(root, configPath, 'check-yaml');
   assert.equal(result.status, 1, result.stdout + result.stderr);
+});
+
+const editionHook = config.repos.flatMap(repo => repo.hooks)
+  .find(hook => hook.id === 'template-edition-transitions');
+test('edition validation shares local and CI composition with verified history', t => {
+  assert.equal(editionHook.entry, 'python3 scripts/check_template_editions.py');
+  assert.equal(editionHook.always_run, true);
+  assert.equal(editionHook.pass_filenames, false);
+  const workflow = parse(readFileSync(join(source, '.github/workflows/validate.yml'), 'utf8'));
+  const steps = workflow.jobs.validate.steps;
+  assert.equal(steps.find(step => step.uses?.startsWith('actions/checkout@')).with['fetch-depth'], 0);
+  assert.equal(steps.filter(step => step.run?.includes('pre-commit run --all-files')).length, 1);
+  assert.equal(steps.some(step => step.run?.includes('check_template_editions.py')), false);
+  const root = fixture(t);
+  mkdirSync(join(root, 'scripts'));
+  for (const script of ['validate_local.py', 'check_template_editions.py']) {
+    copyFileSync(join(source, 'scripts', script), join(root, 'scripts', script));
+  }
+  mkdirSync(join(root, 'templates/example'), { recursive: true });
+  const readme = join(root, 'templates/example/README.md');
+  writeFileSync(readme, '# Example\n\nStable template ID: `example`\n\nTemplate edition: `1.0`\n');
+  writeFileSync(join(root, 'templates/example/standard.md'), '# Example\n');
+  const probe = join(root, '.pre-commit-config.yaml');
+  writeFileSync(probe, stringify({ repos: [{ repo: 'local', hooks: [editionHook] }] }));
+  const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
+  git(['add', '.']);
+  git(['-c', 'user.name=Test', '-c', 'user.email=test@example.invalid', '-c', 'core.hooksPath=/dev/null', 'commit', '-qm', 'Base']);
+  const base = git(['rev-parse', 'HEAD']);
+  git(['update-ref', 'refs/remotes/origin/main', base]);
+  const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GITHUB_')));
+  const runEdition = extra => spawnSync(runner, ['run', '--config', probe, '--all-files'], {
+    cwd: root, encoding: 'utf8', env: { ...env, ...extra }, timeout: 60000,
+  });
+  assert.equal(runEdition().status, 0);
+  writeFileSync(join(root, 'templates/example/standard.md'), '# Changed\n');
+  assert.equal(runEdition().status, 1, 'missing bump must fail through pre-commit');
+  writeFileSync(readme, readFileSync(readme, 'utf8').replace('1.0', '1.1'));
+  assert.equal(runEdition().status, 0);
+  git(['add', '.']);
+  git(['-c', 'user.name=Test', '-c', 'user.email=test@example.invalid', '-c', 'core.hooksPath=/dev/null', 'commit', '-qm', 'Candidate']);
+  const head = git(['rev-parse', 'HEAD']);
+  const event = join(root, '.git/event.json');
+  writeFileSync(event, JSON.stringify({ pull_request: { base: { sha: base }, head: { sha: head } } }));
+  const ci = { GITHUB_ACTIONS: 'true', GITHUB_EVENT_NAME: 'pull_request', GITHUB_EVENT_PATH: event, GITHUB_SHA: head };
+  assert.equal(runEdition(ci).status, 0);
+  assert.equal(runEdition({ ...ci, GITHUB_SHA: base }).status, 1);
+  git(['update-ref', '-d', 'refs/remotes/origin/main']);
+  assert.equal(runEdition().status, 1, 'missing base must fail through pre-commit');
 });

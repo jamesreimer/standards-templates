@@ -29,6 +29,8 @@ Human-facing title:
 > **{title}**
 
 Stable template ID: `{template_id}`
+
+Template edition: `1.0`
 """
 
 CATALOG = """# Template Catalog

@@ -36,6 +36,7 @@ repository-structure.txt
 requirements-dev.txt
 ruff.toml
 scripts/
+scripts/check_template_editions.py
 scripts/validate_local.py
 templates/
 templates/architectural-reasoning/
@@ -101,6 +102,7 @@ tests/link-validation/native-control.mjs
 tests/markdown-rules.test.cjs
 tests/repository-markdown-selection.test.mjs
 tests/repository-policy.test.mjs
+tests/test_template_editions.py
 tests/test_validate_local.py
 tests/validation-composition.test.mjs
 tools/

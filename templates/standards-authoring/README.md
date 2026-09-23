@@ -2,6 +2,8 @@
 
 Stable template ID: `standards-authoring`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Standards and Policy Authoring Standard**

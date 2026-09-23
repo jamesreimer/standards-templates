@@ -2,6 +2,8 @@
 
 Stable template ID: `web-quality-verification`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Web Quality and Verification Standard**

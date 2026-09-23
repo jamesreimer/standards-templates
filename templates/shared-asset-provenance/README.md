@@ -2,6 +2,8 @@
 
 Stable template ID: `shared-asset-provenance`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Shared Asset Provenance Standard**

@@ -2,6 +2,8 @@
 
 Stable template ID: `responsive-web-layout`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Responsive Web Layout Standard**

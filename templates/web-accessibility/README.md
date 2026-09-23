@@ -2,6 +2,8 @@
 
 Stable template ID: `web-accessibility`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Web Accessibility Standard**
