@@ -32,6 +32,12 @@ Read and apply each standard whose subject the work implicates:
 
 Consult [CATALOG.md](CATALOG.md) for other applicable subjects and their boundaries. This routing governs repository work; it does not itself confer downstream organizational authority on templates.
 
+### Actor-neutrality boundary
+
+Before adding agent-specific behavior, terminology, roles, or workflow mechanics to a reusable template, ask whether the requirement would still make complete sense for an organization that used no AI agents. If not, the material normally belongs in agent-specific guidance rather than in the reusable standard template, unless the governed subject itself inherently depends on that class of actor.
+
+Agent-oriented repositories or local agent guidance may consume and operationalize actor-neutral standards without redefining their underlying governance. This file is repository-local agent guidance, not a reusable standard template.
+
 ## Workflow roles
 
 - **Planner / coordinator:** establishes scope, boundaries, intended outcome, review gates, and the implementation handoff.
