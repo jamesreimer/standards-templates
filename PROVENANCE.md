@@ -13,8 +13,8 @@ organizational authority or permission to publish.
 | Identity | Value |
 | --- | --- |
 | Source | `jamesreimer/repo-template` |
-| Release | [`v1.0.2`](https://github.com/jamesreimer/repo-template/releases/tag/v1.0.2) |
-| Immutable repository revision | `b79d8d0f14b26a2c6414a016b9501853e68f4670` |
+| Release | [`v1.2.0`](https://github.com/jamesreimer/repo-template/releases/tag/v1.2.0) |
+| Immutable repository revision | `90d3b5a6324bfcff6e9bb1b24de02d3677b73f93` |
 
 The commit is the binding identity; the tag is its human-facing label. A moving
 branch, sibling checkout, or local path does not prove immutable consumption.
@@ -63,8 +63,22 @@ current immutable revision:
 - `.github/pull_request_template.md`: retain scope, evidence and adoption review
   questions and update validation expectations.
 - `ruff.toml`: retain local style and import checks; use the Python 3.10 floor.
+- `MAINTAINING.md` release procedure: incorporate upstream release preparation,
+  annotated-tag and remote-object verification, and partial-publication recovery.
+  Retain edition-derived library versioning and notes, exact SHA/path adoption
+  provenance, squash-tree correspondence, independent downstream lifecycle,
+  optional GitHub Release metadata, and this repository's historical tag treatment.
 
 Adapted copies are intentionally different and must not be overwritten as exact.
+
+The v1.2.0 reconciliation covers both intervening upstream changes: release
+maintenance guidance and the restored default-branch ruleset. All 16 exact copies
+remain byte-identical to this basis; unchanged adapted tooling retains its local
+responsibilities. Upstream instructions for creating new repositories are not
+copied into this established standards library. Generic baseline version semantics,
+mandatory GitHub Release publication, and upstream-specific historical tag facts
+are replaced by the library's explicit release adaptations above. These exclusions
+do not exclude the applicable release verification safeguards.
 
 ### Historical copies retained independently
 
@@ -99,12 +113,27 @@ defect evidence before retiring a control. Do not synchronize them automatically
 turn them into a generic framework, or move standards semantics into them.
 They add no runtime or dependency beyond the inherited tooling stack.
 
+These controls were reassessed against v1.2.0. Its validation machinery is unchanged
+from the preceding consumed basis and still does not provide the complete policy,
+whole-repository selection, metadata-first safety, and composition protections
+listed above. The controls therefore remain transitional under the same retirement
+conditions; no standards-domain responsibility moves upstream or into these guards.
+
 `repository-structure.txt` is generated from the tracked plus unignored inventory
 by `node tools/check-repository-policy.mjs --write-snapshot`. Both generator and
 input inventory are downstream-owned working state until committed together;
 ordinary validation only compares the reviewed snapshot.
 
 ### Installed material
+
+The default-branch ruleset is consumed as installed GitHub host configuration from
+`rulesets/default-branch.json` at the recorded revision, not as a copied directory.
+Repository ruleset `21741829` matches that baseline, including the GitHub Actions
+app binding for `Repository validation`; adoption and verification evidence is in
+[issue #141](https://github.com/jamesreimer/standards-templates/issues/141).
+Host settings remain repository-owned and require deliberate reconciliation and
+read-back verification; see [CONTRIBUTING.md](CONTRIBUTING.md#validation). Copying
+upstream `rulesets/` files would not install or prove protection and is unnecessary.
 
 npm dependencies are bound by the exact package manifest and lockfile. The
 pre-commit runner is pinned in `requirements-dev.txt`; hook source revisions and
@@ -119,7 +148,7 @@ checkout bytes. For example, from this repository with an independently verified
 upstream clone:
 
 ```sh
-git -C /path/to/repo-template show b79d8d0f14b26a2c6414a016b9501853e68f4670:tools/check-links.mjs | cmp - tools/check-links.mjs
+git -C /path/to/repo-template show 90d3b5a6324bfcff6e9bb1b24de02d3677b73f93:tools/check-links.mjs | cmp - tools/check-links.mjs
 ```
 
 Verify every declared exact path before accepting a candidate. Resolve the source

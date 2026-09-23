@@ -90,12 +90,13 @@ The published library contract means template identity, template paths, and the 
 
 For each future release:
 
-1. identify the full commit SHA of the exact merged revision intended for release, and verify it against current canonical `main` and the merge/review evidence; when the merge method produces a different commit from the reviewed candidate, verify that the merged commit and reviewed candidate have identical tree object IDs before release;
-2. confirm that applicable repository validation in [CONTRIBUTING.md](CONTRIBUTING.md#validation) passed for that revision; validation of a different revision or altered working tree is insufficient;
-3. select an unused release version and prepare the release notes described below;
-4. create an annotated Git tag targeting that exact commit;
-5. before pushing, verify that the tag ref identifies a tag object, inspect its annotation, and confirm that its target resolves to the intended full commit SHA;
-6. publish only the verified release tag through the authorized release path.
+1. confirm that `origin` identifies `jamesreimer/standards-templates`, fetch current canonical `main` and tags, and require a clean working tree;
+2. identify the full commit SHA of the exact merged revision intended for release, and verify its membership in current canonical `main` history and the merge/review evidence; when the merge method produces a different commit from the reviewed candidate, verify that the merged commit and reviewed candidate have identical tree object IDs before release;
+3. confirm repository CI passed for that revision, check it out, and run the complete validation in [CONTRIBUTING.md](CONTRIBUTING.md#validation); require passing checks and a clean working tree. If checks change files or a defect requires correction, submit the correction through the contribution workflow and select and validate the resulting merged revision before proceeding;
+4. select an unused release version after checking local tags, remote tags, and existing GitHub Releases, including drafts; prepare the release notes described below outside the checkout so it remains clean. A failed availability check does not establish that a version is unused;
+5. create an annotated Git tag targeting that exact commit;
+6. before pushing, verify that the tag ref identifies a tag object, inspect its annotation, and confirm that its target resolves to the intended full commit SHA;
+7. with release publication authorization, push only the verified release tag without force, then verify the remote tag as described below.
 
 For example, after the target and validation checks, replace the placeholder with the verified full SHA:
 
@@ -108,9 +109,28 @@ git rev-parse 'refs/tags/v1.2.0^{commit}'
 
 The object-type check must report `tag`, and the resolved commit must match the verified release target. These commands illustrate the checks; they do not confer publication authority.
 
+After pushing, compare the remote tag ref with the verified local tag object's full SHA and require the remote peeled ref to equal the intended canonical commit. For example, set `tag` and `release_commit` to the verified values, then run:
+
+```sh
+verify_remote_tag() {
+  local_tag_object=$(git rev-parse "refs/tags/$tag") &&
+    remote_tag=$(git ls-remote --exit-code origin "refs/tags/$tag") &&
+    remote_commit=$(git ls-remote --exit-code origin "refs/tags/$tag^{}") &&
+    test "$remote_tag" = "$(printf '%s\t%s' "$local_tag_object" "refs/tags/$tag")" &&
+    test "$remote_commit" = "$(printf '%s\t%s' "$release_commit" "refs/tags/$tag^{}")"
+}
+verify_remote_tag
+```
+
+Require exit status zero. Equality with the locally verified tag object establishes the remote annotated object; the peeled entry establishes its commit. A missing ref (including the peeled entry), a different object or commit, or a Git/network error fails verification. Local verification or a successful push alone is insufficient.
+
+Stop on any preparation, publication, or verification failure. Inspect the remote tag and any GitHub Release state before retrying a partially completed publication; do not claim completion while verification is unresolved, or move/delete/recreate a published tag to recover.
+
 Published release tags are immutable: do not move, delete, or recreate them to identify different content. Correct a published release through a new release version. Preserving published tags provides durable reachability for their revisions; this does not prohibit legitimate repository-history maintenance that preserves that boundary.
 
 The Git tag identifies the release. Optional GitHub Release metadata may present notes and other release information for that tag; it does not replace the tag or its target verification.
+
+When using GitHub Release metadata, create it only after remote tag verification and require the intended existing tag (for example, `gh release create` with `--verify-tag` and the explicit repository). That option prevents implicit tag creation; it does not verify tag type or target. Read back the release and confirm that it is published, not a draft or prerelease, that its tag, title, and notes are correct, and that its page and source archives are available. Recheck the remote tag object and peeled commit against the same verified SHAs after publication. Apply the same stop-and-inspect rule if creation or verification fails; preserve the already-published tag.
 
 The existing published `v1.0.0` and `v1.0.1` tags are lightweight tags and must remain unchanged. The annotated-tag and release-note requirements apply prospectively beginning with the next release; do not rewrite the existing tags to satisfy them retroactively.
 

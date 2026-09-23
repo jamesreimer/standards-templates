@@ -125,6 +125,18 @@ Pre-commit owns pinned Markdownlint, Ruff, actionlint, syntax and hygiene hooks;
 there is no separate CI-only validation path. Review hook autofixes and rerun.
 Neither green checks nor provenance confer permission to merge or publish.
 
+When changing a workflow job/check name, check source, or trigger coverage,
+reconcile the corresponding live required-check configuration and host protection
+in the same scoped change. Preserve `Repository validation` from GitHub Actions
+(app `15368` on github.com), its coverage of every PR without path filters, and
+the repository's squash-only publication protection. Verify both successful check
+production and the persisted/effective host rules; repository files alone do not
+establish enforcement. Follow the immutable upstream
+[host-protection verification procedure](https://github.com/jamesreimer/repo-template/blob/90d3b5a6324bfcff6e9bb1b24de02d3677b73f93/rulesets/README.md)
+for authorized host changes, preserving additional local protections and stopping
+on concurrent changes or verification failure. This guidance does not authorize
+settings changes or waive separately required review or publication authority.
+
 After intentionally adding, removing, or moving paths, regenerate the reviewed
 snapshot before validation:
 
