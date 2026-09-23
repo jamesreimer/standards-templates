@@ -77,7 +77,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the contributor path and [MAINTAINING
 Repository checks cover file hygiene, local links, and template structure.
 They do not establish the correctness or applicability of the standards.
 See [CONTRIBUTING.md](CONTRIBUTING.md#validation) for setup, commands, coverage,
-and limitations. Source relationships are recorded in [PROVENANCE.md](PROVENANCE.md).
+and limitations. [MAINTAINING.md](MAINTAINING.md#repo-template-reconciliation)
+defines upstream reconciliation and the evidence retained in its PR.
 
 ## License
 

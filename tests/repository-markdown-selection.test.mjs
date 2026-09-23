@@ -101,7 +101,7 @@ for (const [label, target, index, status] of [
   ['real index fragment', 'docs/#present', true, 0],
   ['missing real index fragment', 'docs/#absent', true, 1],
   ['generated listing fragment contract', 'docs/#absent', false, 0],
-]) test(`v1.0.1 directory adoption: ${label}`, t => {
+]) test(`directory destination behavior: ${label}`, t => {
   const root = fixture(t);
   mkdirSync(join(root, 'docs'));
   writeFileSync(join(root, 'docs/README.md'), '# Documentation\n');

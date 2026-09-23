@@ -1,4 +1,4 @@
-// Temporary generic preservation controls; ownership/retirement: PROVENANCE.md.
+// Temporary generic preservation controls; ownership/retirement: CONTRIBUTING.md, Validator architecture.
 import { execFileSync } from 'node:child_process';
 import { lstatSync, readFileSync, writeFileSync } from 'node:fs';
 import { isAbsolute, posix, relative, resolve, sep } from 'node:path';
@@ -10,7 +10,7 @@ export const requiredFiles = ['AGENTS.md', 'CONTRIBUTING.md', 'README.md', 'LICE
 // The structure snapshot records inventory; it must not grant naming exceptions.
 const rootMarkdownExceptions = new Set([
   ...requiredFiles.filter(file => file.endsWith('.md')),
-  'ADOPTION.md', 'CODE_OF_CONDUCT.md', 'MAINTAINING.md', 'NAMING.md', 'PROVENANCE.md',
+  'ADOPTION.md', 'CODE_OF_CONDUCT.md', 'MAINTAINING.md', 'NAMING.md',
 ]);
 const snapshotPath = 'repository-structure.txt';
 
