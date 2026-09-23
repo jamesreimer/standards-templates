@@ -67,7 +67,10 @@ sync_policy: manual-review
 source_repo: https://github.com/jamesreimer/standards-templates
 source_path: templates/<template-id>/standard.md
 source_revision: <full-source-commit-sha>
+source_template_edition: N.M # Optional human-facing label
 ```
+
+The optional template edition is human-facing and does not satisfy an immutable-identity requirement, including `standards-adoption-model` §6. Exact SHA/path remains binding provenance. Prefer adopting from a repository release or a commit on `main`'s first-parent history, rather than an intermediate PR commit.
 
 Use the full commit SHA as the immutable source revision. A content digest or organizational adoption record may also be retained when useful.
 
@@ -78,6 +81,38 @@ The provenance record identifies the source used for adoption. It does not make 
 A later change in this repository is a candidate for downstream review, not an automatic downstream update.
 
 The adopting organization may accept, adapt, reject, or defer the change through its own legitimate process. Moving, renaming, or deleting a source template does not by itself alter the authority or lifecycle of an already adopted organizational artifact.
+
+### Checking current upstream status
+
+Open `templates/<id>/` and compare the recorded template edition with the current README:
+
+- Same edition: no edition-tracked upstream `standard.md` change.
+- Same edition number, higher editorial update number: editorial upstream changes.
+- Higher edition number: meaning or citable identity changed, requiring substantive downstream review. An explicit edition correction may instead correct the classification of earlier content; consult the release notes and correction PR.
+
+Use the exact diff to determine what changed. After fetching current upstream history, for an unchanged path:
+
+```sh
+git diff <source_revision> origin/main -- templates/<id>/standard.md
+```
+
+A newer upstream edition is a review candidate, not an automatic update. After a rename or move, release notes identify the current path; compare the old path at the recorded SHA with the current path at the target SHA. Historical `source_path` remains correct at its recorded SHA and must not be rewritten to the new path.
+
+### Adoptions made before editions
+
+The one-time equivalence mapping is:
+
+- Adoption from `v1.0.0`, or a later pre-edition `main` state whose relevant `standard.md` is identical to `v1.0.0`: equivalent to `1.0`.
+- Earlier adoption: equivalent to `1.0` only if the recorded source content equals the `v1.0.0` file.
+- Otherwise: pre-`1.0`, requiring later-source-change review.
+
+Compare source bytes at the recorded SHA/path with the corresponding file at `v1.0.0` (`76382fb84cb9d43340c508145b83c2c1dbdff8c4`). For a path unchanged between those revisions:
+
+```sh
+git diff --exit-code <source_revision> v1.0.0 -- templates/<id>/standard.md
+```
+
+An unreachable or otherwise unverifiable source SHA maps conservatively to pre-`1.0`, unless retained source bytes or a retained content digest establish equality with the `v1.0.0` content. This mapping supplements historical provenance; it does not rewrite it or reconstruct historical editions.
 
 ## General policy
 

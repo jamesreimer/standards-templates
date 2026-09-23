@@ -2,6 +2,8 @@
 
 Stable template ID: `web-content-semantics`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Web Content and Semantics Standard**

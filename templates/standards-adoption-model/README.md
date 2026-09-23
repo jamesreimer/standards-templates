@@ -2,6 +2,8 @@
 
 Stable template ID: `standards-adoption-model`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Organizational Standards Adoption and Ownership Policy**

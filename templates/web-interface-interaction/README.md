@@ -2,6 +2,8 @@
 
 Stable template ID: `web-interface-interaction`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Web Interface and Interaction Standard**

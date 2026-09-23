@@ -2,6 +2,8 @@
 
 Stable template ID: `architectural-reasoning`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Architectural Reasoning Standard**

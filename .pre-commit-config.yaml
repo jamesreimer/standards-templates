@@ -51,6 +51,12 @@ repos:
         entry: python3 scripts/validate_local.py
         always_run: true
         pass_filenames: false
+      - id: template-edition-transitions
+        name: Validate template edition transitions
+        language: system
+        entry: python3 scripts/check_template_editions.py
+        always_run: true
+        pass_filenames: false
       - id: standards-tests
         name: Test standards validation
         language: system

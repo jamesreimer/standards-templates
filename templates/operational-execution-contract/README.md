@@ -2,6 +2,8 @@
 
 Stable template ID: `operational-execution-contract`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Operational Execution Contract Standard**

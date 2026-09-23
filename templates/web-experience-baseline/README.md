@@ -2,6 +2,8 @@
 
 Stable template ID: `web-experience-baseline`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Web Experience Baseline Standard**

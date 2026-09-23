@@ -2,6 +2,8 @@
 
 Stable template ID: `project-repository-model`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Project Repository Responsibility Standard**

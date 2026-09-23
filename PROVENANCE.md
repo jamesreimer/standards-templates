@@ -51,9 +51,13 @@ current immutable revision:
 
 - `.pre-commit-config.yaml`: preserve every baseline hook and add a first,
   fail-fast metadata/policy guard plus independent domain, whole-repository,
-  and preservation-test hooks.
+  and preservation-test hooks, including the local template-edition transition check.
 - `.github/workflows/validate.yml`: inherit the released runtime, action pins,
-  permissions, concurrency, timeout and aggregate command; add `git diff --check`.
+  permissions, concurrency, timeout and aggregate command; add `git diff --check`
+  and full checkout history (`fetch-depth: 0`) for edition transitions. The local
+  validator consumes the runner's event payload and checked-out parent evidence
+  to verify PR/push comparison bases; it runs through the same pre-commit hook
+  locally and in CI.
 - `AGENTS.md`, `CONTRIBUTING.md`, `README.md`: retain standards-library governance
   and responsibility while adopting the current tooling and maintenance model.
 - `.github/pull_request_template.md`: retain scope, evidence and adoption review
@@ -74,7 +78,8 @@ supplies it. Explicit Git attributes and editor behavior remain preserved.
 ### Local and generated material
 
 Standards templates, catalog/adoption/naming guidance, LICENSE, other governance
-content, `scripts/validate_local.py`, and `tests/test_validate_local.py` remain
+content, `scripts/validate_local.py`, `scripts/check_template_editions.py`, and their
+Python tests remain
 local. Their standards semantics are not transferred upstream.
 
 The generic preservation controls and their tests are local **transitional**

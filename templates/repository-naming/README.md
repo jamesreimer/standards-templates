@@ -2,6 +2,8 @@
 
 Stable template ID: `repository-naming`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Repository Naming Standard**

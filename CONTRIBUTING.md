@@ -33,6 +33,8 @@ author against standards-authoring
     ↓
 separate external facts from synthesized rules
     ↓
+initialize the template README edition at 1.0
+    ↓
 update CATALOG.md
     ↓
 update repository structure snapshot if needed
@@ -61,7 +63,7 @@ identify concrete defect or need
     ↓
 open or reference an issue/proposal when warranted
     ↓
-modify the canonical template
+modify the canonical template and assign its next edition in the same PR
     ↓
 review scope, boundaries, and normative calibration
     ↓
@@ -102,10 +104,11 @@ run independently:
 
 ```sh
 python3 scripts/validate_local.py
+python3 scripts/check_template_editions.py
 python3 -m unittest discover -s tests
 ```
 
-The domain validator checks template structure and stable IDs, catalog membership
+The domain validator checks template structure, stable IDs and edition metadata, catalog membership
 and title agreement, declared local requirement schemes and references in
 `standard.md` files, and obvious uppercase BCP 14 keyword near misses. Input and
 runtime failures prevent success.
@@ -133,6 +136,22 @@ Ordinary validation never writes the snapshot. The inventory contains tracked
 and unignored files, including untracked additions, with deterministic ordering.
 Missing tracked files fail closed; stage intended removals before regeneration.
 
+### Edition validation
+
+Every `standard.md` change requires an exact next edition transition in its README in the same PR. Follow [MAINTAINING.md](MAINTAINING.md#template-editions) for semantic classification, initialization, corrections, and lineage. Declare the transition in the PR for human assessment; README-only and other non-content changes leave editions unchanged.
+
+V1 in `validate_local.py` checks exactly one well-formed edition paragraph immediately after the stable ID. V2 in `check_template_editions.py` checks content/edition transitions, initialization, and exact-content rename carry-over over tracked plus unignored candidate files, including unstaged new templates. Stage intended removals; missing tracked input fails closed. Neither check decides whether changed content is meaning-affecting or editorial.
+
+Local V2 uses the merge-base of `HEAD` and `origin/main`; fetch before validating. An explicit `--base <revision>` is available for reproducing a comparison locally. CI validates its event and checked-out commit: PR merge candidates use the first parent, verified against supplied PR base metadata and the head parent; head checkouts require the supplied base to match their merge-base. Pushes use the valid `before` revision and check each intervening first-parent state, so multiple independently merged transitions do not look like one skipped increment. Missing, shallow, stale, unrelated, or ambiguous base/history context fails closed. CI does not fall back to local base selection.
+
+For a correction, identify the misclassified editorial transition's full commit SHA with this declaration on its own line in a commit message body:
+
+```text
+Edition correction: `template-id` at `<full-transition-commit-sha>`
+```
+
+Before committing, local validation accepts the same declaration in the `TEMPLATE_EDITION_CORRECTIONS` environment variable. Once committed it reads declarations from the branch commit messages. CI PR validation reads the candidate commit messages between the validated PR base and head; push validation reads the resulting squash commit message. The PR body may explain the correction for reviewers but is not the machine-authoritative declaration. The declaration must survive into the squash commit message; do not remove it when manually editing that message during publication. The declaration is evidence for the bounded correction, not permission to skip any content or numerical rule. Reviewers verify the historical transition was semantically misclassified. No persistent per-template correction metadata is added.
+
 ## Validator architecture
 
 The current immutable upstream baseline and exact/adapted relationships are in
@@ -144,6 +163,7 @@ standards-specific semantics remain local.
 | Aggregate local/CI composition | Adapted upstream `.pre-commit-config.yaml` |
 | Syntax, hygiene, authoring, links/fragments, Python, workflows | Maintained upstream-selected tools and exact-copy regression assets |
 | Standards-domain structure, IDs, catalog/title agreement, requirements, BCP 14 spelling | Standard-library Python `scripts/validate_local.py` and `tests/test_validate_local.py` |
+| Template edition transitions and comparison-base evidence | Standard-library Python `scripts/check_template_editions.py` and its tests |
 | Missing upstream repository policies | Temporary `tools/check-repository-policy.mjs` and tests |
 | Whole-repository Markdown selection, heading and destination policy | Temporary `tools/check-repository-markdown.mjs` and tests using the maintained AST |
 

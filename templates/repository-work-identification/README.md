@@ -2,6 +2,8 @@
 
 Stable template ID: `repository-work-identification`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Repository Work Identification Standard**

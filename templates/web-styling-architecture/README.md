@@ -2,6 +2,8 @@
 
 Stable template ID: `web-styling-architecture`
 
+Template edition: `1.0`
+
 Human-facing title:
 
 > **Web Styling Architecture Standard**

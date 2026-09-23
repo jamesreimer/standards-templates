@@ -31,6 +31,39 @@ TEMPLATE_ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 STABLE_TEMPLATE_ID_DECLARATION_RE = re.compile(
     r"^Stable template ID: `([^`\n]+)`[ \t]*$", re.MULTILINE
 )
+TEMPLATE_EDITION_RE = re.compile(r"Template edition: `([1-9][0-9]*)\.(0|[1-9][0-9]*)`[ \t]*")
+
+
+def template_edition(content: str, *, allow_missing: bool = False):
+    """Parse the canonical metadata paragraph without weakening stable-ID checks."""
+    visible = markdown_without_fenced_code(content)
+    declarations = [line for line in visible.splitlines() if "Template edition:" in line]
+    if not declarations and allow_missing:
+        return None
+    if len(declarations) != 1:
+        raise ValueError("template README must contain exactly one template edition declaration")
+    match = TEMPLATE_EDITION_RE.fullmatch(declarations[0])
+    if match is None:
+        raise ValueError("template edition must use N.M with N >= 1, M >= 0, no leading zeros")
+    # Use original paragraphs: masking fences must not hide intervening content.
+    paragraphs = re.split(r"\n(?:[ \t]*\n)+", content.strip())
+    stable = list(STABLE_TEMPLATE_ID_DECLARATION_RE.finditer(visible))
+    if len(stable) != 1:
+        raise ValueError("template edition requires exactly one stable template ID")
+    stable_line = stable[0].group()
+    try:
+        position = paragraphs.index(stable_line)
+    except ValueError as error:
+        raise ValueError(
+            "stable ID and template edition must be separate metadata paragraphs"
+        ) from error
+    if position + 1 >= len(paragraphs) or paragraphs[position + 1] != declarations[0]:
+        raise ValueError(
+            "template edition must be the next separate paragraph after stable template ID"
+        )
+    return int(match[1]), int(match[2])
+
+
 LOCAL_REQUIREMENT_SCHEME_DECLARATION_RE = re.compile(
     r"^`([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-NNN)` identifies a local requirement "
     r"synthesized by this template\b",
@@ -251,6 +284,7 @@ class StandardsChecks:
     def run(self) -> list:
         self._check_template_structure()
         self._check_stable_template_ids()
+        self._check_template_editions()
         self._check_requirement_ids()
         self._check_requirement_references()
         self._check_catalog_membership()
@@ -316,6 +350,16 @@ class StandardsChecks:
                     f"declares stable template ID {declarations[0]!r}; "
                     f"expected directory ID {template_id!r}",
                 )
+
+    def _check_template_editions(self) -> None:
+        for template_id in self.template_ids:
+            path = f"{TEMPLATES_DIRECTORY}/{template_id}/README.md"
+            content = self._text(path)
+            if content is not None:
+                try:
+                    template_edition(content)
+                except ValueError as error:
+                    self._add(path, 0, str(error))
 
     def _check_requirement_ids(self) -> None:
         for template_id in self.template_ids:
@@ -588,8 +632,8 @@ class DomainInput:
     text: dict[str, str]
 
 
-def validate_repository(root: Path):
-    """Validate domain semantics; input/runtime failures propagate to the CLI."""
+def read_domain_input(root: Path):
+    """Read the effective candidate inventory after inspecting all path metadata."""
     root = root.resolve()
     result = subprocess.run(
         ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
@@ -617,7 +661,12 @@ def validate_repository(root: Path):
         for relative in files
         if relative.endswith(".md")
     }
-    return StandardsChecks(DomainInput(files, text)).run()
+    return DomainInput(files, text)
+
+
+def validate_repository(root: Path):
+    """Validate domain semantics; input/runtime failures propagate to the CLI."""
+    return StandardsChecks(read_domain_input(root)).run()
 
 
 def main() -> int:
