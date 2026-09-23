@@ -105,7 +105,8 @@ def comparison_context(root: Path, env: dict[str, str], explicit_base: str | Non
             else:
                 if parents(root, head) != [base, pr_head]:
                     raise ValueError("PR merge parents disagree with supplied base/head metadata")
-            return Comparison(base, declarations=pr.get("body") or "")
+            declarations = git(root, "log", "--format=%B", f"{base}..{pr_head}")
+            return Comparison(base, declarations=declarations)
         if name == "push":
             if event_sha(root, event["after"]) != head:
                 raise ValueError("push after revision disagrees with checked-out HEAD")

@@ -189,7 +189,7 @@ Never reuse a removed template ID for a new lineage. A legitimate return must co
 
 An edition-only upward correction is allowed only when `standard.md` is unchanged, the current editorial update number is at least `1`, and the target is exactly `(N+1).0`. The PR must explicitly identify the earlier transition that was misclassified. No other edition-only mutation is permitted.
 
-Use the correction declaration described in [CONTRIBUTING.md](CONTRIBUTING.md#edition-validation). Reviewers assess the claimed misclassification; automation verifies its historical editorial transition and the numerical/content bounds. Retain the declaration in the squash commit message so push validation has the same evidence. Release notes identify unchanged-content corrections explicitly.
+Place the correction declaration on its own line in a commit message body as described in [CONTRIBUTING.md](CONTRIBUTING.md#edition-validation). Reviewers assess the claimed misclassification; automation verifies its historical editorial transition and the numerical/content bounds. The PR body may explain the correction but is not machine-authoritative evidence. Retain the declaration in the resulting squash commit message so push validation has the same evidence; do not remove it during manual squash-message editing. Release notes identify unchanged-content corrections explicitly.
 
 ## Contribution relationship
 

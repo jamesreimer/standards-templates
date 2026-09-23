@@ -342,7 +342,7 @@ class GitEditionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "not constructed"):
             self.check(self.event("pull_request", payload))
 
-    def test_pr_correction_reads_body(self):
+    def test_pr_body_alone_is_not_correction_evidence(self):
         base = self.editorial_base()
         self.git("update-ref", "refs/remotes/origin/main", base)
         self.write(edition="2.0", content=b"# Editorial change\n")
@@ -354,9 +354,87 @@ class GitEditionTests(unittest.TestCase):
                 "body": self.declaration(base),
             }
         }
-        self.assertEqual(self.check(self.event("pull_request", payload)), [])
+        self.assertTrue(self.check(self.event("pull_request", payload)))
         payload["pull_request"]["body"] = ""
         self.assertTrue(self.check(self.event("pull_request", payload)))
+
+    def test_correction_commit_survives_pr_and_squash_push(self):
+        base = self.editorial_base()
+        self.git("branch", "published", base)
+        self.git("update-ref", "refs/remotes/origin/main", base)
+        declaration = self.declaration(base)
+        self.write(edition="2.0", content=b"# Editorial change\n")
+        self.commit(f"Correct edition classification\n\n{declaration}")
+        # Evidence can be in an earlier candidate commit, not just its tip.
+        path = self.root / "templates/example/README.md"
+        path.write_text(path.read_text() + "\nCorrection explanation.\n")
+        head = self.commit("Explain correction")
+        payload = {
+            "pull_request": {
+                "base": {"sha": base},
+                "head": {"sha": head},
+                "body": "Reviewer explanation only.",
+            }
+        }
+        self.assertEqual(self.check(), [])
+        self.assertEqual(self.check(self.event("pull_request", payload)), [])
+        self.git("checkout", "-q", "-b", "pr-merge", base)
+        self.git("merge", "-q", "--no-ff", "candidate", "-m", "Synthetic PR merge")
+        self.assertEqual(self.check(self.event("pull_request", payload)), [])
+        # Reproduce COMMIT_MESSAGES: preserve candidate messages in the squash body.
+        messages = self.git("log", "--format=%B", f"{base}..{head}")
+        self.git("switch", "-q", "published")
+        self.git("merge", "-q", "--squash", "candidate")
+        squash = self.commit(f"Squash correction PR\n\n{messages}")
+        self.assertEqual(
+            self.git("rev-parse", f"{head}^{{tree}}"), self.git("rev-parse", f"{squash}^{{tree}}")
+        )
+        self.assertIn(declaration, self.git("show", "-s", "--format=%B", squash).splitlines())
+        self.assertEqual(self.check(self.event("push", {"before": base, "after": squash})), [])
+        # Manual removal at publication must still fail push validation.
+        self.git("commit", "--amend", "-qm", "Correction evidence removed")
+        stripped = self.git("rev-parse", "HEAD")
+        self.assertTrue(self.check(self.event("push", {"before": base, "after": stripped})))
+
+    def test_pr_merge_message_is_not_candidate_correction_evidence(self):
+        base = self.editorial_base()
+        self.write(edition="2.0", content=b"# Editorial change\n")
+        head = self.commit("Correction without declaration")
+        self.git("checkout", "-q", "-b", "pr-merge", base)
+        self.git(
+            "merge",
+            "-q",
+            "--no-ff",
+            "candidate",
+            "-m",
+            f"Synthetic PR merge\n\n{self.declaration(base)}",
+        )
+        payload = {"pull_request": {"base": {"sha": base}, "head": {"sha": head}}}
+        self.assertTrue(self.check(self.event("pull_request", payload)))
+
+    def test_invalid_commit_correction_evidence_fails_local_and_pr(self):
+        base = self.editorial_base()
+        self.git("update-ref", "refs/remotes/origin/main", base)
+        declarations = [
+            "Edition correction: malformed",
+            self.declaration(self.initial),
+            self.declaration("a" * 40),
+        ]
+        for index, declaration in enumerate(declarations):
+            with self.subTest(declaration=declaration):
+                self.git("checkout", "-q", "-b", f"invalid-{index}", base)
+                self.write(edition="2.0", content=b"# Editorial change\n")
+                head = self.commit(f"Invalid correction\n\n{declaration}")
+                payload = {
+                    "pull_request": {
+                        "base": {"sha": base},
+                        "head": {"sha": head},
+                        "body": self.declaration(base),
+                    }
+                }
+                for env in [{}, self.event("pull_request", payload)]:
+                    with self.assertRaises(ValueError):
+                        self.check(env)
 
     def test_push_checks_each_authoritative_state(self):
         self.editorial_base()

@@ -144,13 +144,13 @@ V1 in `validate_local.py` checks exactly one well-formed edition paragraph immed
 
 Local V2 uses the merge-base of `HEAD` and `origin/main`; fetch before validating. An explicit `--base <revision>` is available for reproducing a comparison locally. CI validates its event and checked-out commit: PR merge candidates use the first parent, verified against supplied PR base metadata and the head parent; head checkouts require the supplied base to match their merge-base. Pushes use the valid `before` revision and check each intervening first-parent state, so multiple independently merged transitions do not look like one skipped increment. Missing, shallow, stale, unrelated, or ambiguous base/history context fails closed. CI does not fall back to local base selection.
 
-For a correction, identify the misclassified editorial transition's full commit SHA in the PR body and retain this line in the squash commit message:
+For a correction, identify the misclassified editorial transition's full commit SHA with this declaration on its own line in a commit message body:
 
 ```text
 Edition correction: `template-id` at `<full-transition-commit-sha>`
 ```
 
-Before committing, local validation accepts the same declaration in the `TEMPLATE_EDITION_CORRECTIONS` environment variable. Once committed it reads declarations from the branch commit messages. CI PR validation reads the PR body; push validation reads the resulting commit message. The declaration is evidence for the bounded correction, not permission to skip any content or numerical rule. Reviewers verify the historical transition was semantically misclassified. No persistent per-template correction metadata is added.
+Before committing, local validation accepts the same declaration in the `TEMPLATE_EDITION_CORRECTIONS` environment variable. Once committed it reads declarations from the branch commit messages. CI PR validation reads the candidate commit messages between the validated PR base and head; push validation reads the resulting squash commit message. The PR body may explain the correction for reviewers but is not the machine-authoritative declaration. The declaration must survive into the squash commit message; do not remove it when manually editing that message during publication. The declaration is evidence for the bounded correction, not permission to skip any content or numerical rule. Reviewers verify the historical transition was semantically misclassified. No persistent per-template correction metadata is added.
 
 ## Validator architecture
 
