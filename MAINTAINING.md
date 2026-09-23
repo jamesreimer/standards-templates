@@ -65,6 +65,70 @@ Before merging a material change:
 8. verify internal links and manually re-check affected external claims;
 9. inspect the complete diff for unintended scope, authority, naming, licensing, or lifecycle changes.
 
+## Repository releases
+
+A repository release labels a coherent published library state. Stable template IDs identify subjects; the exact source commit and template path remain the binding adoption provenance described in [ADOPTION.md](ADOPTION.md). A release label does not replace that provenance, assign individual template versions, or govern the authority, versions, or lifecycle of independently adopted downstream standards.
+
+### Version meaning
+
+Use `vMAJOR.MINOR.PATCH` release tags with these repository-level meanings:
+
+| Increment | Meaning |
+| --- | --- |
+| **MAJOR** | An incompatible change to the published library contract, such as removing or renaming a published template or materially changing the adoption/source-path contract. |
+| **MINOR** | A backward-compatible library expansion or normative template change, including adding a template or changing normative meaning within an existing `standard.md`. |
+| **PATCH** | Editorial, documentary, tooling, maintenance, or other changes that alter neither normative template meaning nor the published library contract. |
+
+Use the highest applicable increment across the release's changes.
+
+### Tag preparation and publication
+
+For each future release:
+
+1. identify the full commit SHA of the exact reviewed and merged revision being released, and verify it against current canonical `main` and the merge/review evidence;
+2. confirm that applicable repository validation in [CONTRIBUTING.md](CONTRIBUTING.md#validation) passed for that revision; validation of a different revision or altered working tree is insufficient;
+3. select an unused release version and prepare the release notes described below;
+4. create an annotated Git tag targeting that exact commit;
+5. before pushing, verify that the tag ref identifies a tag object, inspect its annotation, and confirm that its target resolves to the intended full commit SHA;
+6. publish only the verified release tag through the authorized release path.
+
+For example, after the target and validation checks, replace the placeholder with the verified full SHA:
+
+```sh
+git tag -a v1.2.0 <verified-full-commit-sha> -m "Release v1.2.0"
+git cat-file -t refs/tags/v1.2.0
+git show refs/tags/v1.2.0
+git rev-parse 'refs/tags/v1.2.0^{commit}'
+```
+
+The object-type check must report `tag`, and the resolved commit must match the verified release target. These commands illustrate the checks; they do not confer publication authority.
+
+Published release tags are immutable: do not move, delete, or recreate them to identify different content. Correct a published release through a new release version. Preserving published tags provides durable reachability for their revisions; this does not prohibit legitimate repository-history maintenance that preserves that boundary.
+
+The Git tag identifies the release. Optional GitHub Release metadata may present notes and other release information for that tag; it does not replace the tag or its target verification.
+
+The existing published `v1.0.0` and `v1.0.1` tags are lightweight tags and must remain unchanged. The annotated-tag and release-note requirements apply prospectively beginning with the next release; do not rewrite the existing tags to satisfy them retroactively.
+
+### Release notes
+
+Provide release notes for every future release, whether or not GitHub Release metadata is used. For every template changed since the previous release, identify its stable template ID and classify its change:
+
+| Class | Meaning |
+| --- | --- |
+| `normative` | A `standard.md` change that can alter requirement meaning, scope, strength, dependency, interpretation, or a conformance/adoption conclusion. |
+| `editorial` | A `standard.md` change with unchanged normative meaning, such as a typo, link, citation, or wording correction with unchanged effect. |
+| `README-only` | A change to the adjacent template guidance with no `standard.md` change. |
+
+Classify a template as `normative` if any of its changes are normative; use `editorial` only when all `standard.md` changes leave normative meaning unchanged. Unchanged templates need not be listed. Classification is a maintainer review judgment, not an inference delegated to validation. When uncertain, treat the change as normative.
+
+Notes support later-source-change review under [ADOPTION.md](ADOPTION.md); they do not authorize downstream updates. They may include the exact release SHA or other useful provenance, without duplicating identity already supplied by the release revision and template path. Do not require per-template tags, changelogs, or digest tables solely for release classification.
+
+### Per-template versioning
+
+Do not maintain per-template versions or add version metadata to template READMEs, `standard.md`, or [CATALOG.md](CATALOG.md). Stable IDs, exact source revisions/paths, and repository releases serve the current identity and provenance needs, consistent with [PROVENANCE.md](PROVENANCE.md)'s distinction between a binding commit identity and a human-facing release label.
+
+Reconsider per-template versioning only through separate architectural review of a concrete forcing function, such as independent distribution without repository revision provenance, demonstrated failure of downstream later-source-change review without a human-readable template revision label, or a cross-template dependency requiring independent revision identity that a coherent repository revision cannot express. Do not infer a template version from the repository release version.
+
 ## Contribution relationship
 
 [CONTRIBUTING.md](CONTRIBUTING.md) describes how to prepare new templates and revisions for review. Maintainers apply the principles and review criteria in this document when evaluating those contributions.
