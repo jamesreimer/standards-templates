@@ -127,6 +127,21 @@ Important boundaries:
 - preserves source-managed relationships through distribution intermediaries and verifies required shared targets for the declared consumer use;
 - does not impose ordinary same-repository link completeness, simultaneous consumer updates, or architectural dependency-design responsibility.
 
+### Publication and Release Integrity
+
+#### `publication-release-integrity`
+
+**Publication and Release Integrity Standard**
+
+Defines publisher-side integrity across and after publication, including correspondence to the authorized source state, identity-to-state binding, fixed identities and moving references, verification, successor publications, withdrawal, identity reservation, and partial or premature publication.
+
+Important boundaries:
+
+- leaves authority to perform publication to the applicable execution authority;
+- defers source identity, derivation, and general correspondence semantics to the applicable provenance model;
+- preserves independently governed downstream adoption, consumption, deployment, and activation;
+- does not prescribe a publication platform, versioning scheme, cryptographic mechanism, permanent ledger, or organizational role structure.
+
 ### Operational Execution
 
 #### `operational-execution-contract`
@@ -285,6 +300,10 @@ These responsibilities are distinct. Their presentation order is a discovery aid
 **Shared Assets and Provenance**
 
 `shared-asset-provenance` governs relationship meaning, source provenance, immutable consumed identity, and verification of consumed content. Provenance does not itself preserve upstream organizational authority. Repository placement and topology remain owned by `project-repository-model`; organizational standards adoption remains owned by `standards-adoption-model`. Catalog grouping itself creates no authority or adoption dependency.
+
+**Publication and Release Integrity**
+
+`publication-release-integrity` governs what publication identities denote, how resulting publication state is verified, and how integrity is preserved through correction, withdrawal, or partial publication. Execution authority remains owned by `operational-execution-contract`, source and correspondence semantics by `shared-asset-provenance` where applicable, and independent organizational adoption by `standards-adoption-model`. Publication does not establish deployment or activation. These relationships create no adoption dependency.
 
 **Operational Execution**
 
