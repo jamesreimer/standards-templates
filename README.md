@@ -1,5 +1,9 @@
 # Standards Templates
 
+[![Repository validation](https://github.com/jamesreimer/standards-templates/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/jamesreimer/standards-templates/actions/workflows/validate.yml?query=branch%3Amain)
+[![Latest release](https://img.shields.io/github/v/release/jamesreimer/standards-templates)](https://github.com/jamesreimer/standards-templates/releases/latest)
+[![License: CC0-1.0](https://img.shields.io/badge/license-CC0--1.0-blue)](LICENSE)
+
 Reusable, organization-neutral templates for standards and policies.
 
 This repository provides source templates that organizations may deliberately adopt into their own standards repositories. The templates here are **not authoritative for any organization by themselves**. Once an organization adopts a template, the organization governs the resulting standard or policy, its scope, its lifecycle, and any later changes. This canonical governance does not by itself transfer copyright or other intellectual-property rights in source material.
