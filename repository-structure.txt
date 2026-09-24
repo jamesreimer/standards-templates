@@ -50,6 +50,9 @@ templates/operational-execution-contract/standard.md
 templates/project-repository-model/
 templates/project-repository-model/README.md
 templates/project-repository-model/standard.md
+templates/publication-release-integrity/
+templates/publication-release-integrity/README.md
+templates/publication-release-integrity/standard.md
 templates/repository-naming/
 templates/repository-naming/README.md
 templates/repository-naming/standard.md
