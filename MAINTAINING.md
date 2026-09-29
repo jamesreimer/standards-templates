@@ -146,9 +146,26 @@ classification and the repository version rules above.
 
 Prepare the heading with the intended UTC publication date. When using GitHub
 Releases, its date is the UTC calendar date of the actual `publishedAt` timestamp;
-for a tag-only release, use the UTC date of verified remote tag publication and
-retain that evidence in the release record. Before tagging, verify the candidate's
-changelog version, date, links, and coverage against the planned release. If the
+for a tag-only release, use the UTC calendar date of the first successful remote
+verification after the authorized tag push. That verification must establish that
+the remote annotated tag object equals the locally verified tag object and the
+remote peeled commit equals the intended release commit.
+
+Before relying on a tag-only publication date, identify the existing named durable
+release work record selected for that release: for example, its governing release
+issue or publication record, or retained release notes when those already serve
+as the governed durable record. Publication must capture the UTC verification
+timestamp contemporaneously when that first successful verification occurs and
+retain it, the verified remote tag object SHA, and the verified peeled/intended
+release commit SHA in that selected record. Do not create a new ledger.
+
+Annotated-tag tagger time records tag creation, not remote publication. A successful
+push without successful remote verification is insufficient evidence. Git refs do
+not record when a tag was pushed, and a later observation that the tag exists
+cannot reconstruct the original publication date.
+
+Before tagging, verify the candidate's changelog version, date, links, and coverage
+against the planned release. If the
 publication date or scope changes during preparation, correct the section through
 a reviewed PR and select and fully validate the resulting merged candidate again.
 A prepared section does not authorize publication.
@@ -188,8 +205,10 @@ The Git tag identifies the release. Optional GitHub Release metadata may present
 When using GitHub Release metadata, create it only after remote tag verification and require the intended existing tag (for example, `gh release create` with `--verify-tag`, `--title "$tag"`, and the explicit repository). That option prevents implicit tag creation; it does not verify tag type or target. Read back the release and confirm that it is published, not a draft or prerelease, that its tag and title both equal the intended complete tag, that its notes are correct, and that its page and source archives are available. Recheck the remote tag object and peeled commit against the same verified SHAs after publication. Apply the same stop-and-inspect rule if creation or verification fails; preserve the already-published tag.
 
 After publication, verify the changelog date against the actual GitHub Release
-`publishedAt` UTC date, or the retained remote tag publication evidence for a
-tag-only release. Record any discrepancy and correct the changelog through a
+`publishedAt` UTC date. For a tag-only release, compare the heading date with the
+UTC calendar date of the contemporaneously retained first-successful-verification
+timestamp in the selected durable release work record. Record any discrepancy and
+correct the changelog through a
 reviewed successor PR. Preserve the published tag and its tree; a successor
 release still requires separate publication authorization.
 

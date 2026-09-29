@@ -30,12 +30,12 @@
 ### Changed
 
 - Verify exact release candidates, remote annotated tags, and partial publication state, and coordinate workflow changes with live required checks ([`a59651f`](https://github.com/jamesreimer/standards-templates/commit/a59651fc21019ee8e364627e695bded1dcf6bad5), [#146](https://github.com/jamesreimer/standards-templates/pull/146))
-- Clarify that reusable standards remain actor-neutral unless their subject inherently depends on a particular actor class ([`9992060`](https://github.com/jamesreimer/standards-templates/commit/99920606585d62171557a69a434c10f3eb314354), [#144](https://github.com/jamesreimer/standards-templates/pull/144))
+- Clarify in maintainer and agent guidance that reusable standards remain actor-neutral unless their subject inherently depends on a particular actor class ([`9992060`](https://github.com/jamesreimer/standards-templates/commit/99920606585d62171557a69a434c10f3eb314354), [#144](https://github.com/jamesreimer/standards-templates/pull/144))
 
 ### Added
 
 - Introduce template editions, edition-aware adoption comparisons, and transition validation; initialize all 17 existing templates at `1.0` without changing their standard content ([`b85d2e2`](https://github.com/jamesreimer/standards-templates/commit/b85d2e2d0c1ec97630671e452eaefb7a39ffa65a), [#143](https://github.com/jamesreimer/standards-templates/pull/143))
-- Define library release numbering and release-note classifications while preserving independent template identity and downstream adoption authority ([`8caef60`](https://github.com/jamesreimer/standards-templates/commit/8caef60638fa632edbd460e44b154e0a6ba80596), [#139](https://github.com/jamesreimer/standards-templates/pull/139))
+- Define library release numbering and release-note classifications while preserving independent template identity and downstream adoption authority ([#138](https://github.com/jamesreimer/standards-templates/pull/138), [#139](https://github.com/jamesreimer/standards-templates/pull/139))
 
 ### Fixed
 
