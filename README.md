@@ -76,6 +76,11 @@ See [Web Standards Suite Assessment Guidance](web-standards-assessment-guidance.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the contributor path and [MAINTAINING.md](MAINTAINING.md) for the repository's maintenance and review path.
 
+See [CHANGELOG.md](CHANGELOG.md) for notable repository release history and
+[GitHub Releases](https://github.com/jamesreimer/standards-templates/releases) for
+publication records and detailed release notes. Repository versions remain
+separate from template editions and downstream adoption history.
+
 ## Repository validation
 
 Repository checks cover file hygiene, local links, and template structure.

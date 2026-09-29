@@ -10,7 +10,7 @@ export const requiredFiles = ['AGENTS.md', 'CONTRIBUTING.md', 'README.md', 'LICE
 // The structure snapshot records inventory; it must not grant naming exceptions.
 const rootMarkdownExceptions = new Set([
   ...requiredFiles.filter(file => file.endsWith('.md')),
-  'ADOPTION.md', 'CODE_OF_CONDUCT.md', 'MAINTAINING.md', 'NAMING.md',
+  'ADOPTION.md', 'CHANGELOG.md', 'CODE_OF_CONDUCT.md', 'MAINTAINING.md', 'NAMING.md',
 ]);
 const snapshotPath = 'repository-structure.txt';
 

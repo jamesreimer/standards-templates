@@ -4,6 +4,12 @@
 
 What changed and why?
 
+## Changelog
+
+Propose a concise repository-release changelog summary with supporting references,
+or briefly explain why the change is not notable. Follow the
+[changelog guidance](../CONTRIBUTING.md#changelog).
+
 ## Scope / Boundary Impact
 
 Did this change alter template scope, conceptual boundaries, applicability, or repository structure?

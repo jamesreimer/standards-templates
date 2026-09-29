@@ -128,12 +128,30 @@ The published library contract means template identity, template paths, and the 
 For each future release:
 
 1. confirm that `origin` identifies `jamesreimer/standards-templates`, fetch current canonical `main` and tags, and require a clean working tree;
-2. identify the full commit SHA of the exact merged revision intended for release, and verify its membership in current canonical `main` history and the merge/review evidence; when the merge method produces a different commit from the reviewed candidate, verify that the merged commit and reviewed candidate have identical tree object IDs before release;
-3. confirm repository CI passed for that revision, check it out, and run the complete validation in [CONTRIBUTING.md](CONTRIBUTING.md#validation); require passing checks and a clean working tree. If checks change files or a defect requires correction, submit the correction through the contribution workflow and select and validate the resulting merged revision before proceeding;
-4. select an unused release version after checking local tags, remote tags, and existing GitHub Releases, including drafts; prepare the release notes described below outside the checkout so it remains clean. A failed availability check does not establish that a version is unused;
-5. create an annotated Git tag targeting that exact commit;
-6. before pushing, verify that the tag ref identifies a tag object, inspect its annotation, and confirm that its target resolves to the intended full commit SHA;
-7. with release publication authorization, push only the verified release tag without force, then verify the remote tag as described below.
+2. choose an unused version under the repository version rules, checking local and remote tags and all GitHub Releases, including drafts. Through the ordinary reviewed PR workflow, prepare its actual [CHANGELOG.md](CHANGELOG.md) section before selecting the final candidate. Review every change since the previous release against [summaries retained in PR descriptions](CONTRIBUTING.md#changelog), including carried-forward summaries; verify that all notable changes are represented and resolve missing or unclear summaries from authors and retained evidence. Curate existing interpretation rather than reconstructing history from scratch;
+3. identify the full commit SHA of the exact merged revision intended for release, and verify its membership in current canonical `main` history and the merge/review evidence; when the merge method produces a different commit from the reviewed candidate, verify that the merged commit and reviewed candidate have identical tree object IDs before release;
+4. confirm repository CI passed for that revision, check it out, and run the complete validation in [CONTRIBUTING.md](CONTRIBUTING.md#validation); require passing checks and a clean working tree. If checks change files or a defect requires correction, submit the correction through the contribution workflow and select and validate the resulting merged revision before proceeding;
+5. recheck that the selected release version remains unused in local tags, remote tags, and existing GitHub Releases, including drafts; prepare the release notes described below outside the checkout so it remains clean. A failed availability check does not establish that a version is unused;
+6. create an annotated Git tag targeting that exact commit;
+7. before pushing, verify that the tag ref identifies a tag object, inspect its annotation, and confirm that its target resolves to the intended full commit SHA;
+8. with release publication authorization, push only the verified release tag without force, then verify the remote tag as described below.
+
+Use [Common Changelog](https://common-changelog.org/) for the release section:
+version without `v`, a `YYYY-MM-DD` date, newest versions first, and applicable
+`Changed`, `Added`, `Removed`, and `Fixed` groups in that order. Write concise
+imperative entries with supporting commit/PR links and mark breaking changes.
+Link the version heading to its GitHub Release when using GitHub Releases;
+otherwise link to the verified release tag. Keep the reviewed template-edition
+classification and the repository version rules above.
+
+Prepare the heading with the intended UTC publication date. When using GitHub
+Releases, its date is the UTC calendar date of the actual `publishedAt` timestamp;
+for a tag-only release, use the UTC date of verified remote tag publication and
+retain that evidence in the release record. Before tagging, verify the candidate's
+changelog version, date, links, and coverage against the planned release. If the
+publication date or scope changes during preparation, correct the section through
+a reviewed PR and select and fully validate the resulting merged candidate again.
+A prepared section does not authorize publication.
 
 For example, after the target and validation checks, replace the placeholder with the verified full SHA:
 
@@ -169,11 +187,17 @@ The Git tag identifies the release. Optional GitHub Release metadata may present
 
 When using GitHub Release metadata, create it only after remote tag verification and require the intended existing tag (for example, `gh release create` with `--verify-tag`, `--title "$tag"`, and the explicit repository). That option prevents implicit tag creation; it does not verify tag type or target. Read back the release and confirm that it is published, not a draft or prerelease, that its tag and title both equal the intended complete tag, that its notes are correct, and that its page and source archives are available. Recheck the remote tag object and peeled commit against the same verified SHAs after publication. Apply the same stop-and-inspect rule if creation or verification fails; preserve the already-published tag.
 
+After publication, verify the changelog date against the actual GitHub Release
+`publishedAt` UTC date, or the retained remote tag publication evidence for a
+tag-only release. Record any discrepancy and correct the changelog through a
+reviewed successor PR. Preserve the published tag and its tree; a successor
+release still requires separate publication authorization.
+
 The existing published `v1.0.0` and `v1.0.1` tags are lightweight tags and must remain unchanged. The annotated-tag and release-note requirements apply prospectively beginning with the next release; do not rewrite the existing tags to satisfy them retroactively.
 
 ### Release notes
 
-Provide release notes for every future release, whether or not GitHub Release metadata is used. For every changed template, identify its stable ID and compare the README editions at the previous release and the release candidate. The reviewed edition transition is the source of truth for semantic classification; do not independently reclassify the content at release time.
+Provide release notes for every future release, whether or not GitHub Release metadata is used. Use the curated changelog and detailed Git/PR/issue evidence as inputs, keeping notable changes consistent while retaining the edition detail and release-specific adoption information required here. For every changed template, identify its stable ID and compare the README editions at the previous release and the release candidate. The reviewed edition transition is the source of truth for semantic classification; do not independently reclassify the content at release time.
 
 | Transition or change | Release-note entry |
 | --- | --- |

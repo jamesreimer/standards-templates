@@ -33,6 +33,12 @@ Read and apply each standard whose subject the work implicates:
 
 Consult [CATALOG.md](CATALOG.md) for other applicable subjects and their boundaries. This routing governs repository work; it does not itself confer downstream organizational authority on templates.
 
+[Common Changelog](https://common-changelog.org/) governs the format of the root
+changelog only. Follow [CONTRIBUTING.md](CONTRIBUTING.md#changelog) for
+contribution-time summaries and [MAINTAINING.md](MAINTAINING.md#tag-preparation-and-publication)
+for release preparation; preserve the governing standards and authority boundaries
+above.
+
 ### Actor-neutrality boundary
 
 Before adding agent-specific behavior, terminology, roles, or workflow mechanics to a reusable template, ask whether the requirement would still make complete sense for an organization that used no AI agents. If not, the material normally belongs in agent-specific guidance rather than in the reusable standard template, unless the governed subject itself inherently depends on that class of actor.
