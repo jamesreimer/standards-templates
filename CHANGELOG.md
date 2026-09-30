@@ -35,7 +35,7 @@
 ### Added
 
 - Introduce template editions, edition-aware adoption comparisons, and transition validation; initialize all 17 existing templates at `1.0` without changing their standard content ([`b85d2e2`](https://github.com/jamesreimer/standards-templates/commit/b85d2e2d0c1ec97630671e452eaefb7a39ffa65a), [#143](https://github.com/jamesreimer/standards-templates/pull/143))
-- Define library release numbering and release-note classifications while preserving independent template identity and downstream adoption authority ([#138](https://github.com/jamesreimer/standards-templates/pull/138), [#139](https://github.com/jamesreimer/standards-templates/pull/139))
+- Define library release numbering and release-note classifications while preserving independent template identity and downstream adoption authority ([`272067b`](https://github.com/jamesreimer/standards-templates/commit/272067bd14fa9561dccbe30fd403e343f3779d0e), [#138](https://github.com/jamesreimer/standards-templates/pull/138), [`8caef60`](https://github.com/jamesreimer/standards-templates/commit/8caef60638fa632edbd460e44b154e0a6ba80596), [#139](https://github.com/jamesreimer/standards-templates/pull/139))
 
 ### Fixed
 
