@@ -23,15 +23,15 @@ function put(root, path, content = '\n') {
 
 test('established root documents and ordinary new Markdown names pass repository policy', t => {
   const root = fixture(t);
-  for (const path of ['ADOPTION.md', 'AGENTS.md', 'CATALOG.md', 'CODE_OF_CONDUCT.md', 'CONTRIBUTING.md', 'MAINTAINING.md', 'NAMING.md', 'README.md', 'SECURITY.md', 'new-guidance.md', 'docs/new-guidance.md', 'docs/README.md']) put(root, path);
+  for (const path of ['ADOPTION.md', 'AGENTS.md', 'CATALOG.md', 'CHANGELOG.md', 'CODE_OF_CONDUCT.md', 'CONTRIBUTING.md', 'MAINTAINING.md', 'NAMING.md', 'README.md', 'SECURITY.md', 'new-guidance.md', 'docs/new-guidance.md', 'docs/README.md']) put(root, path);
   assert.deepEqual(checkRepository(root, { writeSnapshot: true }), []);
   assert.deepEqual(checkRepository(root), []);
 });
-for (const path of ['Bad Name.md', 'NEW_GUIDANCE.md', 'PROVENANCE.md', 'docs/Bad Name.md', 'docs/MAINTAINING.md', 'MAINTAINING.md/notes.md']) {
+for (const path of ['Bad Name.md', 'NEW_GUIDANCE.md', 'PROVENANCE.md', 'docs/CHANGELOG.md', 'CHANGELOG.md/notes.md', 'docs/Bad Name.md', 'docs/MAINTAINING.md', 'MAINTAINING.md/notes.md']) {
   test(`snapshot cannot conceal invalid naming: ${path}`, t => {
     const root = fixture(t);
     put(root, path);
-    const invalid = path === 'MAINTAINING.md/notes.md' ? 'MAINTAINING.md' : path;
+    const invalid = path.endsWith('.md/notes.md') ? path.split('/')[0] : path;
     const finding = `${invalid}: invalid path name`;
     const snapshot = join(root, 'repository-structure.txt');
     const original = readFileSync(snapshot);

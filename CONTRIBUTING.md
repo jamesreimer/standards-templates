@@ -76,6 +76,44 @@ submit for review
 
 Keep the change within the template's established responsibility unless the proposal explicitly justifies a scope correction. Reverify any external claim or citation affected by the revision.
 
+## Changelog
+
+[CHANGELOG.md](CHANGELOG.md) summarizes notable repository releases using
+[Common Changelog](https://common-changelog.org/) for format. This convention
+covers the changelog only; the branch and PR naming rules above still apply.
+
+For each PR, retain a concise proposed changelog summary with supporting
+references in its description, or briefly explain why the change is not notable.
+Capture material consumer impact while context is fresh. Reviewers check that
+this summary describes the final change. Template additions and material content
+changes, adoption-support changes, and meaningful validation or release-procedure
+changes warrant consideration; routine dependency updates and trivial edits
+usually do not. A PR need not produce a changelog entry.
+
+Keep repository release versions distinct from template editions. Where material,
+identify normative template changes, editorial clarification, repository
+maintenance, and catalog or adoption-support changes using the reviewed evidence.
+The changelog is a concise historical interpretation: template READMEs own
+editions, [CATALOG.md](CATALOG.md) owns discovery, [ADOPTION.md](ADOPTION.md) owns
+adoption guidance, and exact source path/SHA and adoption records retain their
+provenance responsibilities. Git, PRs, issues, and GitHub Releases remain the
+sources of detailed history, decisions, and publication evidence. Do not add
+per-template changelogs or source-pin/adoption ledgers. Publication of this library
+does not adopt or update an organization's independently governed standards.
+
+Pending summaries stay in PR descriptions until an actual release version and
+date are selected. Do not add an `Unreleased` section, invent a future release, or
+place new work under a published version. Once a release section is being
+prepared, include further notable changes to that release in the same PR that
+introduces them. Maintainers curate the retained summaries and verify the whole
+delta during [release preparation](MAINTAINING.md#tag-preparation-and-publication).
+
+The initial history from `v1.0.0` through `v1.2.1` was backfilled from retained
+release notes, publication timestamps, tags, diffs, and merged PRs; the entries
+were not written contemporaneously. These entries describe Standards Templates.
+Organizations adopting individual templates retain their own history and adoption
+records; they do not inherit this repository's releases as their own history.
+
 ## Validation
 
 Install Python 3.10 or later, Git, and Node.js 24.18.1 (including npm), then set
