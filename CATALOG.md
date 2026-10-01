@@ -46,7 +46,7 @@ Important boundaries:
 
 **Architectural Reasoning Standard**
 
-Defines reasoning about applicable authority, responsibility-based ownership, system identity, boundary reclassification, capability evidence, proportional architecture, durable state, and cross-system dependency impact.
+Defines reasoning about applicable authority, responsibility-based ownership, system identity, boundary reclassification, capability evidence, proportional architecture, durable state, cross-system dependency impact, and proportionate testing of material architectural conclusions.
 
 Important boundaries:
 
@@ -286,7 +286,7 @@ Important boundaries:
 
 **Architectural Reasoning**
 
-`architectural-reasoning` determines the system model: applicable authority, responsibility, system identity, proportionate design, intended durable state, and effects on dependent systems. Operational execution authority remains owned by `operational-execution-contract`; shared-material identity and correspondence by `shared-asset-provenance`; organizational adoption by `standards-adoption-model`; and repository topology and artifact placement by `project-repository-model`. Architectural dependency analysis identifies what a target must provide and what its change affects without prescribing propagation mechanics. These relationships create no adoption dependency.
+`architectural-reasoning` determines the system model: applicable authority, responsibility, system identity, proportionate design, intended durable state, effects on dependent systems, and proportionate testing of material architectural conclusions. Operational execution authority remains owned by `operational-execution-contract`; shared-material identity and correspondence by `shared-asset-provenance`; publication lifecycle integrity by `publication-release-integrity`; organizational adoption by `standards-adoption-model`; and repository topology and artifact placement by `project-repository-model`. Architectural dependency analysis identifies what a target must provide and what its change affects without prescribing propagation mechanics. These relationships create no adoption dependency.
 
 **Repository Architecture and Naming**
 

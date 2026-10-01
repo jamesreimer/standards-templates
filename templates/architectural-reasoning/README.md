@@ -2,7 +2,7 @@
 
 Stable template ID: `architectural-reasoning`
 
-Template edition: `1.0`
+Template edition: `2.0`
 
 Human-facing title:
 
@@ -10,7 +10,7 @@ Human-facing title:
 
 ## Purpose
 
-This template defines a reusable model for reasoning about authority, responsibility, system identity, proportionate architecture, final state, and dependent systems before committing to an implementation model.
+This template defines a reusable model for reasoning about authority, responsibility, system identity, proportionate architecture, final state, and dependent systems before committing to an implementation model, including proportionate testing and support of material architectural conclusions.
 
 Its central question is:
 
@@ -36,6 +36,7 @@ Use the universal review in [ADOPTION.md](../../ADOPTION.md) first. For this sta
 - whether the authority categories or system-identity criteria conflict with existing delegated authority or responsibility assignments;
 - which current plans, compatibility commitments, controls, and dependent systems rely on boundaries that adoption might cause reviewers to reconsider;
 - how any changed ownership or durable-state interpretation would be reviewed and validated without silently authorizing migration, control bypass, or operational changes;
+- which existing authority governs consequential evidence-producing activity that architectural validation may call for, and how adoption remains distinguishable from authorization to perform that activity;
 - whether existing review evidence can demonstrate the required reasoning without duplicating an adequate design-review process.
 
 ## Likely organization-specific review points
@@ -43,7 +44,8 @@ Use the universal review in [ADOPTION.md](../../ADOPTION.md) first. For this sta
 An adopting organization may need to adapt:
 
 - terminology for systems, capabilities, authority, and responsibility;
-- how consequential architectural reasoning is retained in existing review records;
+- how consequence and uncertainty influence how deeply architectural conclusions are tested;
+- how existing records distinguish supported findings from material assumptions and carried limitations;
 - what evidence supports reasonably anticipated evolution and lifecycle cost;
 - how compatibility commitments and transition-retirement conditions are represented;
 - which existing review mechanism resolves conflicting authority or revisits a defective control design.
@@ -56,6 +58,7 @@ This template determines the system model. It is independently adoptable; the fo
 
 - [`operational-execution-contract`](../operational-execution-contract/) governs consequential execution authority, scope, protected boundaries, and completion or stop conditions. Execution-path selection, escalation, and the authorized disposition of separately discovered defects belong to that subject.
 - [`shared-asset-provenance`](../shared-asset-provenance/) governs shared-material source identity, consumed state, relationship meaning, and correspondence. Shared-target resolution and propagation mechanics belong to that subject where applicable. This template considers what depends on a target and what breaks if it changes.
+- [`publication-release-integrity`](../publication-release-integrity/) owns correspondence between authorized and published state, publication identity and identity-to-state binding, fixed and moving publication references, resulting-state verification, successor or corrective publication, withdrawal and identity reservation, and partial, failed, or premature publication. Architectural Reasoning may consider the architectural cost of reversing a decision without taking ownership of publication lifecycle mechanics.
 - [`standards-adoption-model`](../standards-adoption-model/) governs how reusable normative material becomes organizational authority and follows an independent lifecycle.
 - [`project-repository-model`](../project-repository-model/) governs repository responsibility, artifact and work-state placement, and repository separation. A distinct Architectural Unit does not by itself require a separate repository.
 - [`standards-authoring`](../standards-authoring/) governs normative drafting and requirement calibration.

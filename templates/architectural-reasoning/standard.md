@@ -10,7 +10,7 @@ It governs how the model is established and reconsidered, including whether the 
 
 This standard applies to decisions that establish or materially change system responsibility, authority interpretation, system identity, design or control complexity, durable state, or dependencies. It applies equally to human, delegated, and automated reasoning across domains.
 
-It does not require a fresh architectural assessment for every routine action under an unchanged, applicable model. Reasoning depth and retained evidence SHOULD be proportionate to the consequence and uncertainty of the decision.
+It does not require a fresh architectural assessment for every routine action under an unchanged, applicable model. Reasoning depth, the depth to which architectural conclusions are tested, and retained evidence SHOULD be proportionate to the consequence and uncertainty of the decision.
 
 This standard does not grant execution authority, select operational execution paths, define escalation or stop rules, establish standards-adoption authority, prescribe repository topology, or govern shared-asset propagation and publication lifecycle.
 
@@ -196,7 +196,34 @@ A dependency MUST NOT be treated as the architectural center by default such tha
 
 This section classifies architectural responsibility and corrective mechanisms. It grants no execution authority; execution-path selection and escalation remain governed by the applicable execution contract, and shared-source identity, correspondence, and propagation mechanics belong to shared-asset provenance where applicable.
 
-## 12. Architectural Completion Review
+## 12. Architectural Conclusion Validation
+
+An architectural conclusion within this standard's scope SHOULD be tested to a depth proportionate to its consequence and uncertainty before it is treated as settled. This concerns support for the architectural conclusion, not validation mechanisms inside the system being designed, runtime validation, or execution validation. A low-consequence, low-uncertainty conclusion MAY rest on brief reasoning.
+
+For example, consequence can be affected by the cost of being wrong, blast radius, durability, or practical reversibility. Uncertainty can be affected by novelty, reliance on external behavior, conflicting or limited evidence, or material unknowns. These are non-exhaustive, informative examples, not mandatory factors to assess.
+
+Ease of reverting the originating change does not by itself establish practical reversibility. Practical reversibility depends on the cost and difficulty of undoing the decision's effects on dependent systems and consequential state.
+
+Where an assumption, inference, estimate, or unverified claim could materially change the architectural conclusion, the reasoning MUST identify it as such rather than present it as established.
+
+Known contrary evidence, known credible competing explanations, and reasonably foreseeable failure cases capable of materially changing the architectural conclusion MUST be examined. A successful nominal case MUST NOT by itself establish the architectural conclusion while such a material contrary case or competing explanation remains unexamined. Where feasible and proportionate, reasoning SHOULD seek additional evidence capable of disconfirming or materially altering the preferred conclusion.
+
+No validation method is presumptively required. Methods may include reasoned analysis of available evidence, authoritative research, inspection of actual system or repository state, representative tests, comparative analysis, relevant historical evidence, a prototype, an experiment, or a simulation. These informative examples do not establish a methodology hierarchy or require a fixed number of alternatives, scenarios, experiments, or research sources.
+
+Validation of the architectural conclusion is sufficient when, and only when, every material assumption, item of known contrary evidence, known credible competing explanation, and reasonably foreseeable failure case capable of changing the conclusion has been supported, resolved, or carried as an explicit limitation to a depth proportionate to the decision's consequence and uncertainty.
+
+Recording a limitation does not by itself account for it. A limitation counts as accounted for only when either:
+
+1. the architectural conclusion is qualified so it does not claim what the limitation could defeat; or
+2. the selected architecture remains acceptable, or preserves a practicable response, if the limitation is realized.
+
+Settlement does not require eliminating all uncertainty. Additional evidence unlikely to change the architectural conclusion SHOULD NOT be gathered merely to increase evidentiary volume.
+
+Where the conclusion warrants more than brief reasoning, material assumptions, material contrary evidence and competing explanations, material failure cases, and carried limitations SHOULD be reviewable through existing design records, decision records, change reviews, or equivalent existing records. This section does not require a new validation artifact.
+
+This section grants no execution authority. The applicable execution contract governs any consequential evidence-producing action. Inability to obtain evidence within applicable authority leaves the corresponding uncertainty explicit and does not by itself satisfy this section. Where that uncertainty could materially change the conclusion, the conclusion MUST NOT be represented as settled unless the selected architecture accounts for that uncertainty under the limitation-accounting rule above.
+
+## 13. Architectural Completion Review
 
 Before an implementation model is treated as settled, and before architectural completion is claimed, the review MUST establish that:
 
@@ -209,7 +236,7 @@ Before an implementation model is treated as settled, and before architectural c
 7. durable state is distinguished from transitions and superseded assumptions or patterns;
 8. affected systems and required dependencies have been evaluated;
 9. the shortfall has been classified and the selected corrective mechanism justified under Dependency Responsibility Boundary Reasoning where an existing component does not satisfy a complete requirement;
-10. evidence supports the state claimed, including any retained transition or unresolved limitation.
+10. evidence and validation sufficient under Section 12 support the architectural conclusion and state claimed, with material assumptions, retained transitions, and unresolved limitations explicit.
 
 The review MUST distinguish a settled design from an implemented and verified final state. Unresolved material assumptions MUST NOT be hidden by a completion claim.
 
@@ -225,21 +252,22 @@ Evidence SHOULD be retained where losing it would materially impair later review
 
 Architectural completion does not grant approval to execute, publish, deploy, or broaden work.
 
-## 13. Boundaries with Related Standards
+## 14. Boundaries with Related Standards
 
 - [`operational-execution-contract`](../operational-execution-contract/standard.md) owns consequential execution authority, protected boundaries, authorized scope, and completion or stop conditions. Execution-path selection, escalation, and the execution disposition of newly discovered defects belong to that subject.
 - [`shared-asset-provenance`](../shared-asset-provenance/standard.md) owns shared-material source identity, consumed state, relationship meaning, and correspondence; shared-target integrity mechanics belong there where applicable.
+- [`publication-release-integrity`](../publication-release-integrity/standard.md) owns correspondence between authorized and published state, publication identity and identity-to-state binding, fixed and moving publication references, resulting-state verification, successor or corrective publication, withdrawal and identity reservation, and partial, failed, or premature publication. Architectural Reasoning may consider the architectural cost of reversing a decision without taking ownership of publication lifecycle mechanics.
 - [`standards-adoption-model`](../standards-adoption-model/standard.md) owns deliberate organizational adoption and the independent authority and lifecycle of adopted material.
 - [`project-repository-model`](../project-repository-model/standard.md) owns repository responsibility, placement of durable artifacts and work state, and repository separation.
 - [`standards-authoring`](../standards-authoring/standard.md) owns normative drafting and requirement calibration.
 
 These references clarify ownership. They do not require adoption of the siblings or make an external source authoritative.
 
-## 14. Basis
+## 15. Basis
 
 The architectural rules are synthesized organization-neutral standards decisions. BCP 14 supplies the normative-keyword interpretation, not the architectural model or an organizational authority hierarchy.
 
-## 15. Default Standard
+## 16. Default Standard
 
 Unless concrete organizational requirements demonstrate otherwise:
 
@@ -250,5 +278,7 @@ Unless concrete organizational requirements demonstrate otherwise:
 > **Evaluate architecture and controls by their justified contribution across the system and its dependents.**
 >
 > **Separate durable state from transitions, retire superseded assumptions, and trace effects through responsibilities and dependencies.**
+>
+> **Test consequential architectural conclusions against what could make them wrong, keep material assumptions visible, and avoid further evidence gathering when it is unlikely to change the result.**
 >
 > **Claim only the architectural state supported by the completion review.**
