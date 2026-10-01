@@ -210,7 +210,7 @@ Known contrary evidence, known credible competing explanations, and reasonably f
 
 No validation method is presumptively required. Methods may include reasoned analysis of available evidence, authoritative research, inspection of actual system or repository state, representative tests, comparative analysis, relevant historical evidence, a prototype, an experiment, or a simulation. These informative examples do not establish a methodology hierarchy or require a fixed number of alternatives, scenarios, experiments, or research sources.
 
-Validation of the architectural conclusion is sufficient when, and only when, every material assumption, item of known contrary evidence, known credible competing explanation, and reasonably foreseeable failure case capable of changing the conclusion has been supported, resolved, or carried as an explicit limitation to a depth proportionate to the decision's consequence and uncertainty.
+Validation of the architectural conclusion is sufficient when, and only when, every material assumption, item of known contrary evidence, known credible competing explanation, and reasonably foreseeable failure case capable of changing the conclusion has been supported or resolved to a depth proportionate to the decision's consequence and uncertainty, or carried as an explicit limitation that is accounted for under the rule below.
 
 Recording a limitation does not by itself account for it. A limitation counts as accounted for only when either:
 
