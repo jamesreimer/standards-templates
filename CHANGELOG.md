@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.0] - 2026-10-02
+
+### Changed
+
+- Clarify that actor-neutral reusable templates remain usable without AI agents, with stricter agent guidance layered above rather than redefining their governance; preserve inherently actor-dependent subjects ([`bbe980f`](https://github.com/jamesreimer/standards-templates/commit/bbe980f68ee214c7314e8887b60127d0776c6a90), [#162](https://github.com/jamesreimer/standards-templates/pull/162))
+
+### Added
+
+- Add the Review Integrity Standard (`review-integrity`) at edition `1.0` for truthful correspondence between Review conclusions and their scope, reviewed state, evidence, method capability, limitations, and findings; preserve bounded, partial, and undetermined Reviews and separate Review completion from work readiness and action authority ([`bbe980f`](https://github.com/jamesreimer/standards-templates/commit/bbe980f68ee214c7314e8887b60127d0776c6a90), [#162](https://github.com/jamesreimer/standards-templates/pull/162))
+
 ## [1.3.0] - 2026-10-02
 
 ### Changed
@@ -61,6 +71,7 @@
 
 _First stable release of the reusable standards and policy template library._
 
+[1.4.0]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.4.0
 [1.3.0]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.3.0
 [1.2.1]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.2.1
 [1.2.0]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.2.0
