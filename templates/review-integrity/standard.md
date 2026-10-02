@@ -90,7 +90,7 @@ Before Review completion, every Material Finding identified in scope MUST be rep
 
 Classification does not equal disposition. A reviewer MAY recommend a disposition. A recommendation is not itself a disposition unless the reviewer also holds the applicable authority and acts in that capacity.
 
-A later readiness, completion, acceptance, publication, or similar reliance claim MUST NOT represent the Review as supporting that claim while omitting Material Findings that affect the reliance and lack whatever disposition the applicable authority or subject-specific standard requires.
+A later readiness, completion, acceptance, publication, or similar reliance claim MUST NOT represent the Review as supporting that claim while omitting Material Findings that affect that reliance and have neither been accurately disclosed in that reliance claim nor received a valid disposition under the applicable authority or subject-specific standard.
 
 This standard does not require the reviewer to disposition findings and grants no authority to correct, accept, defer, waive, or continue. Depending on applicable authority, later treatment might include correction, acceptance under competent authority, authorized deferral recorded where needed, qualification, or dismissal with rationale. These are informative examples, not a universal disposition scheme.
 
