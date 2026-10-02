@@ -14,7 +14,7 @@ For work in this repository, agents MUST apply the relevant standards as governi
 
 ### Default architectural reasoning
 
-For substantive repository work, read and apply [`architectural-reasoning`](templates/architectural-reasoning/standard.md) before committing to an implementation model. Use it to determine, as applicable, the Architectural Unit, responsible system or owner, existing-system versus new-system treatment, evidence that changes assumed boundaries or ownership, proportional architecture, final state versus transition mechanisms, adjacent and dependent-system effects, and whether a discovered defect is a separate Architectural Unit.
+For substantive repository work, read and apply [`architectural-reasoning`](templates/architectural-reasoning/standard.md) before committing to an implementation model. Use it to determine, as applicable, the Architectural Unit, responsible system or owner, existing-system versus new-system treatment, evidence that changes assumed boundaries or ownership, proportional architecture, testing consequential architectural conclusions while keeping material assumptions visible, final state versus transition mechanisms, adjacent and dependent-system effects, and whether a discovered defect is a separate Architectural Unit.
 
 Keep reasoning proportionate to consequence and uncertainty. Trivial mechanical edits do not require a heavyweight architecture exercise.
 
