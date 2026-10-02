@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.0] - 2026-10-02
+
+### Changed
+
+- Strengthen Architectural Reasoning from edition `1.0` to `2.0` with proportionate testing of material architectural conclusions, explicit treatment of assumptions and contrary evidence, practical reversibility, and bounded validation sufficiency ([`46e3c55`](https://github.com/jamesreimer/standards-templates/commit/46e3c55b689e2a2222e63cb85f3285bd61c14694), [#159](https://github.com/jamesreimer/standards-templates/pull/159))
+
+### Added
+
+- Add repository release history with supported historical backfill through `v1.2.1` and retain notable-change summaries through contribution and release preparation ([`51dd2b6`](https://github.com/jamesreimer/standards-templates/commit/51dd2b6a3441597d3c08818469b7a9196f089687), [#156](https://github.com/jamesreimer/standards-templates/pull/156))
+
 ## [1.2.1] - 2026-09-28
 
 ### Changed
@@ -51,6 +61,7 @@
 
 _First stable release of the reusable standards and policy template library._
 
+[1.3.0]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.3.0
 [1.2.1]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.2.1
 [1.2.0]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.2.0
 [1.1.2]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.1.2
