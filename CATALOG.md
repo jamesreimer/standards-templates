@@ -56,6 +56,21 @@ Important boundaries:
 - leaves shared-source identity, consumed state, correspondence, and propagation mechanics to Shared Asset Provenance where applicable;
 - does not prescribe organizational adoption, repository topology, publication lifecycle, administrative taxonomy, or a required review tool or record format.
 
+### Review Integrity
+
+#### `review-integrity`
+
+**Review Integrity Standard**
+
+Defines correspondence between a Review's claimed conclusion and its scope, reviewed state, evidence, method capability, limitations, and findings, including truthful representation in later reliance claims.
+
+Important boundaries:
+
+- allocates matters governed by more specific applicable requirements to those requirements without weakening, reinterpreting, supplementing, or duplicating them;
+- distinguishes Review completion from work readiness, finding classification from authorized disposition, and evaluative conclusions from authority to act;
+- permits truthful partial or unresolved results without converting missing evidence into a pass or a defect in the subject;
+- does not prescribe universal review procedures, report formats, severity taxonomies, independence requirements, or reviewer organizational structures.
+
 ### Repository Architecture and Naming
 
 These templates are independently adoptable. Their order below is a discovery or reading aid, not a required adoption sequence.
@@ -287,6 +302,10 @@ Important boundaries:
 **Architectural Reasoning**
 
 `architectural-reasoning` determines the system model: applicable authority, responsibility, system identity, proportionate design, intended durable state, effects on dependent systems, and proportionate testing of material architectural conclusions. Operational execution authority remains owned by `operational-execution-contract`; shared-material identity and correspondence by `shared-asset-provenance`; publication lifecycle integrity by `publication-release-integrity`; organizational adoption by `standards-adoption-model`; and repository topology and artifact placement by `project-repository-model`. Architectural dependency analysis identifies what a target must provide and what its change affects without prescribing propagation mechanics. These relationships create no adoption dependency.
+
+**Review Integrity**
+
+`review-integrity` governs whether evaluative conclusions and later reliance claims accurately represent the scope, reviewed state, evidence, method capability, limitations, and findings that support them. More specific applicable requirements govern their matters without duplicate Review Integrity obligations; Review Integrity continues to govern matters they do not address. Architecture, execution, publication, authoring, provenance, adoption, and Web subjects retain their respective ownership. Review completion does not confer work readiness or authority, and these relationships create no adoption dependency.
 
 **Repository Architecture and Naming**
 

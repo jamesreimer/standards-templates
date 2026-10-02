@@ -28,6 +28,7 @@ Read and apply each standard whose subject the work implicates:
 | Shared, external, propagated, copied, generated, installed, or otherwise source-related governed artifacts; source identity, immutable consumed state, correspondence, or required governed targets | [`shared-asset-provenance`](templates/shared-asset-provenance/standard.md) |
 | Publication or release integrity; correspondence between authorized source and published states; publication identity and state binding; fixed identities and moving references; publication verification; successor publication; withdrawal and identity reservation; partial, failed, or premature publication | [`publication-release-integrity`](templates/publication-release-integrity/standard.md) |
 | Creation or modification of normative templates | [`standards-authoring`](templates/standards-authoring/standard.md) |
+| Review conclusions and later reliance; scope, reviewed state, evidence and method capability, limitations, Material Findings, attribution, reassessment, or independence claims | [`review-integrity`](templates/review-integrity/standard.md) |
 | Organizational adoption of reusable or external normative material | [`standards-adoption-model`](templates/standards-adoption-model/standard.md) |
 | Repository responsibility, canonical durable artifact placement, planning/work-item versus durable-record questions, or justification for another repository | [`project-repository-model`](templates/project-repository-model/standard.md) |
 
