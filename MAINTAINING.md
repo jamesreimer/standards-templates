@@ -12,7 +12,7 @@ Apply the repository-wide [addition-decision model](README.md#design-principle) 
 
 Reusable documents may acknowledge domain-specific implementations or sibling standards, but do not present one domain's answer as the universal answer.
 
-Reusable standards should remain actor-neutral unless the governed subject itself inherently depends on a particular class of actor. Agent-specific behavior, assignments, product/model mappings, and workflow mechanics belong in agent-oriented guidance rather than in a reusable template when the underlying requirement remains meaningful without them.
+Reusable standards should remain actor-neutral unless the governed subject itself inherently depends on a particular class of actor. A reusable template must remain fully usable by an organization that uses no AI agents. Agent-specific guidance may layer stricter or more detailed behavior above that human-usable baseline, but must not redefine the template's underlying governance or make agent-specific mechanics a condition of conformance unless the governed subject inherently depends on that actor class. Agent-specific behavior, assignments, product/model mappings, and workflow mechanics belong in that agent-oriented layer when the underlying requirement remains meaningful without them.
 
 Repository work state belongs in Issues. Settled repository guidance belongs in the appropriate canonical document. Reusable normative requirements belong in a template only after the subject and its boundary have been justified.
 

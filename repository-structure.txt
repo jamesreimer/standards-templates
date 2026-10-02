@@ -63,6 +63,9 @@ templates/repository-work-identification/standard.md
 templates/responsive-web-layout/
 templates/responsive-web-layout/README.md
 templates/responsive-web-layout/standard.md
+templates/review-integrity/
+templates/review-integrity/README.md
+templates/review-integrity/standard.md
 templates/shared-asset-provenance/
 templates/shared-asset-provenance/README.md
 templates/shared-asset-provenance/standard.md
