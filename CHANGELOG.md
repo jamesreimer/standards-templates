@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.1] - 2026-10-04
+
+### Added
+
+- Add non-normative Purpose-Specific Review Guidance for existing-state and change / implementation reviews, with later-reliance guidance and README discovery ([`8935309`](https://github.com/jamesreimer/standards-templates/commit/8935309d0561529f2b344c52b4f399fbf342f8ed), [#166](https://github.com/jamesreimer/standards-templates/pull/166))
+
 ## [1.4.0] - 2026-10-02
 
 ### Changed
@@ -71,6 +77,7 @@
 
 _First stable release of the reusable standards and policy template library._
 
+[1.4.1]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.4.1
 [1.4.0]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.4.0
 [1.3.0]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.3.0
 [1.2.1]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.2.1
