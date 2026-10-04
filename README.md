@@ -15,6 +15,7 @@ This repository owns:
 - reusable standards and policy templates;
 - stable template identities;
 - guidance for deliberate organizational adoption;
+- non-normative guidance for applying reusable templates without creating additional conformance authority;
 - repository-level naming rules for templates and their human-facing titles;
 - maintenance guidance for evaluating and reviewing changes to this library.
 
@@ -68,9 +69,12 @@ Each template has:
 
 See [NAMING.md](NAMING.md) for the **template naming** standard used inside this repository. Repository naming and filesystem naming are separate reusable subjects covered by the [`repository-naming`](templates/repository-naming/) and [`filesystem-naming`](templates/filesystem-naming/) templates.
 
-## Non-normative Web Standards Suite guidance
+## Non-normative guidance
 
-See [Web Standards Suite Assessment Guidance](web-standards-assessment-guidance.md) for non-normative assistance with assessment and evidence recording. It does not create adoption or conformance authority or a normative dependency.
+These guidance documents assist application of reusable templates without creating adoption or conformance authority or normative dependencies:
+
+- [Web Standards Suite Assessment Guidance](web-standards-assessment-guidance.md) supports Web assessment and evidence recording.
+- [Purpose-Specific Review Guidance](purpose-specific-review-guidance.md) supports existing-state and change / implementation reviews, with a shared note on later reliance.
 
 ## Contributing and maintenance
 
