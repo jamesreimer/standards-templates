@@ -129,6 +129,24 @@ For each future release:
 
 1. confirm that `origin` identifies `jamesreimer/standards-templates`, fetch current canonical `main` and tags, and require a clean working tree;
 2. choose an unused version under the repository version rules, checking local and remote tags and all GitHub Releases, including drafts. Through the ordinary reviewed PR workflow, prepare its actual [CHANGELOG.md](CHANGELOG.md) section before selecting the final candidate. Review every change since the previous release against [summaries retained in PR descriptions](CONTRIBUTING.md#changelog), including carried-forward summaries; verify that all notable changes are represented and resolve missing or unclear summaries from authors and retained evidence. Curate existing interpretation rather than reconstructing history from scratch;
+
+   The release section may ship in the same PR as a release-bearing change when
+   the intended repository release version, release scope, and intended UTC
+   publication date are established. In that path, complete this step's existing
+   release-delta verification in the same PR before merge, accounting for every
+   change since the previous release against retained summaries. Under the
+   [squash-only durable-reference guidance](CONTRIBUTING.md#changelog), earlier
+   already-canonical changes may cite canonical commits while the current same-PR
+   change cites the PR. Mixed reference forms are acceptable when they accurately
+   reflect publication state.
+
+   Use the separate reviewed changelog-preparation path when the intended version,
+   release scope, or intended UTC publication date is not established for the
+   substantive PR, when that PR has already merged without the release section,
+   or when correction is required after merge. Establish the release facts before
+   preparing the section in that later PR. Aggregating multiple earlier changes
+   does not itself require a separate changelog PR.
+
 3. identify the full commit SHA of the exact merged revision intended for release, and verify its membership in current canonical `main` history and the merge/review evidence; when the merge method produces a different commit from the reviewed candidate, verify that the merged commit and reviewed candidate have identical tree object IDs before release;
 4. confirm repository CI passed for that revision, check it out, and run the complete validation in [CONTRIBUTING.md](CONTRIBUTING.md#validation); require passing checks and a clean working tree. If checks change files or a defect requires correction, submit the correction through the contribution workflow and select and validate the resulting merged revision before proceeding;
 5. recheck that the selected release version remains unused in local tags, remote tags, and existing GitHub Releases, including drafts; prepare the release notes described below outside the checkout so it remains clean. A failed availability check does not establish that a version is unused;
@@ -165,10 +183,17 @@ not record when a tag was pushed, and a later observation that the tag exists
 cannot reconstruct the original publication date.
 
 Before tagging, verify the candidate's changelog version, date, links, and coverage
-against the planned release. If the
-publication date or scope changes during preparation, correct the section through
-a reviewed PR and select and fully validate the resulting merged candidate again.
-A prepared section does not authorize publication.
+against the planned release. If the intended date, version, scope, or entries
+change while the release-bearing PR remains open, correct them in that same PR
+with proportionate re-review under the ordinary review process. This includes
+crossing UTC midnight when the intended publication day changes.
+
+If correction is required after merge but before tagging, correct the section
+through a reviewed PR and select and fully validate the resulting merged candidate
+again, preserving step 3's reviewed-candidate / published-tree correspondence.
+After publication, use the reviewed successor-PR correction path below, including
+its publication-date verification. A prepared section does not authorize
+publication.
 
 For example, after the target and validation checks, replace the placeholder with the verified full SHA:
 

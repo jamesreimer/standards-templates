@@ -90,6 +90,19 @@ changes, adoption-support changes, and meaningful validation or release-procedur
 changes warrant consideration; routine dependency updates and trivial edits
 usually do not. A PR need not produce a changelog entry.
 
+Common Changelog states that changes must reference relevant commits, while its
+own examples also show pull-request references. Standards Templates interprets
+those examples as permitting a pull request to serve as the durable change
+reference when a same-PR change's eventual canonical squash commit does not yet
+exist.
+
+When the canonical published commit already exists, cite that commit and include
+the associated PR where useful. When the changelog entry ships in the same PR as
+the current change, use the PR as the durable reference. That PR reference is
+final; do not later supplement or replace it merely because the canonical squash
+commit becomes available. Do not cite the pre-squash candidate commit: it will
+not belong to canonical `main` history under this repository's squash-only model.
+
 Keep repository release versions distinct from template editions. Where material,
 identify normative template changes, editorial clarification, repository
 maintenance, and catalog or adoption-support changes using the reviewed evidence.
