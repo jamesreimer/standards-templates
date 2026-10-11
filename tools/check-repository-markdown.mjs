@@ -47,13 +47,17 @@ export function checkMarkdown(root) {
   const findings = markdown.flatMap(file => markdownPolicy(file, new TextDecoder('utf-8', { fatal: true }).decode(readFileSync(resolve(root, file))), files));
   if (findings.length) { findings.forEach(finding => console.error(finding)); return 1; }
   if (!markdown.length) return 0;
-  const cliRoot = dirname(require.resolve('markdownlint-cli2'));
-  const cliPackage = JSON.parse(readFileSync(resolve(cliRoot, 'package.json'), 'utf8'));
+  let manifest;
+  try { manifest = require.resolve('../node_modules/markdownlint-cli2/package.json'); }
+  catch (error) { throw new Error('Run npm ci --ignore-scripts before repository validation.', { cause: error }); }
+  const cliRoot = dirname(manifest);
+  const cliPackage = JSON.parse(readFileSync(manifest, 'utf8'));
   const cli = resolve(cliRoot, cliPackage.bin['markdownlint-cli2']);
   // Explicit repository inventory also includes new, unignored Markdown. Prefix
-  // paths so filenames cannot become CLI options. No shell command construction.
+  // Markdownlint paths with its literal marker, not glob syntax or CLI options.
+  // Linkinator separately attests its requested initial files. No shell boundary.
   for (const args of [
-    [cli, '--config', resolve(sourceRoot, '.markdownlint-cli2.jsonc'), ...markdown.map(file => `./${file}`)],
+    [cli, '--config', resolve(sourceRoot, '.markdownlint-cli2.jsonc'), ...markdown.map(file => `:${file}`)],
     [resolve(sourceRoot, 'tools/check-links.mjs'), ...markdown.map(file => `./${file}`)],
   ]) {
     const result = spawnSync(process.execPath, args, { cwd: root, stdio: 'inherit' });

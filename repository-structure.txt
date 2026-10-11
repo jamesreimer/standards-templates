@@ -14,6 +14,7 @@
 .github/workflows/validate.yml
 .gitignore
 .markdownlint-cli2.jsonc
+.npmrc
 .pre-commit-config.yaml
 .vscode/
 .vscode/settings.json
@@ -117,4 +118,6 @@ tools/check-links.mjs
 tools/check-repository-markdown.mjs
 tools/check-repository-policy.mjs
 tools/link-frontmatter.mjs
+tools/markdownlint-files.cjs
+tools/requested-file-identity.mjs
 web-standards-assessment-guidance.md

@@ -56,6 +56,13 @@ These roles describe responsibilities rather than required tools or a fixed numb
 
 When preparing or returning from an implementation handoff, reference settled authoritative results rather than replaying their reasoning, and carry forward only the context, constraints, and unresolved questions the next decision needs, keeping detail proportionate to remaining uncertainty and consequence; `architectural-reasoning` §2 governs that proportionality, and `operational-execution-contract` §5 and §12.1 govern what each direction carries. Bound the authorized problem, permitted consequences, and protected interests without unnecessarily prescribing the form of the solution, and let `architectural-reasoning` §8 determine whether the conforming result is additive, modifying, consolidating, replacing, or removing. Where exact-change discipline is materially required, state that restriction deliberately and name the consequence it protects rather than letting it arise implicitly from substantive scope limits or non-goals; `operational-execution-contract` §9 and §5 own that distinction.
 
+For existing-consumer tooling reconciliation, apply the specialization review in
+[README.md](README.md#repository-validation). Search tracked content, including
+nested files and staged additions, for inherited identities and instructions;
+review matches by responsibility and preserve legitimate provenance references.
+Retain completion evidence and omissions in the PR under
+[MAINTAINING.md](MAINTAINING.md#repo-template-reconciliation), not a new ledger.
+
 ## Adoption assistance
 
 Before assisting an adoption, read root [ADOPTION.md](ADOPTION.md), the candidate template's adjacent `README.md`, the candidate `standard.md`, and the adopting source's existing authority.

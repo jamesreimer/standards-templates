@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdtempSync, mkdirSync, readFileSync, realpathSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -116,3 +116,43 @@ for (const [label, target, index, status] of [
     assert.ok(data.result.links.some(link => link.url === 'https://example.invalid/' && link.state === 'SKIPPED'));
   }
 });
+
+test('whole inventory selects invalid literal braces beside valid glob decoys', t => {
+  const root = fixture(t);
+  for (const file of ['choicea.md', 'choiceb.md']) writeFileSync(join(root, file), '# Decoy\n');
+  writeFileSync(join(root, 'choice{a,b}.md'), '#Title\n');
+  const result = run(root);
+  assert.equal(result.status, 1, result.stdout + result.stderr);
+  assert.match(result.stderr, /choice\{a,b\}\.md:1:1 error MD018/u);
+  assert.match(result.stdout, /:choice\{a,b\}\.md/u);
+  assert.equal(readFileSync(join(root, 'choice{a,b}.md'), 'utf8'), '#Title\n');
+});
+
+for (const parentOnly of [false, true]) {
+  test(`whole inventory rejects missing root Markdownlint (parent decoy: ${parentOnly})`, t => {
+    const parent = realpathSync(fixture(t));
+    const root = join(parent, 'repo');
+    mkdirSync(join(root, 'tools'), { recursive: true });
+    mkdirSync(join(root, 'node_modules'));
+    writeFileSync(join(root, '.gitignore'), 'node_modules/\n');
+    writeFileSync(join(root, 'package.json'), '{}\n');
+    writeFileSync(join(root, 'README.md'), '# Title\n');
+    execFileSync('git', ['init', '-q'], { cwd: root });
+    for (const file of ['check-repository-markdown.mjs', 'check-repository-policy.mjs']) {
+      copyFileSync(join(source, 'tools', file), join(root, 'tools', file));
+    }
+    for (const pkg of ['unified', 'remark-parse', 'remark-frontmatter', 'unist-util-visit']) {
+      symlinkSync(join(source, 'node_modules', pkg), join(root, 'node_modules', pkg), 'dir');
+    }
+    if (parentOnly) {
+      mkdirSync(join(parent, 'node_modules/markdownlint-cli2'), { recursive: true });
+      writeFileSync(join(parent, 'node_modules/markdownlint-cli2/package.json'), JSON.stringify({ main: 'cli.cjs', bin: { 'markdownlint-cli2': 'cli.cjs' } }));
+      writeFileSync(join(parent, 'node_modules/markdownlint-cli2/cli.cjs'), 'console.log("PARENT DECOY EXECUTED");\n');
+    }
+    const result = spawnSync(process.execPath, [join(root, 'tools/check-repository-markdown.mjs')], { cwd: root, encoding: 'utf8', timeout: 30000 });
+    assert.ifError(result.error);
+    assert.equal(result.status, 1, result.stdout + result.stderr);
+    assert.match(result.stderr, /Run npm ci --ignore-scripts/u);
+    assert.doesNotMatch(result.stdout, /PARENT DECOY EXECUTED/u);
+  });
+}

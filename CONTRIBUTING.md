@@ -16,6 +16,11 @@ Use a conventional type prefix that describes the work for new contribution bran
 
 Format branch names as `<type>/<short-kebab-case-description>` and pull request titles as `<type>: <concise description>`. Choose the type from the substance of the change; a normative requirement change is not merely documentation work because it is written in Markdown.
 
+Use GitHub issue-closing relationships only when merging the PR completes the
+issue's substantive requirements. Use a non-closing reference when material
+post-merge obligations remain. Routine synchronization and branch housekeeping
+alone do not defer an otherwise complete issue.
+
 ## Addition decisions
 
 Apply the repository-wide [addition-decision model](README.md#design-principle) before adding templates, repository structure, metadata, validation, automation, taxonomy, or related machinery.
@@ -129,7 +134,7 @@ records; they do not inherit this repository's releases as their own history.
 
 ## Validation
 
-Install Python 3.10 or later, Git, and Node.js 24.18.1 (including npm), then set
+Install Python 3.10 or later, Git, and Node.js 24.21.0 (including npm), then set
 up the validation tools:
 
 ```sh
@@ -141,7 +146,7 @@ python3 -m venv .venv
 On Windows, use `.venv\Scripts\python.exe` and
 `.venv\Scripts\pre-commit.exe` instead. Initial dependency and hook installation
 needs network access; required link checking is offline. CI runs the same
-pre-commit composition, using Python 3.12 and Node 24.18.1.
+pre-commit composition, using Python 3.12 and Node 24.21.0.
 
 Stage intended new files so native hooks include them, then run:
 
@@ -172,7 +177,8 @@ validation.
 
 The pre-commit runner is pinned in `requirements-dev.txt`. npm installs the exact
 validation dependencies from `package-lock.json` using `npm ci --ignore-scripts`.
-Pre-commit owns pinned Markdownlint, Ruff, actionlint, syntax and hygiene hooks;
+The root npm graph owns Markdownlint for both its hook and rule tests.
+Pre-commit owns pinned Ruff, actionlint, syntax and hygiene hooks;
 there is no separate CI-only validation path. Review hook autofixes and rerun.
 Neither green checks nor provenance confer permission to merge or publish.
 
@@ -183,9 +189,8 @@ in the same scoped change. Preserve `Repository validation` from GitHub Actions
 the repository's squash-only publication protection. Verify both successful check
 production and the persisted/effective host rules; repository files alone do not
 establish enforcement. Use the upstream
-[host-protection guidance](https://github.com/jamesreimer/repo-template/blob/main/rulesets/README.md)
-for discovery, then verify the procedure at the exact target commit recorded in
-the change under [reconciliation evidence](MAINTAINING.md#repo-template-reconciliation).
+[host-protection guidance](https://github.com/jamesreimer/repo-template/blob/f4f5ad18546d5dbcb8574a2ca05ccea55991ce6b/rulesets/README.md)
+at its immutable source revision, and retain installed-setting evidence under [reconciliation evidence](MAINTAINING.md#repo-template-reconciliation).
 For authorized host changes, preserve additional local protections and stop on
 concurrent changes or verification failure. This guidance does not authorize
 settings changes or waive separately required review or publication authority.
@@ -200,6 +205,17 @@ node tools/check-repository-policy.mjs --write-snapshot
 Ordinary validation never writes the snapshot. The inventory contains tracked
 and unignored files, including untracked additions, with deterministic ordering.
 Missing tracked files fail closed; stage intended removals before regeneration.
+
+The package engine and root `.npmrc` enforce exactly Node 24.21.0 during
+installation. CI selects that runtime; later local execution uses `node` on
+PATH, so keep that version selected while running checks. No per-invocation
+runtime guard or separate Markdownlint Node environment is installed.
+
+The staged Markdown hook and whole-repository Markdown check resolve the same
+repository-root `node_modules/markdownlint-cli2` executable. Both use the CLI's
+`:filename` literal marker; parent or global packages are not substitutes for
+`npm ci --ignore-scripts`. Pre-commit retains staged-file selection, batching,
+and unstaged-change stashing. Rule tests use this same root installation.
 
 ### Edition validation
 
@@ -228,7 +244,7 @@ for deliberate upstream reconciliation and its PR evidence.
 | Responsibility | Ownership and current surfaces |
 | --- | --- |
 | Aggregate local/CI composition | Generic mechanics from repo-template with local integration in `.pre-commit-config.yaml` and `.github/workflows/validate.yml` |
-| Syntax, hygiene, authoring, links/fragments, Python, workflows | Generic repo-template mechanics using maintained tools; `tools/check-links.mjs`, `tools/link-frontmatter.mjs`, `markdownlint-rules/`, link/authoring regression suites, and native tool configuration |
+| Syntax, hygiene, authoring, links/fragments, workflows; consumer-owned Python/TOML checks | Generic repo-template mechanics with local Ruff/TOML retention for real Python sources; `tools/check-links.mjs`, `tools/link-frontmatter.mjs`, `markdownlint-rules/`, link/authoring regression suites, and native tool configuration |
 | Standards-domain structure, IDs, catalog/title agreement, requirements, BCP 14 spelling | Local standard-library Python `scripts/validate_local.py` and `tests/test_validate_local.py` |
 | Template edition transitions and comparison-base evidence | Local standard-library Python `scripts/check_template_editions.py` and its tests |
 | Repository policies lacking an adequate upstream implementation | Temporary local `tools/check-repository-policy.mjs` and `tests/repository-policy.test.mjs` |
@@ -288,7 +304,11 @@ Directory destinations use `tools/check-links.mjs` with native listings enabled.
 Existing inventoried directories need no index document; missing ones fail.
 Real `index.html` fragments are checked. Generated listings have no native
 fragment-validation contract; link explicitly to a Markdown or HTML file when
-that validation is required. External HTTP/HTTPS is skipped, including redirects
+that validation is required. Successful link validation also requires exact requested initial-file attestation.
+Some legal filenames have URL/glob meanings that Linkinator cannot scan literally;
+those selections fail closed instead of claiming success. See the
+[link regression contract](tests/link-validation/README.md) for the covered limits.
+External HTTP/HTTPS is skipped, including redirects
 leaving Linkinator's serving origin. YAML streams use the native multi-document
 syntax option. Validation preserves source bytes except explicit native hook
 formatting/hygiene fixes, which must be reviewed.
@@ -321,7 +341,7 @@ Commit hooks do not replace the full all-files command before a PR.
 
 Dependabot covers Actions, pip, and npm monthly. Update hook revisions with
 `.venv/bin/pre-commit autoupdate --freeze`, reviewing revisions and compatibility.
-Keep the Markdownlint hook and npm test version aligned. Update dependency pins
+Keep the Markdownlint hook and rule tests on the same root npm graph. Update dependency pins
 and lock together; retain the effective-renderer startup probe rather than
 assuming a hoisted Marked identity. Run `npm audit` and the complete suite.
 
