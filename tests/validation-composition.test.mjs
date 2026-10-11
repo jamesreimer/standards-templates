@@ -116,3 +116,53 @@ test('edition validation shares local and CI composition with verified history',
   git(['update-ref', '-d', 'refs/remotes/origin/main']);
   assert.equal(runEdition().status, 1, 'missing base must fail through pre-commit');
 });
+
+const markdownHook = config.repos.filter(repo => repo.repo === 'local')
+  .flatMap(repo => repo.hooks).find(hook => hook.id === 'markdownlint-cli2');
+test('actual Markdown hook preserves staged literal filenames, stash and split batches', t => {
+  const root = fixture(t);
+  mkdirSync(join(root, 'tools'));
+  mkdirSync(join(root, 'markdownlint-rules'));
+  copyFileSync(join(source, 'tools/markdownlint-files.cjs'), join(root, 'tools/markdownlint-files.cjs'));
+  copyFileSync(join(source, '.markdownlint-cli2.jsonc'), join(root, '.markdownlint-cli2.jsonc'));
+  copyFileSync(join(source, 'markdownlint-rules/fenced-code-closed.cjs'), join(root, 'markdownlint-rules/fenced-code-closed.cjs'));
+  writeFileSync(join(root, 'package.json'), '{}\n');
+  writeFileSync(join(root, '.gitignore'), 'node_modules/\n');
+  symlinkSync(join(source, 'node_modules'), join(root, 'node_modules'), 'dir');
+  const probe = join(root, '.pre-commit-config.yaml');
+  writeFileSync(probe, stringify({ repos: [{ repo: 'local', hooks: [markdownHook] }] }));
+  const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' });
+  const literal = 'choice{a,b}.md';
+  for (const name of [literal, 'choicea.md', 'choiceb.md']) writeFileSync(join(root, name), '# Title\n');
+  git(['add', '.']);
+  git(['-c', 'user.name=Test', '-c', 'user.email=test@example.invalid', '-c', 'core.hooksPath=/dev/null', 'commit', '-qm', 'Fixture']);
+  const staged = () => spawnSync(runner, ['run', 'markdownlint-cli2', '--verbose'], {
+    cwd: root, encoding: 'utf8', timeout: 60000,
+  });
+  writeFileSync(join(root, literal), '#Title\n');
+  git(['add', '--', literal]);
+  writeFileSync(join(root, literal), '# Fixed only in worktree\n');
+  const invalid = staged();
+  assert.ifError(invalid.error);
+  assert.equal(invalid.status, 1, invalid.stdout + invalid.stderr);
+  assert.match(invalid.stdout, /choice\{a,b\}\.md:1:1 error MD018/u);
+  assert.match(invalid.stdout + invalid.stderr, /Stashing unstaged files/u);
+  assert.equal(readFileSync(join(root, literal), 'utf8'), '# Fixed only in worktree\n');
+  git(['add', '--', literal]);
+  writeFileSync(join(root, literal), '#Unstaged defect\n');
+  const valid = staged();
+  assert.equal(valid.status, 0, valid.stdout + valid.stderr);
+  assert.equal(readFileSync(join(root, literal), 'utf8'), '#Unstaged defect\n');
+  writeFileSync(join(root, literal), '# Fixed only in worktree\n');
+  // Enough long names to exceed even one worker's pre-commit argv partition.
+  for (let index = 0; index < 160; index++) {
+    const name = `batch-${index}-${'a'.repeat(180)}.md`;
+    writeFileSync(join(root, name), index === 159 ? '#Invalid\n' : '# Valid\n');
+  }
+  git(['add', '.']);
+  const batches = staged();
+  assert.ifError(batches.error);
+  assert.equal(batches.status, 1, batches.stdout + batches.stderr);
+  assert.ok((batches.stdout.match(/Linting: /gu) || []).length > 1, batches.stdout);
+  assert.match(batches.stdout, /batch-159-.*error MD018/u);
+});

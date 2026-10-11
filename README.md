@@ -93,6 +93,14 @@ See [CONTRIBUTING.md](CONTRIBUTING.md#validation) for setup, commands, coverage,
 and limitations. [MAINTAINING.md](MAINTAINING.md#repo-template-reconciliation)
 defines upstream reconciliation and the evidence retained in its PR.
 
+When reconciling generic tooling into this existing consumer, review inherited
+names, package metadata, badges, URLs, nested guidance, examples, release commands,
+ignore patterns, and license/security descriptions against this repository's
+responsibility. Verify applicable installed host controls independently. Correct
+stale identities, retain justified upstream provenance references, and record
+searches, dispositions, and validation in the reconciliation PR; do not copy a
+new-repository setup checklist or maintain a permanent specialization ledger.
+
 ## License
 
 Unless otherwise noted, all repository-authored material in this repository is dedicated to the public domain under [CC0 1.0 Universal](LICENSE). This includes the standards templates and documentation; maintenance tooling under `scripts/`, `tools/`, `markdownlint-rules/`, and `tests/`; repository automation and contribution configuration under `.github/`; editor and Git configuration in `.editorconfig`, `.gitattributes`, `.gitignore`, and `.vscode/`; and the generated `repository-structure.txt` snapshot.

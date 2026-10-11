@@ -137,3 +137,34 @@ test('metadata gate rejects an outside-root path before filesystem reads', t => 
   const root = fixture(t);
   assert.throws(() => assertSafeInputs(root, ['../outside.md']), /path escapes repository/u);
 });
+
+test('root npm configuration is named and selected precisely', t => {
+  const root = fixture(t);
+  assert.equal(validName('.npmrc'), true);
+  assert.equal(validName('.npmrc', false), false);
+  assert.equal(isSelectedText('.npmrc'), true);
+  put(root, '.npmrc', 'engine-strict=true\n');
+  assert.deepEqual(checkRepository(root, { writeSnapshot: true }), []);
+  assert.deepEqual(checkRepository(root), []);
+  for (const path of ['nested/.npmrc', '.npmrc-copy', '.npmrc.json', '.NPMRC', '.prettierignore', '.prettierrc.json']) {
+    assert.equal(validName(path), false, path);
+  }
+  assert.equal(isSelectedText('nested/.npmrc'), false);
+  for (const [content, expected] of [
+    [Buffer.from([255]), /\.npmrc: cannot read UTF-8/u],
+    ['engine-strict=true', /\.npmrc: missing final newline/u],
+  ]) {
+    put(root, '.npmrc', content);
+    assert.ok(checkRepository(root).some(finding => expected.test(finding)));
+  }
+});
+
+for (const path of ['nested/.npmrc', '.npmrc/notes.md']) {
+  test(`npm exception cannot authorize nested or directory decoys: ${path}`, t => {
+    const root = fixture(t);
+    put(root, path);
+    const snapshot = readFileSync(join(root, 'repository-structure.txt'));
+    assert.ok(checkRepository(root, { writeSnapshot: true }).some(finding => finding.includes('invalid path name')));
+    assert.deepEqual(readFileSync(join(root, 'repository-structure.txt')), snapshot);
+  });
+}

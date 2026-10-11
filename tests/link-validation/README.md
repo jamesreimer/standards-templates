@@ -51,3 +51,16 @@ Link diagnostics retain original filenames and display text. Linkinator does
 not promise Markdown line/column positions. YAML snippets use metadata-relative
 positions; malformed files remain named as failed local results. The batch
 regression test verifies that both original failing filenames are reported.
+
+Successful results also attest that public `pagestart` URLs identify exactly the
+requested initial files, after repository containment and segment-wise URL
+decoding. Linked targets are not initial requests. Tests cover duplicate inputs,
+reversed batches, malformed encodings, encoded separators, outside-root paths,
+and valid decoys next to broken literal filenames.
+
+This is fail-closed selection checking, not universal filename support.
+Linkinator still cannot reliably scan literal brace, bracket, extglob, hash,
+percent-encoded, star, or question-mark names. Depending on native behavior,
+unsupported requests fail with a broken-link result or an attestation error;
+they must never pass by silently checking a different file. The regression
+matrix records the observed cases and preserves source bytes.

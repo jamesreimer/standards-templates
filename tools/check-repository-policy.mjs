@@ -52,7 +52,7 @@ export function validName(path, isFile = true) {
     return /^(?:[a-z][a-z0-9]*(?:_[a-z0-9]+)*|__init__)\.py$/u.test(name);
   }
   if (/^templates\/[^/]+\/(?:README\.md|standard\.md)$/u.test(path)) return true;
-  if (isFile && rootMarkdownExceptions.has(path)) return true;
+  if (isFile && (rootMarkdownExceptions.has(path) || path === '.npmrc')) return true;
   if (!path.includes('/') && ['LICENSE', '.editorconfig', '.gitattributes', '.gitignore', '.markdownlint-cli2.jsonc', '.pre-commit-config.yaml', 'scripts', 'tests'].includes(path)) return true;
   return /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+)*$/u.test(name);
 }
@@ -68,7 +68,7 @@ export function isCredential(path) {
 }
 
 export function isSelectedText(path) {
-  return /\.(?:cfg|css|html|ini|js|json|jsonc|jsx|md|mjs|py|sh|toml|ts|tsx|txt|xml|yaml|yml)$/u.test(path) || ['.editorconfig', '.gitattributes', '.gitignore'].includes(posix.basename(path)) || /^\.githooks\/[^/]+$/u.test(path);
+  return path === '.npmrc' || /\.(?:cfg|css|html|ini|js|json|jsonc|jsx|md|mjs|py|sh|toml|ts|tsx|txt|xml|yaml|yml)$/u.test(path) || ['.editorconfig', '.gitattributes', '.gitignore'].includes(posix.basename(path)) || /^\.githooks\/[^/]+$/u.test(path);
 }
 
 export function renderSnapshot(files) {
