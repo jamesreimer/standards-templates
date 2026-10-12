@@ -6,13 +6,13 @@ Keep contributions bounded to a concrete or imminent need that is high-confidenc
 
 Use a conventional type prefix that describes the work for new contribution branches and pull request titles. Use the same type for the branch and its pull request:
 
-| Type | Work | Branch example | Pull request title example |
-| --- | --- | --- | --- |
-| `feat` | New or extended functionality or normative requirements | `feat/execution-path-rules` | `feat: extend execution-path rules` |
-| `fix` | Corrections to defects | `fix/broken-catalog-link` | `fix: correct broken catalog link` |
-| `docs` | Documentation and guidance changes | `docs/contribution-naming` | `docs: document contribution naming` |
-| `chore` | Repository maintenance or configuration | `chore/update-validation-config` | `chore: update validation configuration` |
-| `refactor` | Restructuring without changing behavior or normative meaning | `refactor/validator-helpers` | `refactor: simplify validator helpers` |
+| Type       | Work                                                         | Branch example                   | Pull request title example               |
+| ---------- | ------------------------------------------------------------ | -------------------------------- | ---------------------------------------- |
+| `feat`     | New or extended functionality or normative requirements      | `feat/execution-path-rules`      | `feat: extend execution-path rules`      |
+| `fix`      | Corrections to defects                                       | `fix/broken-catalog-link`        | `fix: correct broken catalog link`       |
+| `docs`     | Documentation and guidance changes                           | `docs/contribution-naming`       | `docs: document contribution naming`     |
+| `chore`    | Repository maintenance or configuration                      | `chore/update-validation-config` | `chore: update validation configuration` |
+| `refactor` | Restructuring without changing behavior or normative meaning | `refactor/validator-helpers`     | `refactor: simplify validator helpers`   |
 
 Format branch names as `<type>/<short-kebab-case-description>` and pull request titles as `<type>: <concise description>`. Choose the type from the substance of the change; a normative requirement change is not merely documentation work because it is written in Markdown.
 
@@ -177,7 +177,7 @@ validation.
 
 The pre-commit runner is pinned in `requirements-dev.txt`. npm installs the exact
 validation dependencies from `package-lock.json` using `npm ci --ignore-scripts`.
-The root npm graph owns Markdownlint for both its hook and rule tests.
+The root npm graph owns Markdownlint, ESLint and Prettier for their hooks and tests.
 Pre-commit owns pinned Ruff, actionlint, syntax and hygiene hooks;
 there is no separate CI-only validation path. Review hook autofixes and rerun.
 Neither green checks nor provenance confer permission to merge or publish.
@@ -217,6 +217,26 @@ repository-root `node_modules/markdownlint-cli2` executable. Both use the CLI's
 `npm ci --ignore-scripts`. Pre-commit retains staged-file selection, batching,
 and unstaged-change stashing. Rule tests use this same root installation.
 
+### JavaScript correctness and formatting
+
+ESLint checks JavaScript tooling (`.js`, `.cjs`, `.mjs`). Prettier checks those
+files plus JSON/JSONC, YAML/YML and Markdown without writing changes. Both staged
+hooks invoke the installed root package binaries directly with a `--` filename
+separator, preserving literal names, selection, batching and stash restoration.
+
+Prettier preserves prose wrapping and does not format embedded code. Both
+`.prettierignore` and the hook exclusion protect `templates/*/standard.md`;
+normative documents remain covered by Markdownlint, link, domain and edition
+checks. The lockfile, digest-pinned link contract and YAML stream fixture also
+have exact exclusions. Template READMEs and other documentation remain checked.
+
+Resolve formatting findings individually, inspect the diff and verify parsed
+AST/value equivalence when changing tooling or structured data. Do not run bulk
+write formatting: a formatter can repair an unclosed Markdown fence and hide an
+authoring defect. Normative changes require their own authorized edition review.
+The root `.prettierrc.json` and `.prettierignore` have exact naming exceptions and
+UTF-8/final-newline checks; nested or lookalike configs gain no naming exception.
+
 ### Edition validation
 
 Every `standard.md` change requires an exact next edition transition in its README in the same PR. Follow [MAINTAINING.md](MAINTAINING.md#template-editions) for semantic classification, initialization, corrections, and lineage. Declare the transition in the PR for human assessment; README-only and other non-content changes leave editions unchanged.
@@ -241,15 +261,15 @@ standards-domain semantics. Local adaptations are legitimate and do not transfer
 generic ownership. Use [the maintenance procedure](MAINTAINING.md#repo-template-reconciliation)
 for deliberate upstream reconciliation and its PR evidence.
 
-| Responsibility | Ownership and current surfaces |
-| --- | --- |
-| Aggregate local/CI composition | Generic mechanics from repo-template with local integration in `.pre-commit-config.yaml` and `.github/workflows/validate.yml` |
+| Responsibility                                                                            | Ownership and current surfaces                                                                                                                                                                                                        |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Aggregate local/CI composition                                                            | Generic mechanics from repo-template with local integration in `.pre-commit-config.yaml` and `.github/workflows/validate.yml`                                                                                                         |
 | Syntax, hygiene, authoring, links/fragments, workflows; consumer-owned Python/TOML checks | Generic repo-template mechanics with local Ruff/TOML retention for real Python sources; `tools/check-links.mjs`, `tools/link-frontmatter.mjs`, `markdownlint-rules/`, link/authoring regression suites, and native tool configuration |
-| Standards-domain structure, IDs, catalog/title agreement, requirements, BCP 14 spelling | Local standard-library Python `scripts/validate_local.py` and `tests/test_validate_local.py` |
-| Template edition transitions and comparison-base evidence | Local standard-library Python `scripts/check_template_editions.py` and its tests |
-| Repository policies lacking an adequate upstream implementation | Temporary local `tools/check-repository-policy.mjs` and `tests/repository-policy.test.mjs` |
-| Whole-repository Markdown selection, heading and destination policy | Temporary local `tools/check-repository-markdown.mjs` and `tests/repository-markdown-selection.test.mjs`, using the maintained AST |
-| Preservation across the aggregate validation composition | Temporary local `tests/validation-composition.test.mjs` |
+| Standards-domain structure, IDs, catalog/title agreement, requirements, BCP 14 spelling   | Local standard-library Python `scripts/validate_local.py` and `tests/test_validate_local.py`                                                                                                                                          |
+| Template edition transitions and comparison-base evidence                                 | Local standard-library Python `scripts/check_template_editions.py` and its tests                                                                                                                                                      |
+| Repository policies lacking an adequate upstream implementation                           | Temporary local `tools/check-repository-policy.mjs` and `tests/repository-policy.test.mjs`                                                                                                                                            |
+| Whole-repository Markdown selection, heading and destination policy                       | Temporary local `tools/check-repository-markdown.mjs` and `tests/repository-markdown-selection.test.mjs`, using the maintained AST                                                                                                    |
+| Preservation across the aggregate validation composition                                  | Temporary local `tests/validation-composition.test.mjs`                                                                                                                                                                               |
 
 ### Temporary controls and retirement
 
@@ -315,14 +335,14 @@ formatting/hygiene fixes, which must be reviewed.
 
 ### Scoped naming
 
-| Scope | Convention |
-| --- | --- |
-| `.github/`, `.githooks/`, `.vscode/` | Owning tool conventions |
-| `scripts/*.py`, `tests/*.py` | Lowercase snake_case |
-| File basename `README.md` at any depth | Conventional documentation basename |
-| `templates/*/standard.md` | Fixed template-owned document |
-| Established root documents and explicit tool configuration | Existing named exceptions |
-| Other files and directory components | Lowercase kebab-case |
+| Scope                                                      | Convention                          |
+| ---------------------------------------------------------- | ----------------------------------- |
+| `.github/`, `.githooks/`, `.vscode/`                       | Owning tool conventions             |
+| `scripts/*.py`, `tests/*.py`                               | Lowercase snake_case                |
+| File basename `README.md` at any depth                     | Conventional documentation basename |
+| `templates/*/standard.md`                                  | Fixed template-owned document       |
+| Established root documents and explicit tool configuration | Existing named exceptions           |
+| Other files and directory components                       | Lowercase kebab-case                |
 
 The README exception does not exempt its ancestors, siblings, or unrelated
 uppercase basenames such as nested `NOTES.md`, `CHANGELOG.md`, or `SECURITY.md`.

@@ -115,11 +115,11 @@ A repository release labels a coherent published library state. Stable template 
 
 Use `vMAJOR.MINOR.PATCH` release tags with these repository-level meanings:
 
-| Increment | Meaning |
-| --- | --- |
-| **MAJOR** | An incompatible change to the published library contract, such as removing or renaming a published template or materially changing the adoption/source-path contract. |
+| Increment | Meaning                                                                                                                                                                  |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **MAJOR** | An incompatible change to the published library contract, such as removing or renaming a published template or materially changing the adoption/source-path contract.    |
 | **MINOR** | A library expansion or any template edition-number increase, including an edition correction or citable-identity change; adding a template also requires at least MINOR. |
-| **PATCH** | Editorial-update-only template changes, README-only, tooling, maintenance, or other changes that alter neither normative meaning nor the published library contract. |
+| **PATCH** | Editorial-update-only template changes, README-only, tooling, maintenance, or other changes that alter neither normative meaning nor the published library contract.     |
 
 The published library contract means template identity, template paths, and the adoption/source-path contract. Normative content changes are MINOR even when they can change downstream conformance or adoption conclusions. The release-note `normative` classification signals the need for downstream review; the repository version increment does not substitute for that classification. Use the highest applicable increment across the release's changes.
 
@@ -243,15 +243,15 @@ The existing published `v1.0.0` and `v1.0.1` tags are lightweight tags and must 
 
 Provide release notes for every future release, whether or not GitHub Release metadata is used. Use the curated changelog and detailed Git/PR/issue evidence as inputs, keeping notable changes consistent while retaining the edition detail and release-specific adoption information required here. For every changed template, identify its stable ID and compare the README editions at the previous release and the release candidate. The reviewed edition transition is the source of truth for semantic classification; do not independently reclassify the content at release time.
 
-| Transition or change | Release-note entry |
-| --- | --- |
-| Edition number increased | Start → end editions, `normative`, for example `1.0 → 3.0`. |
-| Only editorial update number increased | Start → end editions, `editorial`, for example `2.0 → 2.2`. |
-| README-only | `README-only (edition unchanged)`. |
-| Added template | `added at 1.0`. |
-| Removed template | Last edition and last path. |
-| Renamed/moved template | Previous/current ID and path, with the carried edition. |
-| Edition-only correction | Start → end editions, `edition correction, content unchanged`, identifying the earlier misclassified transition. |
+| Transition or change                   | Release-note entry                                                                                               |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Edition number increased               | Start → end editions, `normative`, for example `1.0 → 3.0`.                                                      |
+| Only editorial update number increased | Start → end editions, `editorial`, for example `2.0 → 2.2`.                                                      |
+| README-only                            | `README-only (edition unchanged)`.                                                                               |
+| Added template                         | `added at 1.0`.                                                                                                  |
+| Removed template                       | Last edition and last path.                                                                                      |
+| Renamed/moved template                 | Previous/current ID and path, with the carried edition.                                                          |
+| Edition-only correction                | Start → end editions, `edition correction, content unchanged`, identifying the earlier misclassified transition. |
 
 When multiple transitions occur between releases, report the start and end editions. Consult intermediate history for corrections and structural changes; a correction must not be presented as new normative content in its correction PR. Combine rename/move information with any content transitions in the same release. Unchanged templates need not be listed. Initializing the existing library at `1.0` labels unchanged baseline content; it does not introduce normative changes.
 
