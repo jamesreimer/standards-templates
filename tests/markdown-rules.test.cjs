@@ -307,15 +307,33 @@ test("adapter rejects a parent-only package and NODE_PATH decoy", (t) => {
   const child = join(parent, "repo");
   mkdirSync(join(child, "tools"), { recursive: true });
   writeFileSync(join(child, "package.json"), "{}\n");
-  copyFileSync(join(root, "tools/markdownlint-files.cjs"), join(child, "tools/markdownlint-files.cjs"));
+  copyFileSync(
+    join(root, "tools/markdownlint-files.cjs"),
+    join(child, "tools/markdownlint-files.cjs"),
+  );
   const pkg = join(parent, "node_modules/markdownlint-cli2");
   mkdirSync(pkg, { recursive: true });
-  writeFileSync(join(pkg, "package.json"), JSON.stringify({ main: "cli.cjs", bin: { "markdownlint-cli2": "cli.cjs" } }));
-  writeFileSync(join(pkg, "cli.cjs"), 'console.log("PARENT DECOY EXECUTED");\n');
-  const result = spawnSync(process.execPath, [join(child, "tools/markdownlint-files.cjs"), "example.md"], {
-    cwd: root, encoding: "utf8", timeout: 30000,
-    env: { ...process.env, NODE_PATH: join(parent, "node_modules") },
-  });
+  writeFileSync(
+    join(pkg, "package.json"),
+    JSON.stringify({
+      main: "cli.cjs",
+      bin: { "markdownlint-cli2": "cli.cjs" },
+    }),
+  );
+  writeFileSync(
+    join(pkg, "cli.cjs"),
+    'console.log("PARENT DECOY EXECUTED");\n',
+  );
+  const result = spawnSync(
+    process.execPath,
+    [join(child, "tools/markdownlint-files.cjs"), "example.md"],
+    {
+      cwd: root,
+      encoding: "utf8",
+      timeout: 30000,
+      env: { ...process.env, NODE_PATH: join(parent, "node_modules") },
+    },
+  );
   assert.equal(result.error, undefined);
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /Run npm ci --ignore-scripts/);

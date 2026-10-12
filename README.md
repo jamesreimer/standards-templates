@@ -101,6 +101,12 @@ stale identities, retain justified upstream provenance references, and record
 searches, dispositions, and validation in the reconciliation PR; do not copy a
 new-repository setup checklist or maintain a permanent specialization ledger.
 
+ESLint checks JavaScript correctness and Prettier checks formatting without
+writing changes. Normative `templates/*/standard.md` files are excluded from
+Prettier while retaining all existing standards and Markdown checks. See
+[quality-check guidance](CONTRIBUTING.md#javascript-correctness-and-formatting)
+for scope, exclusions and source-preserving corrections.
+
 ## License
 
 Unless otherwise noted, all repository-authored material in this repository is dedicated to the public domain under [CC0 1.0 Universal](LICENSE). This includes the standards templates and documentation; maintenance tooling under `scripts/`, `tools/`, `markdownlint-rules/`, and `tests/`; repository automation and contribution configuration under `.github/`; editor and Git configuration in `.editorconfig`, `.gitattributes`, `.gitignore`, and `.vscode/`; and the generated `repository-structure.txt` snapshot.

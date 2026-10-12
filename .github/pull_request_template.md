@@ -37,3 +37,7 @@ If yes or unclear, briefly explain what organizations that adopted an earlier re
 ## Validation
 
 Confirm that the full pre-commit composition and `git diff --check` passed, that changed validation includes positive and injected-defect evidence, and that any required manual evidence review was completed. For repo-template source/reconciliation work, record the upstream target SHA, dispositions of applicable upstream changes reviewed, correspondence evidence, and applicable installed host-configuration verification under [MAINTAINING.md](../MAINTAINING.md#repo-template-reconciliation). This evidence prompt does not apply to unrelated changes.
+
+For quality-tooling changes, distinguish correctness changes from formatting-only
+changes, record AST/value correspondence and verify both normative Prettier
+exclusions with unchanged standard bytes and editions.
