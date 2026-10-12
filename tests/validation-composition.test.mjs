@@ -336,3 +336,87 @@ test("actual Markdown hook preserves staged literal filenames, stash and split b
   );
   assert.equal(readFileSync(join(root, last), "utf8"), "#Invalid\n");
 });
+
+test("actual fail-fast ordering reports unclosed fences before formatting", (t) => {
+  const root = fixture(t);
+  for (const file of requiredFiles) writeFileSync(join(root, file), "");
+  for (const file of [
+    "tools/check-repository-policy.mjs",
+    "tools/markdownlint-files.cjs",
+    "markdownlint-rules/fenced-code-closed.cjs",
+    ".markdownlint-cli2.jsonc",
+    ".prettierrc.json",
+    ".prettierignore",
+  ]) {
+    mkdirSync(dirname(join(root, file)), { recursive: true });
+    copyFileSync(join(source, file), join(root, file));
+  }
+  writeFileSync(join(root, ".gitignore"), "node_modules\n");
+  symlinkSync(join(source, "node_modules"), join(root, "node_modules"), "dir");
+  // Project the relevant hooks from the actual configuration without changing
+  // their order or definitions. Omit suites that would recursively run this test.
+  const relevant = new Set([
+    "repository-policy",
+    "markdownlint-cli2",
+    "format-check",
+  ]);
+  const probe = join(root, ".pre-commit-config.yaml");
+  writeFileSync(
+    probe,
+    stringify({
+      ...config,
+      repos: config.repos
+        .map((repo) => ({
+          ...repo,
+          hooks: repo.hooks.filter((hook) => relevant.has(hook.id)),
+        }))
+        .filter((repo) => repo.hooks.length),
+    }),
+  );
+  const path = join(root, "fence.md");
+  const unclosed =
+    "# Fence\n\n```text\nexample\n\nIntended prose outside the code block.\n";
+  const closed =
+    "# Fence\n\n```text\nexample\n```\n\nIntended prose outside the code block.\n";
+  const results = [];
+  for (const [label, content] of [
+    ["unclosed", unclosed],
+    ["closed", closed],
+  ]) {
+    writeFileSync(path, content);
+    assert.deepEqual(checkRepository(root, { writeSnapshot: true }), []);
+    execFileSync("git", ["add", "."], { cwd: root });
+    const result = spawnSync(
+      runner,
+      ["run", "--config", probe, "--files", "fence.md", "--verbose"],
+      { cwd: root, encoding: "utf8", timeout: 60000 },
+    );
+    assert.ifError(result.error);
+    assert.equal(result.signal, null);
+    assert.equal(
+      readFileSync(path, "utf8"),
+      content,
+      `${label}: source changed`,
+    );
+    const output = result.stdout + result.stderr;
+    t.diagnostic(`${label}: exit ${result.status}\n${output}`);
+    results.push({ status: result.status, output });
+  }
+  assert.equal(results[1].status, 0, results[1].output);
+  assert.match(results[1].output, /Check Markdown authoring.*Passed/u);
+  assert.match(results[1].output, /Check formatting with Prettier.*Passed/u);
+  assert.equal(results[0].status, 1, results[0].output);
+  assert.match(results[0].output, /MDX001\/fenced-code-closed/u);
+  assert.doesNotMatch(results[0].output, /Check formatting with Prettier/u);
+  assert.equal(config.fail_fast, true);
+  const ids = config.repos.flatMap((repo) => repo.hooks.map((hook) => hook.id));
+  assert.equal(ids[0], "repository-policy");
+  const linkTests = ids.indexOf("test-link-validation");
+  assert.ok(linkTests > ids.indexOf("markdownlint-cli2"));
+  assert.deepEqual(ids.slice(linkTests + 1, linkTests + 5), [
+    "lint-js",
+    "format-check",
+    "test-quality-hooks",
+    "ruff-check",
+  ]);
+});

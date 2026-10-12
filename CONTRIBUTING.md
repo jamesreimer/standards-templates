@@ -233,7 +233,9 @@ have exact exclusions. Template READMEs and other documentation remain checked.
 Resolve formatting findings individually, inspect the diff and verify parsed
 AST/value equivalence when changing tooling or structured data. Do not run bulk
 write formatting: a formatter can repair an unclosed Markdown fence and hide an
-authoring defect. Normative changes require their own authorized edition review.
+authoring defect. Prettier's generic `--write` suggestion is not permission to
+apply it blindly to Markdown; resolve authoring errors, especially unclosed
+fences, first. Normative changes require their own authorized edition review.
 The root `.prettierrc.json` and `.prettierignore` have exact naming exceptions and
 UTF-8/final-newline checks; nested or lookalike configs gain no naming exception.
 
@@ -265,6 +267,8 @@ for deliberate upstream reconciliation and its PR evidence.
 | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Aggregate local/CI composition                                                            | Generic mechanics from repo-template with local integration in `.pre-commit-config.yaml` and `.github/workflows/validate.yml`                                                                                                         |
 | Syntax, hygiene, authoring, links/fragments, workflows; consumer-owned Python/TOML checks | Generic repo-template mechanics with local Ruff/TOML retention for real Python sources; `tools/check-links.mjs`, `tools/link-frontmatter.mjs`, `markdownlint-rules/`, link/authoring regression suites, and native tool configuration |
+| JavaScript correctness and check-only formatting                                          | Upstream-owned generic ESLint/Prettier mechanics with local integration in `.pre-commit-config.yaml`, `eslint.config.mjs`, `.prettierrc.json` and quality tests                                                                       |
+| Normative template formatting exclusions                                                  | Standards Templates-owned edition protection for `templates/*/standard.md` in `.prettierignore` and the Prettier hook exclusion                                                                                                       |
 | Standards-domain structure, IDs, catalog/title agreement, requirements, BCP 14 spelling   | Local standard-library Python `scripts/validate_local.py` and `tests/test_validate_local.py`                                                                                                                                          |
 | Template edition transitions and comparison-base evidence                                 | Local standard-library Python `scripts/check_template_editions.py` and its tests                                                                                                                                                      |
 | Repository policies lacking an adequate upstream implementation                           | Temporary local `tools/check-repository-policy.mjs` and `tests/repository-policy.test.mjs`                                                                                                                                            |
