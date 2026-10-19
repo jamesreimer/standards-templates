@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.2] - 2026-10-20
+
+### Changed
+
+- Require Node 24.21.0 and root-installed Markdownlint with literal filename selection; reject link-validation success when Linkinator cannot attest the exact requested files ([`bcaf548`](https://github.com/jamesreimer/standards-templates/commit/bcaf5483878642e468990446e04ddf0ce7695f71), [#176](https://github.com/jamesreimer/standards-templates/pull/176))
+- Clarify same-PR changelog preparation and canonical published-commit references while preserving independent release verification ([`d5d0740`](https://github.com/jamesreimer/standards-templates/commit/d5d07407cf827b9972471ca292d6fcdd3cee39b3), [#170](https://github.com/jamesreimer/standards-templates/pull/170))
+- Update Marked from 18.0.14 to 18.1.0 with no observed change in the repository's maintained link-validation behavior ([`295a11a`](https://github.com/jamesreimer/standards-templates/commit/295a11a4c0a71b3cbe53df70c8ec0b0093d5d249), [#157](https://github.com/jamesreimer/standards-templates/pull/157))
+
+### Added
+
+- Add ESLint, check-only Prettier and deterministic filename/batch regression coverage; preserve normative-standard formatting exclusions and authoring diagnostics before formatting checks ([`034aa8f`](https://github.com/jamesreimer/standards-templates/commit/034aa8fd24af58817112f63ca767c1e5a3f5403e), [#177](https://github.com/jamesreimer/standards-templates/pull/177))
+
 ## [1.4.1] - 2026-10-04
 
 ### Added
@@ -77,6 +89,7 @@
 
 _First stable release of the reusable standards and policy template library._
 
+[1.4.2]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.4.2
 [1.4.1]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.4.1
 [1.4.0]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.4.0
 [1.3.0]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.3.0
