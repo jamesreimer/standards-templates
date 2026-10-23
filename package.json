@@ -18,12 +18,12 @@
     "test:links": "node --test tests/link-validation.test.mjs"
   },
   "engines": {
-    "node": "24.21.0"
+    "node": ">=24.22.1 <25"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "eslint": "10.12.0",
-    "markdownlint-cli2": "0.23.3",
+    "markdownlint-cli2": "0.24.0",
     "prettier": "3.9.9"
   }
 }
