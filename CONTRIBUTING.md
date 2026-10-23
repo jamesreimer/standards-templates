@@ -134,8 +134,9 @@ records; they do not inherit this repository's releases as their own history.
 
 ## Validation
 
-Install Python 3.10 or later, Git, and Node.js 24.21.0 (including npm), then set
-up the validation tools:
+Install Python 3.10 or later, Git, and Node.js 24.22.1 or a later Node 24 release
+(including npm), then set up the validation tools. This Node baseline applies to
+repository development tooling, not to organizations adopting the standards:
 
 ```sh
 npm ci --ignore-scripts
@@ -146,7 +147,7 @@ python3 -m venv .venv
 On Windows, use `.venv\Scripts\python.exe` and
 `.venv\Scripts\pre-commit.exe` instead. Initial dependency and hook installation
 needs network access; required link checking is offline. CI runs the same
-pre-commit composition, using Python 3.12 and Node 24.21.0.
+pre-commit composition, using Python 3.12 and exactly Node 24.22.1.
 
 Stage intended new files so native hooks include them, then run:
 
@@ -206,16 +207,33 @@ Ordinary validation never writes the snapshot. The inventory contains tracked
 and unignored files, including untracked additions, with deterministic ordering.
 Missing tracked files fail closed; stage intended removals before regeneration.
 
-The package engine and root `.npmrc` enforce exactly Node 24.21.0 during
-installation. CI selects that runtime; later local execution uses `node` on
-PATH, so keep that version selected while running checks. No per-invocation
-runtime guard or separate Markdownlint Node environment is installed.
+The package engine and root `.npmrc` enforce Node `>=24.22.1 <25` during
+installation, allowing later compatible Node 24 patches. CI pins Node 24.22.1;
+later local execution uses `node` on PATH, so keep a supported version selected
+while running checks. No per-invocation runtime guard or separate Markdownlint
+Node environment is installed.
 
 The staged Markdown hook and whole-repository Markdown check resolve the same
 repository-root `node_modules/markdownlint-cli2` executable. Both use the CLI's
 `:filename` literal marker; parent or global packages are not substitutes for
 `npm ci --ignore-scripts`. Pre-commit retains staged-file selection, batching,
 and unstaged-change stashing. Rule tests use this same root installation.
+
+Inline Markdownlint configuration comments, including enable/disable directives
+and rule exceptions, are intentionally ignored with `noInlineConfig: true`.
+No existing tracked Markdown depended on these directives when this protection
+was adopted. Correct authoring defects or propose a reviewed configuration change
+instead of adding inline exceptions. This removes the Markdown comment
+configuration parsing route; it does not prevent nested executable CLI2 option
+files or all TOML configuration parsing, and does not replace patched packages.
+
+Markdownlint CLI2 0.24.0 (markdownlint 0.42.0) uses RE2JS for `frontMatter`
+expressions. This narrows the previously supported JavaScript `RegExp` syntax:
+custom patterns using lookahead can throw `RE2JSSyntaxException` and need
+supported no-lookahead equivalents. Verify custom patterns before updating;
+the repository's root defaults do not configure custom `frontMatter`. The
+real-CLI regression checks a supported custom opener, skipped metadata, genuine
+heading errors outside metadata, and source preservation.
 
 ### JavaScript correctness and formatting
 
