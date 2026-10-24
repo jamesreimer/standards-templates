@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.0] - 2026-10-24
+
+### Changed
+
+- **Breaking:** Require Node `>=24.22.1 <25` for repository tooling and update Markdownlint CLI2 to `0.24.0`; disable inline configuration comments and require supported RE2JS syntax for custom `frontMatter` expressions ([`d3e350c`](https://github.com/jamesreimer/standards-templates/commit/d3e350c6f1c54af1e3e03b06fa60e962dae50032), [#184](https://github.com/jamesreimer/standards-templates/pull/184))
+- Advance Architectural Reasoning from edition `2.0` to `3.0` with normative target-architecture re-evaluation when materially changed requirements, assumptions, constraints or evidence call the selected model into question ([`1d71bc8`](https://github.com/jamesreimer/standards-templates/commit/1d71bc86140a126f895e057741d07c00a35746f9), [#185](https://github.com/jamesreimer/standards-templates/pull/185))
+- Advance Operational Execution Contract from edition `1.0` to `2.0` with normative validation of material producer-consumer interface expectations during consequential execution, including proportionate actual-exchange evidence and explicit unresolved limitations ([`1d71bc8`](https://github.com/jamesreimer/standards-templates/commit/1d71bc86140a126f895e057741d07c00a35746f9), [#185](https://github.com/jamesreimer/standards-templates/pull/185))
+
+### Fixed
+
+- Resolve Undici to supported `8.12.3` within Linkinator's existing range to address EventSource memory exhaustion, SRI token handling and excessive content-encoding denial of service ([`5e4b121`](https://github.com/jamesreimer/standards-templates/commit/5e4b121ca713b3dd7720db349f55ac47195fa0d4), [#187](https://github.com/jamesreimer/standards-templates/pull/187))
+- Patch smol-toml and markdown-it vulnerabilities through the supported Markdownlint dependency graph, using `1.9.1` and `15.0.3` respectively ([`d3e350c`](https://github.com/jamesreimer/standards-templates/commit/d3e350c6f1c54af1e3e03b06fa60e962dae50032), [#184](https://github.com/jamesreimer/standards-templates/pull/184))
+
 ## [1.4.2] - 2026-10-19
 
 ### Changed
@@ -89,6 +102,7 @@
 
 _First stable release of the reusable standards and policy template library._
 
+[1.5.0]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.5.0
 [1.4.2]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.4.2
 [1.4.1]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.4.1
 [1.4.0]: https://github.com/jamesreimer/standards-templates/releases/tag/v1.4.0
