@@ -2,7 +2,7 @@
 
 Stable template ID: `architectural-reasoning`
 
-Template edition: `2.0`
+Template edition: `3.0`
 
 Human-facing title:
 
