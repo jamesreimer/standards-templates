@@ -269,6 +269,8 @@ Changes to execution authority or Protected Boundaries remain subject to Section
 
 An Execution Contract MUST define validation proportionate to the authorized consequence.
 
+When consequential execution introduces or materially changes a producer-consumer interaction that is material to its objective, the required validation MUST address the materially relevant agreed interface expectations, including exchanged values and their meaning, required or absent states, compatibility, and error behavior as applicable. Where feasible and proportionate, validation SHOULD exercise representative output from the actual producer through the intended consumer, including materially relevant adverse responses. Passing separate component tests or invented fixtures alone MUST NOT be presented as verified interoperability of the real exchange. If such end-to-end evidence is unavailable within authorized scope, the limitation MUST remain explicit and completion MUST NOT be claimed where the unresolved exchange could defeat a required acceptance or safety condition. On a material integration failure, the assessment SHOULD examine producer, consumer and their agreed interface before assigning the defect to one side.
+
 Validation MAY include:
 
 - repository checks;

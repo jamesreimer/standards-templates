@@ -120,6 +120,8 @@ The intended durable state MUST be distinguished from Transition Mechanisms. A m
 
 Before recording a final-state conclusion, the reasoning MUST identify whether the work creates, replaces, refines, invalidates, or implements an already-decided state.
 
+When materially changed requirements, assumptions, constraints, or evidence call the selected target architecture into question, reasoning MUST re-evaluate the intended durable model against the current governing requirements instead of deriving the target from existing implementation. Prior implementation and review effort alone MUST NOT justify retaining an obsolete architectural arrangement; useful evidence and legitimate compatibility, continuity, or migration constraints remain relevant to the target and any transition.
+
 When current authority supersedes earlier assumptions, incompatible assumptions MUST be retired from the current model. Historical material MAY explain earlier behavior but MUST NOT remain an alternative current truth unless active authority preserves it.
 
 When a pattern is replaced, the intended final state MUST exclude the replaced pattern unless active authority preserves it for a defined compatibility, migration, rollback, or phased-adoption need. A completed replacement MUST NOT be claimed while incompatible superseded state remains outside that retained scope.
